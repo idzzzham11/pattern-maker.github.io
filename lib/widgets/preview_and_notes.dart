@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/pattern_models.dart';
 import '../painters/garment_preview_painter.dart';
 import '../utils/pattern_instructions.dart';
+import '../screens/full_garment_preview_screen.dart';
 
 class PreviewAndNotes extends StatelessWidget {
   final Measurements measurements;
@@ -91,8 +92,7 @@ class PreviewAndNotes extends StatelessWidget {
           ),
           SizedBox(height: isSmallScreen ? 16 : 24),
 
-
-          // Canvas Preview
+          // 2D Canvas Preview
           Expanded(
             child: Container(
               decoration: BoxDecoration(
@@ -114,18 +114,20 @@ class PreviewAndNotes extends StatelessWidget {
                 ],
               ),
               padding: EdgeInsets.all(isSmallScreen ? 8 : 16),
-              child: CustomPaint(
-                painter: GarmentPreviewPainter(
-                  measurements: measurements,
-                  styleSelections: styleSelections,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: CustomPaint(
+                  painter: GarmentPreviewPainter(
+                    measurements: measurements,
+                    styleSelections: styleSelections,
+                  ),
+                  size: Size.infinite,
                 ),
-                size: Size.infinite,
               ),
             ),
           ),
 
           SizedBox(height: isSmallScreen ? 16 : 24),
-
 
           // Style Summary
           Container(
@@ -162,6 +164,43 @@ class PreviewAndNotes extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+          ),
+
+          SizedBox(height: isSmallScreen ? 16 : 24),
+
+          // Full Screen Preview Button
+          SizedBox(
+            width: double.infinity,
+            height: isSmallScreen ? 48 : 56,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => FullGarmentPreviewScreen(
+                      measurements: measurements,
+                      styleSelections: styleSelections,
+                    ),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.fullscreen),
+              label: Text(
+                isSmallScreen ? 'Lihat Penuh' : 'Lihat Preview Penuh Skrin',
+                style: TextStyle(
+                  fontSize: isSmallScreen ? 14 : 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF7c3aed),
+                foregroundColor: Colors.white,
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
             ),
           ),
         ],

@@ -16,7 +16,7 @@ class GarmentPreviewPainter extends CustomPainter {
     final paint = Paint()
       ..color = const Color(0xFF1f2937)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0
+      ..strokeWidth = 2.5
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round;
 
@@ -24,48 +24,44 @@ class GarmentPreviewPainter extends CustomPainter {
       ..color = const Color(0xFFFFFBF5)
       ..style = PaintingStyle.fill;
 
-    final gridPaint = Paint()
-      ..color = const Color(0xFFE5E7EB)
-      ..strokeWidth = 0.5
-      ..style = PaintingStyle.stroke;
+    final accentPaint = Paint()
+      ..color = const Color(0xFFe9d5ff)
+      ..style = PaintingStyle.fill;
 
-    // Draw background grid for pattern paper effect
-    _drawPatternGrid(canvas, size, gridPaint);
+    // Calculate center and scale
+    final centerX = size.width / 2;
+    final centerY = size.height / 2;
+    final scale = min(size.width, size.height) / 400;
 
-    // Calculate proportions
-    final scale = min(size.width, size.height) / 300;
-    final bustWidth = (measurements.bust / 4) * scale;
-    final waistWidth = (measurements.waist / 4) * scale;
-    final hipWidth = (measurements.hip / 4) * scale;
-    final shoulderWidth = (measurements.shoulder / 2) * scale;
-
+    // Calculate garment proportions
+    final shoulderWidth = measurements.shoulder * scale * 0.4;
+    final bustWidth = measurements.bust / 4 * scale * 0.8;
+    final waistWidth = measurements.waist / 4 * scale * 0.8;
+    final hipWidth = measurements.hip / 4 * scale * 0.8;
+    
     // Draw title
     _drawTitle(canvas, size);
 
-    // Draw front bodice pattern piece
-    _drawFrontBodice(canvas, size, paint, fillPaint, scale,
-        shoulderWidth, bustWidth, waistWidth);
+    // Draw complete garment from top to bottom
+    canvas.save();
+    canvas.translate(centerX, centerY - size.height * 0.15);
 
-    // Draw front skirt pattern piece
-    _drawFrontSkirt(canvas, size, paint, fillPaint, scale,
-        waistWidth, hipWidth);
+    // 1. Draw sleeves first (behind bodice)
+    _drawCompleteSleeves(canvas, paint, fillPaint, shoulderWidth, scale);
 
-    // Draw measurement annotations
-    _drawMeasurementAnnotations(canvas, size, scale);
-  }
+    // 2. Draw bodice
+    _drawCompleteBodice(canvas, paint, fillPaint, accentPaint, shoulderWidth, bustWidth, waistWidth, scale);
 
-  void _drawPatternGrid(Canvas canvas, Size size, Paint gridPaint) {
-    const gridSize = 20.0;
+    // 3. Draw collar (on top of bodice)
+    _drawCompleteCollar(canvas, paint, fillPaint, accentPaint, shoulderWidth, scale);
 
-    // Draw vertical lines
-    for (double x = 0; x < size.width; x += gridSize) {
-      canvas.drawLine(Offset(x, 0), Offset(x, size.height), gridPaint);
-    }
+    // 4. Draw skirt
+    _drawCompleteSkirt(canvas, paint, fillPaint, waistWidth, hipWidth, scale);
 
-    // Draw horizontal lines
-    for (double y = 0; y < size.height; y += gridSize) {
-      canvas.drawLine(Offset(0, y), Offset(size.width, y), gridPaint);
-    }
+    canvas.restore();
+
+    // Draw style summary
+    _drawStyleSummary(canvas, size);
   }
 
   void _drawTitle(Canvas canvas, Size size) {
@@ -75,335 +71,844 @@ class GarmentPreviewPainter extends CustomPainter {
     );
 
     textPainter.text = TextSpan(
-      text: '${measurements.name} - PATTERN PIECES',
+      text: '${measurements.name.isNotEmpty ? measurements.name : "Preview"} - GARMENT DESIGN',
       style: const TextStyle(
         color: Color(0xFF374151),
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: FontWeight.bold,
         fontFamily: 'Inter',
       ),
     );
     textPainter.layout();
-    textPainter.paint(canvas, Offset(size.width / 2 - textPainter.width / 2, 20));
+    textPainter.paint(canvas, Offset(size.width / 2 - textPainter.width / 2, 15));
   }
 
-  void _drawFrontBodice(Canvas canvas, Size size, Paint paint, Paint fillPaint,
-      double scale, double shoulderWidth, double bustWidth, double waistWidth) {
+  void _drawCompleteSleeves(Canvas canvas, Paint paint, Paint fillPaint, double shoulderWidth, double scale) {
+    final sleeveLength = measurements.sleeveLength * scale * 0.6;
+    final armholeDepth = measurements.armhole * scale * 0.8;
+    
+    switch (styleSelections.sleeve) {
+      case 'Sleeveless':
+        // No sleeves, just draw armhole
+        break;
+        
+      case 'Short':
+        // Left sleeve
+        final leftSleevePath = Path();
+        leftSleevePath.moveTo(-shoulderWidth - 5, 10);
+        leftSleevePath.quadraticBezierTo(
+          -shoulderWidth - 25,
+          20,
+          -shoulderWidth - 20,
+          50,
+        );
+        leftSleevePath.lineTo(-shoulderWidth - 15, 50);
+        leftSleevePath.quadraticBezierTo(
+          -shoulderWidth - 20,
+          25,
+          -shoulderWidth, 
+          armholeDepth + 10,
+        );
+        leftSleevePath.close();
+        canvas.drawPath(leftSleevePath, fillPaint);
+        canvas.drawPath(leftSleevePath, paint);
 
-    final bodiceX = size.width * 0.25;
-    final bodiceY = size.height * 0.15;
+        // Right sleeve
+        final rightSleevePath = Path();
+        rightSleevePath.moveTo(shoulderWidth + 5, 10);
+        rightSleevePath.quadraticBezierTo(
+          shoulderWidth + 25,
+          20,
+          shoulderWidth + 20,
+          50,
+        );
+        rightSleevePath.lineTo(shoulderWidth + 15, 50);
+        rightSleevePath.quadraticBezierTo(
+          shoulderWidth + 20,
+          25,
+          shoulderWidth,
+          armholeDepth + 10,
+        );
+        rightSleevePath.close();
+        canvas.drawPath(rightSleevePath, fillPaint);
+        canvas.drawPath(rightSleevePath, paint);
+        break;
+        
+      case 'Long':
+        // Left long sleeve
+        final leftLongPath = Path();
+        leftLongPath.moveTo(-shoulderWidth - 5, 10);
+        leftLongPath.quadraticBezierTo(
+          -shoulderWidth - 25,
+          20,
+          -shoulderWidth - 22,
+          sleeveLength + 30,
+        );
+        leftLongPath.lineTo(-shoulderWidth - 17, sleeveLength + 30);
+        leftLongPath.quadraticBezierTo(
+          -shoulderWidth - 20,
+          sleeveLength / 2,
+          -shoulderWidth,
+          armholeDepth + 10,
+        );
+        leftLongPath.close();
+        canvas.drawPath(leftLongPath, fillPaint);
+        canvas.drawPath(leftLongPath, paint);
 
-    final armholeDepth = measurements.armhole * scale;
-    final backLength = measurements.backLength * scale;
+        // Right long sleeve
+        final rightLongPath = Path();
+        rightLongPath.moveTo(shoulderWidth + 5, 10);
+        rightLongPath.quadraticBezierTo(
+          shoulderWidth + 25,
+          20,
+          shoulderWidth + 22,
+          sleeveLength + 30,
+        );
+        rightLongPath.lineTo(shoulderWidth + 17, sleeveLength + 30);
+        rightLongPath.quadraticBezierTo(
+          shoulderWidth + 20,
+          sleeveLength / 2,
+          shoulderWidth,
+          armholeDepth + 10,
+        );
+        rightLongPath.close();
+        canvas.drawPath(rightLongPath, fillPaint);
+        canvas.drawPath(rightLongPath, paint);
+        break;
+        
+      case 'Puff':
+        // Left puff sleeve
+        final leftPuffPath = Path();
+        leftPuffPath.moveTo(-shoulderWidth - 5, 10);
+        leftPuffPath.quadraticBezierTo(
+          -shoulderWidth - 40,
+          15,
+          -shoulderWidth - 35,
+          40,
+        );
+        leftPuffPath.lineTo(-shoulderWidth - 15, 45);
+        leftPuffPath.quadraticBezierTo(
+          -shoulderWidth - 15,
+          25,
+          -shoulderWidth,
+          armholeDepth + 10,
+        );
+        leftPuffPath.close();
+        canvas.drawPath(leftPuffPath, fillPaint);
+        canvas.drawPath(leftPuffPath, paint);
 
-    final path = Path();
+        // Right puff sleeve
+        final rightPuffPath = Path();
+        rightPuffPath.moveTo(shoulderWidth + 5, 10);
+        rightPuffPath.quadraticBezierTo(
+          shoulderWidth + 40,
+          15,
+          shoulderWidth + 35,
+          40,
+        );
+        rightPuffPath.lineTo(shoulderWidth + 15, 45);
+        rightPuffPath.quadraticBezierTo(
+          shoulderWidth + 15,
+          25,
+          shoulderWidth,
+          armholeDepth + 10,
+        );
+        rightPuffPath.close();
+        canvas.drawPath(rightPuffPath, fillPaint);
+        canvas.drawPath(rightPuffPath, paint);
 
-    // Start at center front neck
-    path.moveTo(bodiceX, bodiceY);
+        // Draw gathering lines
+        final gatherPaint = Paint()
+          ..color = const Color(0xFF9ca3af)
+          ..strokeWidth = 1
+          ..style = PaintingStyle.stroke;
+        for (int i = 0; i < 5; i++) {
+          canvas.drawLine(
+            Offset(-shoulderWidth - 30 + i * 3, 40),
+            Offset(-shoulderWidth - 30 + i * 3, 45),
+            gatherPaint,
+          );
+          canvas.drawLine(
+            Offset(shoulderWidth + 20 + i * 3, 40),
+            Offset(shoulderWidth + 20 + i * 3, 45),
+            gatherPaint,
+          );
+        }
+        break;
+        
+      case 'Bell':
+        // Left bell sleeve
+        final leftBellPath = Path();
+        leftBellPath.moveTo(-shoulderWidth - 5, 10);
+        leftBellPath.lineTo(-shoulderWidth - 20, 60);
+        leftBellPath.lineTo(-shoulderWidth - 40, 100);
+        leftBellPath.lineTo(-shoulderWidth - 30, 100);
+        leftBellPath.lineTo(-shoulderWidth - 12, 65);
+        leftBellPath.quadraticBezierTo(
+          -shoulderWidth - 10,
+          35,
+          -shoulderWidth,
+          armholeDepth + 10,
+        );
+        leftBellPath.close();
+        canvas.drawPath(leftBellPath, fillPaint);
+        canvas.drawPath(leftBellPath, paint);
 
-    // Draw neckline based on style
-    _drawPatternNeckline(path, bodiceX, bodiceY, shoulderWidth);
+        // Right bell sleeve
+        final rightBellPath = Path();
+        rightBellPath.moveTo(shoulderWidth + 5, 10);
+        rightBellPath.lineTo(shoulderWidth + 20, 60);
+        rightBellPath.lineTo(shoulderWidth + 40, 100);
+        rightBellPath.lineTo(shoulderWidth + 30, 100);
+        rightBellPath.lineTo(shoulderWidth + 12, 65);
+        rightBellPath.quadraticBezierTo(
+          shoulderWidth + 10,
+          35,
+          shoulderWidth,
+          armholeDepth + 10,
+        );
+        rightBellPath.close();
+        canvas.drawPath(rightBellPath, fillPaint);
+        canvas.drawPath(rightBellPath, paint);
+        break;
+        
+      case 'Cap':
+        // Left cap sleeve
+        final leftCapPath = Path();
+        leftCapPath.moveTo(-shoulderWidth - 5, 10);
+        leftCapPath.quadraticBezierTo(
+          -shoulderWidth - 20,
+          12,
+          -shoulderWidth - 18,
+          25,
+        );
+        leftCapPath.lineTo(-shoulderWidth - 10, 25);
+        leftCapPath.quadraticBezierTo(
+          -shoulderWidth - 12,
+          15,
+          -shoulderWidth,
+          armholeDepth + 10,
+        );
+        leftCapPath.close();
+        canvas.drawPath(leftCapPath, fillPaint);
+        canvas.drawPath(leftCapPath, paint);
 
-    // Shoulder line
-    path.lineTo(bodiceX + shoulderWidth, bodiceY - 10);
+        // Right cap sleeve
+        final rightCapPath = Path();
+        rightCapPath.moveTo(shoulderWidth + 5, 10);
+        rightCapPath.quadraticBezierTo(
+          shoulderWidth + 20,
+          12,
+          shoulderWidth + 18,
+          25,
+        );
+        rightCapPath.lineTo(shoulderWidth + 10, 25);
+        rightCapPath.quadraticBezierTo(
+          shoulderWidth + 12,
+          15,
+          shoulderWidth,
+          armholeDepth + 10,
+        );
+        rightCapPath.close();
+        canvas.drawPath(rightCapPath, fillPaint);
+        canvas.drawPath(rightCapPath, paint);
+        break;
+    }
+  }
 
-    // Draw armhole
+  void _drawCompleteBodice(Canvas canvas, Paint paint, Paint fillPaint, Paint accentPaint, 
+      double shoulderWidth, double bustWidth, double waistWidth, double scale) {
+    
+    final armholeDepth = measurements.armhole * scale * 0.8;
+    final backLength = measurements.backLength * scale * 0.6;
+    final neckDepth = 25.0;
+
+    final bodicePath = Path();
+
+    // Start from left shoulder
+    bodicePath.moveTo(-shoulderWidth - 5, 10);
+
+    // Draw neckline based on selection
+    _drawNeckline(bodicePath, shoulderWidth, neckDepth);
+
+    // Right shoulder line
+    bodicePath.lineTo(shoulderWidth + 5, 10);
+
+    // Right armhole
     if (styleSelections.sleeve == 'Sleeveless') {
-      path.quadraticBezierTo(
-        bodiceX + shoulderWidth + 5,
-        bodiceY + armholeDepth / 2,
-        bodiceX + bustWidth,
-        bodiceY + armholeDepth,
+      bodicePath.quadraticBezierTo(
+        shoulderWidth + 15,
+        armholeDepth / 2,
+        bustWidth + 5,
+        armholeDepth,
       );
     } else {
-      path.quadraticBezierTo(
-        bodiceX + shoulderWidth + 10,
-        bodiceY + armholeDepth / 2,
-        bodiceX + bustWidth,
-        bodiceY + armholeDepth,
-      );
+      bodicePath.lineTo(shoulderWidth, armholeDepth + 10);
     }
 
-    // Side seam to waist
-    path.lineTo(bodiceX + waistWidth, bodiceY + backLength);
-
-    // Waist line
-    path.lineTo(bodiceX, bodiceY + backLength);
-
-    // Center front line
-    path.close();
-
-    canvas.drawPath(path, fillPaint);
-    canvas.drawPath(path, paint);
-
-    // Draw center fold line
-    _drawFoldLine(canvas, bodiceX, bodiceY, bodiceX, bodiceY + backLength);
-
-    // Draw grain line
-    _drawGrainLine(canvas, bodiceX + shoulderWidth / 2, bodiceY + 40,
-        bodiceX + shoulderWidth / 2, bodiceY + backLength - 20);
-
-    // Draw darts if applicable
-    if (styleSelections.bodice == 'Dart Front' || styleSelections.bodice == 'Basic Fitted') {
-      _drawDart(canvas, bodiceX + bustWidth * 0.6, bodiceY + armholeDepth + 10,
-          bodiceX + waistWidth * 0.8, bodiceY + backLength - 5);
-    }
-
-    // Label
-    _drawPatternLabel(canvas, 'BODICE DEPAN\n(Potong 1x atas Lipat)',
-        bodiceX + shoulderWidth / 2, bodiceY + backLength / 2);
-  }
-
-  void _drawFrontSkirt(Canvas canvas, Size size, Paint paint, Paint fillPaint,
-      double scale, double waistWidth, double hipWidth) {
-
-    final skirtX = size.width * 0.6;
-    final skirtY = size.height * 0.15;
-
-    final hipDepth = 180.0 * scale;
-    final skirtLength = 250.0 * scale;
-
-    final path = Path();
-
-    // Start at center front waist
-    path.moveTo(skirtX, skirtY);
-
-    // Waist to side seam
-    path.lineTo(skirtX + waistWidth, skirtY);
-
-    // Side seam - varies by skirt style
-    switch (styleSelections.skirt) {
-      case 'Straight':
-        path.lineTo(skirtX + hipWidth, skirtY + hipDepth);
-        path.lineTo(skirtX + hipWidth, skirtY + skirtLength);
-        path.lineTo(skirtX, skirtY + skirtLength);
-        break;
-      case 'A-Line':
-        path.lineTo(skirtX + hipWidth, skirtY + hipDepth);
-        path.lineTo(skirtX + hipWidth + 40, skirtY + skirtLength);
-        path.lineTo(skirtX, skirtY + skirtLength);
-        break;
-      case 'Flared':
-        path.lineTo(skirtX + hipWidth, skirtY + hipDepth);
-        path.quadraticBezierTo(
-          skirtX + hipWidth + 30,
-          skirtY + hipDepth + 50,
-          skirtX + hipWidth + 80,
-          skirtY + skirtLength,
-        );
-        path.lineTo(skirtX, skirtY + skirtLength);
-        break;
-      case 'Pencil':
-        path.lineTo(skirtX + hipWidth, skirtY + hipDepth);
-        path.lineTo(skirtX + hipWidth - 10, skirtY + skirtLength);
-        path.lineTo(skirtX, skirtY + skirtLength);
-        break;
-      case 'Pleated':
-      case 'Gathered':
-        path.lineTo(skirtX + waistWidth * 1.8, skirtY);
-        path.lineTo(skirtX + hipWidth + 40, skirtY + hipDepth);
-        path.lineTo(skirtX + hipWidth + 40, skirtY + skirtLength);
-        path.lineTo(skirtX, skirtY + skirtLength);
-        break;
+    // Apply bodice style variations
+    switch (styleSelections.bodice) {
+      case 'Princess Line':
+        _drawPrincessLineBodice(canvas, paint, fillPaint, bodicePath, 
+            shoulderWidth, bustWidth, waistWidth, armholeDepth, backLength);
+        return;
+        
+      case 'Wrap Style':
+        _drawWrapStyleBodice(canvas, paint, fillPaint, 
+            shoulderWidth, bustWidth, waistWidth, armholeDepth, backLength);
+        return;
+        
+      case 'Peplum':
+        // Draw basic bodice first
+        bodicePath.lineTo(waistWidth + 5, backLength - 10);
+        bodicePath.lineTo(-waistWidth - 5, backLength - 10);
+        
+        if (styleSelections.sleeve == 'Sleeveless') {
+          bodicePath.quadraticBezierTo(
+            -bustWidth - 5,
+            armholeDepth,
+            -shoulderWidth - 15,
+            armholeDepth / 2,
+          );
+        } else {
+          bodicePath.lineTo(-shoulderWidth, armholeDepth + 10);
+        }
+        bodicePath.close();
+        
+        canvas.drawPath(bodicePath, fillPaint);
+        canvas.drawPath(bodicePath, paint);
+        
+        // Draw peplum
+        _drawPeplum(canvas, paint, accentPaint, waistWidth, backLength);
+        return;
+        
       default:
-        path.lineTo(skirtX + hipWidth, skirtY + hipDepth);
-        path.lineTo(skirtX + hipWidth, skirtY + skirtLength);
-        path.lineTo(skirtX, skirtY + skirtLength);
+        // Basic fitted or dart front
+        bodicePath.lineTo(waistWidth + 5, backLength - 10);
+        bodicePath.lineTo(-waistWidth - 5, backLength - 10);
+        
+        if (styleSelections.sleeve == 'Sleeveless') {
+          bodicePath.quadraticBezierTo(
+            -bustWidth - 5,
+            armholeDepth,
+            -shoulderWidth - 15,
+            armholeDepth / 2,
+          );
+        } else {
+          bodicePath.lineTo(-shoulderWidth, armholeDepth + 10);
+        }
+        bodicePath.close();
+        
+        canvas.drawPath(bodicePath, fillPaint);
+        canvas.drawPath(bodicePath, paint);
+        
+        // Draw darts if applicable
+        if (styleSelections.bodice == 'Dart Front') {
+          _drawBustDarts(canvas, paint, bustWidth, waistWidth, armholeDepth, backLength);
+        }
     }
-
-    // Center front line
-    path.close();
-
-    canvas.drawPath(path, fillPaint);
-    canvas.drawPath(path, paint);
-
-    // Draw center fold line
-    _drawFoldLine(canvas, skirtX, skirtY, skirtX, skirtY + skirtLength);
-
-    // Draw grain line
-    _drawGrainLine(canvas, skirtX + waistWidth / 2, skirtY + 40,
-        skirtX + waistWidth / 2, skirtY + skirtLength - 40);
-
-    // Draw gathering marks for gathered/pleated skirts
-    if (styleSelections.skirt == 'Gathered' || styleSelections.skirt == 'Pleated') {
-      _drawGatheringMarks(canvas, skirtX, skirtY, skirtX + waistWidth * 1.8, skirtY);
-    }
-
-    // Label
-    _drawPatternLabel(canvas, 'SKIRT DEPAN\n(Potong 1x atas Lipat)',
-        skirtX + waistWidth / 2, skirtY + skirtLength / 2);
   }
 
-  void _drawPatternNeckline(Path path, double x, double y, double shoulderWidth) {
+  void _drawNeckline(Path path, double shoulderWidth, double neckDepth) {
     switch (styleSelections.neckline) {
       case 'Round':
-        path.quadraticBezierTo(x + 15, y - 5, x + shoulderWidth * 0.4, y - 10);
+        path.quadraticBezierTo(
+          -shoulderWidth / 2, 
+          -5,
+          0, 
+          0,
+        );
+        path.quadraticBezierTo(
+          shoulderWidth / 2,
+          -5,
+          shoulderWidth + 5,
+          10,
+        );
         break;
+        
       case 'V-Neck':
-        path.lineTo(x + 15, y + 40);
-        path.lineTo(x + shoulderWidth * 0.4, y - 5);
+        path.lineTo(-shoulderWidth / 3, 5);
+        path.lineTo(0, neckDepth + 10);
+        path.lineTo(shoulderWidth / 3, 5);
         break;
+        
       case 'Square':
-        path.lineTo(x + 25, y);
-        path.lineTo(x + 25, y + 30);
-        path.lineTo(x + shoulderWidth * 0.4, y + 30);
-        path.lineTo(x + shoulderWidth * 0.4, y - 5);
+        path.lineTo(-shoulderWidth / 2, 10);
+        path.lineTo(-shoulderWidth / 2, neckDepth);
+        path.lineTo(shoulderWidth / 2, neckDepth);
+        path.lineTo(shoulderWidth / 2, 10);
         break;
+        
       case 'Sweetheart':
-        path.quadraticBezierTo(x + 10, y + 10, x + 20, y + 35);
-        path.quadraticBezierTo(x + 30, y + 10, x + shoulderWidth * 0.4, y - 5);
+        path.quadraticBezierTo(
+          -shoulderWidth / 2,
+          5,
+          -shoulderWidth / 4,
+          neckDepth - 5,
+        );
+        path.quadraticBezierTo(
+          -10,
+          neckDepth + 5,
+          0,
+          neckDepth - 8,
+        );
+        path.quadraticBezierTo(
+          10,
+          neckDepth + 5,
+          shoulderWidth / 4,
+          neckDepth - 5,
+        );
+        path.quadraticBezierTo(
+          shoulderWidth / 2,
+          5,
+          shoulderWidth + 5,
+          10,
+        );
         break;
+        
       case 'Boat':
-        path.lineTo(x + shoulderWidth * 0.4, y + 5);
+        path.lineTo(0, 5);
         break;
+        
       case 'Scoop':
-        path.quadraticBezierTo(x + 15, y + 20, x + 20, y + 50);
-        path.quadraticBezierTo(x + 30, y + 20, x + shoulderWidth * 0.4, y - 5);
+        path.quadraticBezierTo(
+          -shoulderWidth / 2,
+          10,
+          0,
+          neckDepth + 15,
+        );
+        path.quadraticBezierTo(
+          shoulderWidth / 2,
+          10,
+          shoulderWidth + 5,
+          10,
+        );
         break;
+        
       default:
-        path.quadraticBezierTo(x + 15, y - 5, x + shoulderWidth * 0.4, y - 10);
+        path.quadraticBezierTo(
+          0,
+          -5,
+          shoulderWidth + 5,
+          10,
+        );
     }
   }
 
-  void _drawFoldLine(Canvas canvas, double x1, double y1, double x2, double y2) {
-    final foldPaint = Paint()
+  void _drawCompleteCollar(Canvas canvas, Paint paint, Paint fillPaint, Paint accentPaint, 
+      double shoulderWidth, double scale) {
+    
+    switch (styleSelections.collar) {
+      case 'No Collar':
+        // No collar to draw
+        break;
+        
+      case 'Shirt Collar':
+        final collarPath = Path();
+        collarPath.moveTo(-shoulderWidth, -5);
+        collarPath.lineTo(-shoulderWidth - 10, 15);
+        collarPath.lineTo(-15, 15);
+        collarPath.lineTo(-10, 5);
+        collarPath.lineTo(10, 5);
+        collarPath.lineTo(15, 15);
+        collarPath.lineTo(shoulderWidth + 10, 15);
+        collarPath.lineTo(shoulderWidth, -5);
+        collarPath.lineTo(shoulderWidth / 2, -10);
+        collarPath.lineTo(-shoulderWidth / 2, -10);
+        collarPath.close();
+        
+        canvas.drawPath(collarPath, accentPaint);
+        canvas.drawPath(collarPath, paint);
+        
+        // Draw collar fold line
+        final foldPaint = Paint()
+          ..color = const Color(0xFF6b7280)
+          ..strokeWidth = 1.5
+          ..style = PaintingStyle.stroke;
+        canvas.drawLine(Offset(-shoulderWidth, 5), Offset(shoulderWidth, 5), foldPaint);
+        break;
+        
+      case 'Peter Pan':
+        final leftCollar = Path();
+        leftCollar.moveTo(-10, 10);
+        leftCollar.quadraticBezierTo(
+          -shoulderWidth / 2,
+          -5,
+          -shoulderWidth - 5,
+          10,
+        );
+        leftCollar.quadraticBezierTo(
+          -shoulderWidth,
+          25,
+          -shoulderWidth / 2,
+          30,
+        );
+        leftCollar.lineTo(-15, 20);
+        leftCollar.close();
+        
+        final rightCollar = Path();
+        rightCollar.moveTo(10, 10);
+        rightCollar.quadraticBezierTo(
+          shoulderWidth / 2,
+          -5,
+          shoulderWidth + 5,
+          10,
+        );
+        rightCollar.quadraticBezierTo(
+          shoulderWidth,
+          25,
+          shoulderWidth / 2,
+          30,
+        );
+        rightCollar.lineTo(15, 20);
+        rightCollar.close();
+        
+        canvas.drawPath(leftCollar, accentPaint);
+        canvas.drawPath(leftCollar, paint);
+        canvas.drawPath(rightCollar, accentPaint);
+        canvas.drawPath(rightCollar, paint);
+        break;
+        
+      case 'Mandarin':
+        final mandarinPath = Path();
+        mandarinPath.moveTo(-shoulderWidth / 2, -5);
+        mandarinPath.lineTo(-shoulderWidth, 5);
+        mandarinPath.lineTo(-shoulderWidth, 15);
+        mandarinPath.lineTo(shoulderWidth, 15);
+        mandarinPath.lineTo(shoulderWidth, 5);
+        mandarinPath.lineTo(shoulderWidth / 2, -5);
+        mandarinPath.close();
+        
+        canvas.drawPath(mandarinPath, accentPaint);
+        canvas.drawPath(mandarinPath, paint);
+        break;
+        
+      case 'Shawl':
+        final shawlPath = Path();
+        shawlPath.moveTo(0, -10);
+        shawlPath.quadraticBezierTo(
+          -shoulderWidth / 2,
+          -5,
+          -shoulderWidth - 10,
+          20,
+        );
+        shawlPath.quadraticBezierTo(
+          -shoulderWidth - 5,
+          35,
+          -shoulderWidth / 2,
+          45,
+        );
+        shawlPath.lineTo(-20, 35);
+        shawlPath.lineTo(-15, 15);
+        shawlPath.lineTo(-10, 10);
+        shawlPath.lineTo(10, 10);
+        shawlPath.lineTo(15, 15);
+        shawlPath.lineTo(20, 35);
+        shawlPath.lineTo(shoulderWidth / 2, 45);
+        shawlPath.quadraticBezierTo(
+          shoulderWidth + 5,
+          35,
+          shoulderWidth + 10,
+          20,
+        );
+        shawlPath.quadraticBezierTo(
+          shoulderWidth / 2,
+          -5,
+          0,
+          -10,
+        );
+        shawlPath.close();
+        
+        canvas.drawPath(shawlPath, accentPaint);
+        canvas.drawPath(shawlPath, paint);
+        break;
+    }
+  }
+
+  void _drawCompleteSkirt(Canvas canvas, Paint paint, Paint fillPaint, 
+      double waistWidth, double hipWidth, double scale) {
+    
+    final backLength = measurements.backLength * scale * 0.6;
+    final skirtLength = 140.0 * scale;
+    final hipDepth = 40.0 * scale;
+    
+    final skirtPath = Path();
+    
+    switch (styleSelections.skirt) {
+      case 'Straight':
+        skirtPath.moveTo(-waistWidth - 5, backLength - 10);
+        skirtPath.lineTo(-hipWidth - 5, backLength - 10 + hipDepth);
+        skirtPath.lineTo(-hipWidth - 5, backLength - 10 + skirtLength);
+        skirtPath.lineTo(hipWidth + 5, backLength - 10 + skirtLength);
+        skirtPath.lineTo(hipWidth + 5, backLength - 10 + hipDepth);
+        skirtPath.lineTo(waistWidth + 5, backLength - 10);
+        skirtPath.close();
+        break;
+        
+      case 'A-Line':
+        skirtPath.moveTo(-waistWidth - 5, backLength - 10);
+        skirtPath.lineTo(-hipWidth - 5, backLength - 10 + hipDepth);
+        skirtPath.lineTo(-hipWidth - 25, backLength - 10 + skirtLength);
+        skirtPath.lineTo(hipWidth + 25, backLength - 10 + skirtLength);
+        skirtPath.lineTo(hipWidth + 5, backLength - 10 + hipDepth);
+        skirtPath.lineTo(waistWidth + 5, backLength - 10);
+        skirtPath.close();
+        break;
+        
+      case 'Flared':
+        skirtPath.moveTo(-waistWidth - 5, backLength - 10);
+        skirtPath.lineTo(-hipWidth - 5, backLength - 10 + hipDepth);
+        skirtPath.quadraticBezierTo(
+          -hipWidth - 30,
+          backLength - 10 + hipDepth + 40,
+          -hipWidth - 50,
+          backLength - 10 + skirtLength,
+        );
+        skirtPath.lineTo(hipWidth + 50, backLength - 10 + skirtLength);
+        skirtPath.quadraticBezierTo(
+          hipWidth + 30,
+          backLength - 10 + hipDepth + 40,
+          hipWidth + 5,
+          backLength - 10 + hipDepth,
+        );
+        skirtPath.lineTo(waistWidth + 5, backLength - 10);
+        skirtPath.close();
+        break;
+        
+      case 'Pleated':
+        skirtPath.moveTo(-waistWidth - 5, backLength - 10);
+        skirtPath.lineTo(-hipWidth - 5, backLength - 10 + hipDepth);
+        skirtPath.lineTo(-hipWidth - 5, backLength - 10 + skirtLength);
+        skirtPath.lineTo(hipWidth + 5, backLength - 10 + skirtLength);
+        skirtPath.lineTo(hipWidth + 5, backLength - 10 + hipDepth);
+        skirtPath.lineTo(waistWidth + 5, backLength - 10);
+        skirtPath.close();
+        
+        canvas.drawPath(skirtPath, fillPaint);
+        canvas.drawPath(skirtPath, paint);
+        
+        // Draw pleat lines
+        final pleatPaint = Paint()
+          ..color = const Color(0xFF9ca3af)
+          ..strokeWidth = 1.5
+          ..style = PaintingStyle.stroke;
+        
+        for (int i = 1; i < 6; i++) {
+          final x = -waistWidth + (i * waistWidth * 2 / 6);
+          canvas.drawLine(
+            Offset(x, backLength - 10),
+            Offset(x, backLength - 10 + skirtLength),
+            pleatPaint,
+          );
+        }
+        return;
+        
+      case 'Gathered':
+        skirtPath.moveTo(-waistWidth - 5, backLength - 10);
+        skirtPath.lineTo(-hipWidth - 15, backLength - 10 + hipDepth);
+        skirtPath.lineTo(-hipWidth - 15, backLength - 10 + skirtLength);
+        skirtPath.lineTo(hipWidth + 15, backLength - 10 + skirtLength);
+        skirtPath.lineTo(hipWidth + 15, backLength - 10 + hipDepth);
+        skirtPath.lineTo(waistWidth + 5, backLength - 10);
+        skirtPath.close();
+        
+        canvas.drawPath(skirtPath, fillPaint);
+        canvas.drawPath(skirtPath, paint);
+        
+        // Draw gathering marks at waist
+        final gatherPaint = Paint()
+          ..color = const Color(0xFF9ca3af)
+          ..strokeWidth = 1
+          ..style = PaintingStyle.stroke;
+        
+        for (int i = 0; i < 15; i++) {
+          final x = -waistWidth + (i * waistWidth * 2 / 15);
+          canvas.drawLine(
+            Offset(x, backLength - 15),
+            Offset(x, backLength - 5),
+            gatherPaint,
+          );
+        }
+        return;
+        
+      case 'Pencil':
+        skirtPath.moveTo(-waistWidth - 5, backLength - 10);
+        skirtPath.lineTo(-hipWidth - 5, backLength - 10 + hipDepth);
+        skirtPath.lineTo(-hipWidth + 5, backLength - 10 + skirtLength);
+        skirtPath.lineTo(hipWidth - 5, backLength - 10 + skirtLength);
+        skirtPath.lineTo(hipWidth + 5, backLength - 10 + hipDepth);
+        skirtPath.lineTo(waistWidth + 5, backLength - 10);
+        skirtPath.close();
+        break;
+        
+      default:
+        skirtPath.moveTo(-waistWidth - 5, backLength - 10);
+        skirtPath.lineTo(-hipWidth - 5, backLength - 10 + skirtLength);
+        skirtPath.lineTo(hipWidth + 5, backLength - 10 + skirtLength);
+        skirtPath.lineTo(waistWidth + 5, backLength - 10);
+        skirtPath.close();
+    }
+    
+    canvas.drawPath(skirtPath, fillPaint);
+    canvas.drawPath(skirtPath, paint);
+  }
+
+  void _drawPrincessLineBodice(Canvas canvas, Paint paint, Paint fillPaint, Path path,
+      double shoulderWidth, double bustWidth, double waistWidth, double armholeDepth, double backLength) {
+    
+    // Center panel
+    final centerPath = Path();
+    centerPath.moveTo(-shoulderWidth / 2, 10);
+    centerPath.lineTo(-bustWidth / 2, armholeDepth + 10);
+    centerPath.lineTo(-waistWidth / 3, backLength - 10);
+    centerPath.lineTo(waistWidth / 3, backLength - 10);
+    centerPath.lineTo(bustWidth / 2, armholeDepth + 10);
+    centerPath.lineTo(shoulderWidth / 2, 10);
+    centerPath.close();
+    
+    canvas.drawPath(centerPath, fillPaint);
+    canvas.drawPath(centerPath, paint);
+    
+    // Left side panel
+    final leftPath = Path();
+    leftPath.moveTo(-shoulderWidth - 5, 10);
+    leftPath.lineTo(-shoulderWidth, armholeDepth + 10);
+    leftPath.lineTo(-waistWidth - 5, backLength - 10);
+    leftPath.lineTo(-waistWidth / 3, backLength - 10);
+    leftPath.lineTo(-bustWidth / 2, armholeDepth + 10);
+    leftPath.lineTo(-shoulderWidth / 2, 10);
+    leftPath.close();
+    
+    canvas.drawPath(leftPath, fillPaint);
+    canvas.drawPath(leftPath, paint);
+    
+    // Right side panel
+    final rightPath = Path();
+    rightPath.moveTo(shoulderWidth + 5, 10);
+    rightPath.lineTo(shoulderWidth, armholeDepth + 10);
+    rightPath.lineTo(waistWidth + 5, backLength - 10);
+    rightPath.lineTo(waistWidth / 3, backLength - 10);
+    rightPath.lineTo(bustWidth / 2, armholeDepth + 10);
+    rightPath.lineTo(shoulderWidth / 2, 10);
+    rightPath.close();
+    
+    canvas.drawPath(rightPath, fillPaint);
+    canvas.drawPath(rightPath, paint);
+  }
+
+  void _drawWrapStyleBodice(Canvas canvas, Paint paint, Paint fillPaint,
+      double shoulderWidth, double bustWidth, double waistWidth, double armholeDepth, double backLength) {
+    
+    final wrapPath = Path();
+    wrapPath.moveTo(-shoulderWidth - 5, 10);
+    wrapPath.lineTo(-shoulderWidth, armholeDepth + 10);
+    wrapPath.lineTo(-waistWidth - 5, backLength - 10);
+    wrapPath.lineTo(waistWidth + 15, backLength - 10);
+    wrapPath.lineTo(waistWidth + 15, backLength / 2);
+    wrapPath.lineTo(-waistWidth / 3, backLength / 2 + 10);
+    wrapPath.lineTo(-10, 15);
+    wrapPath.lineTo(10, 15);
+    wrapPath.lineTo(waistWidth / 3, backLength / 2 + 10);
+    wrapPath.lineTo(shoulderWidth, armholeDepth + 10);
+    wrapPath.lineTo(shoulderWidth + 5, 10);
+    wrapPath.quadraticBezierTo(0, -5, -shoulderWidth - 5, 10);
+    wrapPath.close();
+    
+    canvas.drawPath(wrapPath, fillPaint);
+    canvas.drawPath(wrapPath, paint);
+    
+    // Draw wrap lines
+    final wrapLinePaint = Paint()
       ..color = const Color(0xFF6b7280)
       ..strokeWidth = 1.5
       ..style = PaintingStyle.stroke;
-
-    // Draw dash-dot-dash pattern
-    final path = Path();
-    final totalLength = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
-    final angle = atan2(y2 - y1, x2 - x1);
-
-    double distance = 0;
-    while (distance < totalLength) {
-      final startX = x1 + cos(angle) * distance;
-      final startY = y1 + sin(angle) * distance;
-
-      // Dash
-      final dashEnd = min(distance + 10, totalLength);
-      path.moveTo(startX, startY);
-      path.lineTo(x1 + cos(angle) * dashEnd, y1 + sin(angle) * dashEnd);
-      distance = dashEnd + 3;
-
-      if (distance < totalLength) {
-        // Dot
-        canvas.drawCircle(
-          Offset(x1 + cos(angle) * distance, y1 + sin(angle) * distance),
-          1.5,
-          foldPaint,
-        );
-        distance += 3;
-      }
-    }
-
-    canvas.drawPath(path, foldPaint);
+    
+    canvas.drawLine(
+      Offset(-waistWidth / 3, backLength / 2 + 10),
+      Offset(-10, 15),
+      wrapLinePaint,
+    );
+    canvas.drawLine(
+      Offset(waistWidth / 3, backLength / 2 + 10),
+      Offset(10, 15),
+      wrapLinePaint,
+    );
   }
 
-  void _drawGrainLine(Canvas canvas, double x1, double y1, double x2, double y2) {
-    final grainPaint = Paint()
-      ..color = const Color(0xFF374151)
-      ..strokeWidth = 1.5
-      ..style = PaintingStyle.stroke;
-
-    // Draw arrow line
-    canvas.drawLine(Offset(x1, y1), Offset(x2, y2), grainPaint);
-
-    // Draw arrow heads
-    final arrowSize = 8.0;
-    final angle = atan2(y2 - y1, x2 - x1);
-
-    // Top arrow
-    final topArrow = Path();
-    topArrow.moveTo(x1, y1);
-    topArrow.lineTo(x1 + cos(angle + 2.8) * arrowSize, y1 + sin(angle + 2.8) * arrowSize);
-    topArrow.moveTo(x1, y1);
-    topArrow.lineTo(x1 + cos(angle - 2.8) * arrowSize, y1 + sin(angle - 2.8) * arrowSize);
-    canvas.drawPath(topArrow, grainPaint);
-
-    // Bottom arrow
-    final bottomArrow = Path();
-    bottomArrow.moveTo(x2, y2);
-    bottomArrow.lineTo(x2 - cos(angle + 2.8) * arrowSize, y2 - sin(angle + 2.8) * arrowSize);
-    bottomArrow.moveTo(x2, y2);
-    bottomArrow.lineTo(x2 - cos(angle - 2.8) * arrowSize, y2 - sin(angle - 2.8) * arrowSize);
-    canvas.drawPath(bottomArrow, grainPaint);
+  void _drawPeplum(Canvas canvas, Paint paint, Paint accentPaint, 
+      double waistWidth, double backLength) {
+    
+    final peplumPath = Path();
+    peplumPath.moveTo(-waistWidth - 5, backLength - 10);
+    peplumPath.quadraticBezierTo(
+      -waistWidth - 25,
+      backLength,
+      -waistWidth - 30,
+      backLength + 25,
+    );
+    peplumPath.lineTo(waistWidth + 30, backLength + 25);
+    peplumPath.quadraticBezierTo(
+      waistWidth + 25,
+      backLength,
+      waistWidth + 5,
+      backLength - 10,
+    );
+    peplumPath.close();
+    
+    canvas.drawPath(peplumPath, accentPaint);
+    canvas.drawPath(peplumPath, paint);
   }
 
-  void _drawDart(Canvas canvas, double topX, double topY, double bottomX, double bottomY) {
+  void _drawBustDarts(Canvas canvas, Paint paint, double bustWidth, double waistWidth, 
+      double armholeDepth, double backLength) {
+    
     final dartPaint = Paint()
       ..color = const Color(0xFF6b7280)
-      ..strokeWidth = 1.0
+      ..strokeWidth = 1.5
       ..style = PaintingStyle.stroke;
-
-    final path = Path();
-    path.moveTo(topX - 8, topY);
-    path.lineTo(bottomX, bottomY);
-    path.lineTo(topX + 8, topY);
-
-    canvas.drawPath(path, dartPaint);
+    
+    // Left dart
+    final leftDartPath = Path();
+    leftDartPath.moveTo(-bustWidth / 2 - 8, armholeDepth + 15);
+    leftDartPath.lineTo(-waistWidth / 2, backLength - 15);
+    leftDartPath.lineTo(-bustWidth / 2 + 8, armholeDepth + 15);
+    canvas.drawPath(leftDartPath, dartPaint);
+    
+    // Right dart
+    final rightDartPath = Path();
+    rightDartPath.moveTo(bustWidth / 2 - 8, armholeDepth + 15);
+    rightDartPath.lineTo(waistWidth / 2, backLength - 15);
+    rightDartPath.lineTo(bustWidth / 2 + 8, armholeDepth + 15);
+    canvas.drawPath(rightDartPath, dartPaint);
   }
 
-  void _drawGatheringMarks(Canvas canvas, double x1, double y1, double x2, double y2) {
-    final gatherPaint = Paint()
-      ..color = const Color(0xFF6b7280)
-      ..strokeWidth = 1.0
-      ..style = PaintingStyle.stroke;
-
-    const markCount = 8;
-    final spacing = (x2 - x1) / markCount;
-
-    for (int i = 0; i <= markCount; i++) {
-      final x = x1 + i * spacing;
-      canvas.drawLine(Offset(x, y1 - 5), Offset(x, y1 + 5), gatherPaint);
-    }
-  }
-
-  void _drawPatternLabel(Canvas canvas, String text, double x, double y) {
-    final textPainter = TextPainter(
-      textDirection: TextDirection.ltr,
-      textAlign: TextAlign.center,
-    );
-
-    textPainter.text = TextSpan(
-      text: text,
-      style: const TextStyle(
-        color: Color(0xFF6b7280),
-        fontSize: 11,
-        fontFamily: 'Inter',
-      ),
-    );
-    textPainter.layout();
-    textPainter.paint(canvas, Offset(x - textPainter.width / 2, y - textPainter.height / 2));
-  }
-
-  void _drawMeasurementAnnotations(Canvas canvas, Size size, double scale) {
+  void _drawStyleSummary(Canvas canvas, Size size) {
     final textPainter = TextPainter(
       textDirection: TextDirection.ltr,
       textAlign: TextAlign.left,
     );
 
-    final annotations = [
-      'Bust: ${measurements.bust.toStringAsFixed(1)} ${measurements.unit}',
-      'Waist: ${measurements.waist.toStringAsFixed(1)} ${measurements.unit}',
-      'Hip: ${measurements.hip.toStringAsFixed(1)} ${measurements.unit}',
-      'Shoulder: ${measurements.shoulder.toStringAsFixed(1)} ${measurements.unit}',
-      'Back Length: ${measurements.backLength.toStringAsFixed(1)} ${measurements.unit}',
+    final summaryItems = [
+      'Neckline: ${styleSelections.neckline}',
+      'Collar: ${styleSelections.collar}',
+      'Bodice: ${styleSelections.bodice}',
+      'Sleeve: ${styleSelections.sleeve}',
+      'Skirt: ${styleSelections.skirt}',
     ];
 
-    double yOffset = size.height - 120;
-    for (final annotation in annotations) {
+    double yOffset = size.height - 110;
+    for (final item in summaryItems) {
       textPainter.text = TextSpan(
-        text: annotation,
+        text: item,
         style: const TextStyle(
           color: Color(0xFF374151),
-          fontSize: 10,
+          fontSize: 11,
+          fontWeight: FontWeight.w500,
           fontFamily: 'Inter',
         ),
       );
       textPainter.layout();
-      textPainter.paint(canvas, Offset(20, yOffset));
+      textPainter.paint(canvas, Offset(15, yOffset));
       yOffset += 18;
     }
   }
