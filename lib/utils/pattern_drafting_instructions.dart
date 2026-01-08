@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
 
 /// Generates step-by-step pattern drafting instructions based on measurements and style selections
 class PatternDraftingInstructions {
@@ -11,22 +10,27 @@ class PatternDraftingInstructions {
     required this.styles,
   });
 
-  /// Get back bodice (badan belakang) instructions
-  List<PatternStep> getBackBodiceSteps() {
-    final bust = measurements['bust'] ?? 88;
-    final waist = measurements['waist'] ?? 68;
-    final shoulderLength = measurements['shoulderLength'] ?? 12;
-    final backLength = measurements['backLength'] ?? 40;
-    final frontLength = measurements['frontLength'] ?? 43;
-    final armhole = measurements['armhole'] ?? 20;
+  // Helper getters
+  double get bust => measurements['bust'] ?? 88;
+  double get waist => measurements['waist'] ?? 68;
+  double get hip => measurements['hip'] ?? 94;
+  double get shoulder => measurements['shoulderLength'] ?? 12;
+  double get backLength => measurements['backLength'] ?? 40;
+  double get frontLength => measurements['frontLength'] ?? 43;
+  double get armhole => measurements['armhole'] ?? 40;
+  double get sleeveLength => measurements['sleeveLength'] ?? 58;
+  double get bustDistance => measurements['bustDistance'] ?? 18;
+  double get skirtLength => measurements['skirtLength'] ?? 60;
 
+  /// Get back bodice instructions
+  List<PatternStep> getBackBodiceSteps() {
     return [
       PatternStep(
         stepNumber: 1,
         title: 'Langkah 1 - Garis Asas',
         instructions: [
           'AB – Labuh bahu ke pinggang = ${backLength.toStringAsFixed(1)} cm. Tandakan garisan ini.',
-          'AC – ½ lebar bahu + 1 cm = ${(shoulderLength / 2 + 1).toStringAsFixed(1)} cm. Tandakan garisan dari A ke C.',
+          'AC – ½ lebar bahu + 1 cm = ${(shoulder / 2 + 1).toStringAsFixed(1)} cm. Tandakan garisan dari A ke C.',
           'CD – 5 cm. Tandakan garisan ke bawah dari C ke D.',
         ],
         diagramType: DiagramType.backStep1,
@@ -75,23 +79,15 @@ class PatternDraftingInstructions {
     ];
   }
 
-  /// Get front bodice (badan hadapan) instructions
+  /// Get front bodice instructions
   List<PatternStep> getFrontBodiceSteps() {
-    final bust = measurements['bust'] ?? 88;
-    final waist = measurements['waist'] ?? 68;
-    final shoulderLength = measurements['shoulderLength'] ?? 12;
-    final backLength = measurements['backLength'] ?? 40;
-    final frontLength = measurements['frontLength'] ?? 43;
-    final armhole = measurements['armhole'] ?? 20;
-    final bustDistance = measurements['bustDistance'] ?? 18;
-
     return [
       PatternStep(
         stepNumber: 1,
         title: 'Langkah 1 - Garis Asas',
         instructions: [
           'AB – Labuh bahu ke pinggang = ${frontLength.toStringAsFixed(1)} cm. Tandakan garisan ini.',
-          'AC – ½ lebar bahu + 1 cm = ${(shoulderLength / 2 + 1).toStringAsFixed(1)} cm.',
+          'AC – ½ lebar bahu + 1 cm = ${(shoulder / 2 + 1).toStringAsFixed(1)} cm.',
           'Tandakan garisan dari A ke C.',
           'CD – 4 cm. Tandakan garisan ke bawah dari C ke D.',
         ],
@@ -145,273 +141,763 @@ class PatternDraftingInstructions {
     ];
   }
 
-  /// Get style-specific modifications based on selected styles
-  List<PatternStep> getStyleModifications() {
-    List<PatternStep> modifications = [];
-    
-    // Neckline modifications
-    final neckline = styles['neckline'] ?? 'Round';
-    modifications.add(_getNecklineModification(neckline));
-    
-    // Collar modifications
-    final collar = styles['collar'] ?? 'No Collar';
-    if (collar != 'No Collar') {
-      modifications.add(_getCollarModification(collar));
-    }
-    
-    // Bodice modifications
-    final bodice = styles['bodice'] ?? 'Basic Fitted';
-    if (bodice != 'Basic Fitted') {
-      modifications.add(_getBodiceModification(bodice));
-    }
-    
-    // Sleeve modifications
-    final sleeve = styles['sleeve'] ?? 'Sleeveless';
-    if (sleeve != 'Sleeveless') {
-      modifications.add(_getSleeveModification(sleeve));
-    }
-    
-    // Skirt modifications
-    final skirt = styles['skirt'] ?? 'Straight';
-    modifications.add(_getSkirtModification(skirt));
-    
-    return modifications;
-  }
-
-  PatternStep _getNecklineModification(String neckline) {
+  /// Get neckline modification steps
+  PatternStep getNecklineSteps(String neckline) {
     Map<String, List<String>> necklineInstructions = {
       'Round': [
-        'Garis leher bulat standard.',
-        'Tiada pengubahsuaian diperlukan pada pola asas.',
+        'Garis leher bulat standard - tiada pengubahsuaian diperlukan.',
+        'Kedalaman garis leher hadapan: 7-8 cm dari titik bahu.',
+        'Kedalaman garis leher belakang: 2-3 cm dari titik bahu.',
+        'Lukis lengkungan lancar menggunakan French curve.',
       ],
       'V-Neck': [
-        'Tandakan kedalaman V pada tengah hadapan.',
-        'Kedalaman standard: 15-20 cm dari titik bahu.',
+        'Tandakan kedalaman V pada tengah hadapan: 15-20 cm dari titik bahu.',
+        'Tandakan lebar V pada garisan bahu: 5-7 cm dari titik leher.',
         'Lukis garisan lurus dari titik bahu ke kedalaman V.',
         'Pastikan kedua-dua sisi simetri.',
+        'Garis leher belakang kekal bulat standard.',
       ],
       'Square': [
-        'Tandakan lebar garis leher segi empat.',
-        'Kedalaman standard: 8-10 cm dari titik bahu.',
+        'Tandakan lebar garis leher segi empat: 15-18 cm.',
+        'Kedalaman depan: 8-10 cm dari titik bahu.',
         'Lukis garisan mendatar untuk bahagian atas.',
         'Lukis garisan menegak di kedua-dua sisi.',
+        'Bulatkan sudut sedikit (0.5-1 cm) untuk keselesaan.',
       ],
       'Sweetheart': [
-        'Lukis bentuk hati di tengah hadapan.',
-        'Tandakan dua lengkungan simetri.',
-        'Kedalaman standard: 12-15 cm.',
+        'Tandakan lebar atas: sama dengan V-neck (5-7 cm dari titik leher).',
+        'Kedalaman: 12-15 cm dari titik bahu.',
+        'Lukis dua lengkungan simetri membentuk hati.',
+        'Titik tengah hadapan sedikit naik (2-3 cm) membentuk puncak hati.',
         'Halus semua lengkungan dengan French curve.',
       ],
       'Boat': [
-        'Lebarkan garis leher ke arah bahu.',
-        'Kedalaman minimum di tengah (2-3 cm).',
+        'Lebarkan garis leher ke arah bahu: 3-5 cm ke luar.',
+        'Kedalaman minimum di tengah hadapan: 2-3 cm.',
+        'Kedalaman di tengah belakang: 2 cm.',
         'Lukis garisan hampir mendatar dari bahu ke bahu.',
+        'Sedikit lengkung di tengah untuk keselesaan.',
       ],
       'Scoop': [
         'Lukis lengkungan U dalam.',
-        'Kedalaman standard: 12-18 cm.',
+        'Kedalaman depan: 12-18 cm dari titik bahu.',
+        'Lebar: 12-15 cm (separuh dari keseluruhan).',
         'Pastikan lengkungan lancar dan simetri.',
+        'Garis leher belakang lebih cetek: 5-7 cm.',
       ],
     };
 
     return PatternStep(
       stepNumber: 1,
-      title: 'Pengubahsuaian Garis Leher: $neckline',
-      instructions: necklineInstructions[neckline] ?? ['Tiada pengubahsuaian.'],
+      title: 'Pengubahsuaian Garis Leher $neckline',
+      instructions: necklineInstructions[neckline] ?? ['Tiada pengubahsuaian diperlukan.'],
       diagramType: DiagramType.necklineModification,
     );
   }
 
-  PatternStep _getCollarModification(String collar) {
-    Map<String, List<String>> collarInstructions = {
-      'Shirt Collar': [
-        'Ukur panjang garis leher dari pola.',
-        'Lebar kolar standard: 6-8 cm.',
-        'Lukis stand kolar (2.5-3 cm tinggi).',
-        'Lukis fall kolar di atas stand.',
-        'Tambah 1.5 cm untuk pertindihan di tengah hadapan.',
-      ],
-      'Peter Pan': [
-        'Ukur panjang garis leher dari pola.',
-        'Lebar kolar: 5-7 cm.',
-        'Lukis bentuk bulat lembut.',
-        'Kolar rata tanpa stand.',
-        'Potong 2 helai (kanan dan kiri).',
-      ],
-      'Mandarin': [
-        'Ukur panjang garis leher dari pola.',
-        'Tinggi kolar: 3-4 cm.',
-        'Lukis segi empat tepat.',
-        'Tambah keluk sedikit untuk keselesaan.',
-        'Kolar berdiri tegak.',
-      ],
-      'Shawl': [
-        'Sambungkan garis leher belakang ke hadapan.',
-        'Lebar shawl: 8-12 cm.',
-        'Lukis lapel yang melengkung.',
-        'Roll line pada 2-3 cm dari tepi.',
-      ],
-    };
-
-    return PatternStep(
-      stepNumber: 2,
-      title: 'Pola Kolar: $collar',
-      instructions: collarInstructions[collar] ?? ['Tiada pengubahsuaian.'],
-      diagramType: DiagramType.collarModification,
-    );
-  }
-
-  PatternStep _getBodiceModification(String bodice) {
-    final bust = measurements['bust'] ?? 88;
-    final waist = measurements['waist'] ?? 68;
-    final bustDistance = measurements['bustDistance'] ?? 18;
-    
+  /// Get bodice style modification steps
+  PatternStep getBodiceStyleSteps(String bodice) {
     Map<String, List<String>> bodiceInstructions = {
       'Dart Front': [
-        'Tandakan titik bust: ${(bustDistance / 2).toStringAsFixed(1)} cm dari tengah hadapan.',
+        'Tandakan titik bust (BP): ${(bustDistance / 2).toStringAsFixed(1)} cm dari tengah hadapan.',
+        'Ukur dari garis pinggang ke atas untuk ketinggian bust: ${(frontLength * 0.4).toStringAsFixed(1)} cm.',
         'Lukis dart dari titik bust ke garis pinggang.',
-        'Lebar dart di pinggang: 3-4 cm.',
-        'Dart tidak sampai ke titik bust (berhenti 2 cm sebelum).',
+        'Lebar dart di pinggang: 3-4 cm (setiap sisi 1.5-2 cm).',
+        'Dart tidak sampai ke titik bust - berhenti 2-3 cm sebelum BP.',
+        'Jumlah dart: 2 dart (kiri dan kanan).',
       ],
       'Princess Line': [
-        'Lukis garisan princess dari pertengahan bahu.',
+        'Lukis garisan princess dari pertengahan bahu atau dari lubang lengan.',
         'Garisan melalui titik bust ke hem.',
+        'Jarak dari tengah hadapan ke garisan princess: ${(bustDistance / 2).toStringAsFixed(1)} cm.',
         'Potong pola mengikut garisan princess.',
-        'Tambah kelim jahitan 1.5 cm di setiap sisi.',
-        'Hasilkan 2 panel: panel tengah dan panel sisi.',
+        'Tambah kelim jahitan 1.5 cm di setiap sisi potongan.',
+        'Hasilkan 2 panel: panel tengah (CF) dan panel sisi.',
+        'Labelkan setiap panel dengan jelas.',
       ],
       'Wrap Style': [
-        'Tambah lebar pertindihan: 8-10 cm.',
-        'Lukis garisan wrap dari bahu ke pinggang.',
-        'Tandakan kedudukan butang/tali.',
-        'Pastikan pertindihan cukup untuk menutup.',
+        'Tambah lebar pertindihan di tengah hadapan: 8-10 cm.',
+        'Lukis garisan wrap dari titik bahu ke pinggang sisi.',
+        'Garisan wrap melintasi badan secara diagonal.',
+        'Tandakan kedudukan butang atau tali pengikat.',
+        'Pastikan pertindihan cukup untuk menutup badan.',
+        'Tambah facing untuk kemasan tepi: 5-6 cm.',
       ],
       'Peplum': [
-        'Pendekkan badan di garis pinggang.',
-        'Ukur panjang peplum: 15-20 cm.',
-        'Lebar peplum di hem: 1.5x lebar pinggang.',
+        'Pendekkan badan di garis pinggang - potong pada garisan pinggang.',
+        'Ukur panjang peplum: 15-20 cm dari pinggang.',
         'Lukis pola peplum separuh bulatan atau flared.',
+        'Lebar peplum di hem: 1.5x hingga 2x lebar pinggang.',
+        'Jejari dalam peplum = ukuran pinggang ÷ 3.14 = ${(waist / 3.14).toStringAsFixed(1)} cm.',
+        'Jejari luar = jejari dalam + panjang peplum.',
+        'Sambung peplum ke badan di garis pinggang.',
       ],
     };
 
     return PatternStep(
-      stepNumber: 3,
-      title: 'Pengubahsuaian Badan: $bodice',
-      instructions: bodiceInstructions[bodice] ?? ['Tiada pengubahsuaian.'],
+      stepNumber: 1,
+      title: 'Pengubahsuaian Badan $bodice',
+      instructions: bodiceInstructions[bodice] ?? ['Tiada pengubahsuaian diperlukan.'],
       diagramType: DiagramType.bodiceModification,
     );
   }
 
-  PatternStep _getSleeveModification(String sleeve) {
-    final armhole = measurements['armhole'] ?? 40;
-    final sleeveLength = measurements['sleeveLength'] ?? 58;
-    
-    Map<String, List<String>> sleeveInstructions = {
-      'Short': [
-        'Ukur lilitan lubang lengan dari pola badan: ${armhole.toStringAsFixed(1)} cm.',
-        'Panjang lengan pendek: 15-20 cm.',
-        'Lebar lengan di hem: lilitan lengan atas + 5 cm ease.',
-        'Lukis kepala lengan dengan tinggi 12-14 cm.',
+  /// Get collar pattern steps
+  List<PatternStep> getCollarSteps(String collar) {
+    Map<String, List<PatternStep>> collarInstructions = {
+      'Shirt Collar': [
+        PatternStep(
+          stepNumber: 1,
+          title: 'Langkah 1 - Ukur Garis Leher',
+          instructions: [
+            'Ukur panjang garis leher dari pola badan (hadapan + belakang).',
+            'Bahagikan ukuran dengan 2 untuk separuh kolar.',
+            'Tambah 1.5-2 cm untuk pertindihan di tengah hadapan.',
+          ],
+          diagramType: DiagramType.collarModification,
+        ),
+        PatternStep(
+          stepNumber: 2,
+          title: 'Langkah 2 - Lukis Stand Kolar',
+          instructions: [
+            'Lukis segi empat tepat untuk stand kolar.',
+            'Panjang: separuh ukuran garis leher + 2 cm.',
+            'Tinggi stand: 2.5-3 cm.',
+            'Bentukkan sedikit lengkung pada bahagian leher.',
+          ],
+          diagramType: DiagramType.collarModification,
+        ),
+        PatternStep(
+          stepNumber: 3,
+          title: 'Langkah 3 - Lukis Fall Kolar',
+          instructions: [
+            'Lukis fall kolar di atas stand.',
+            'Lebar fall: 6-8 cm dari fold line.',
+            'Bentuk hujung kolar mengikut kesesuaian (pointed, rounded, atau squared).',
+            'Tambah kelim jahitan 1 cm di sekeliling.',
+          ],
+          diagramType: DiagramType.collarModification,
+        ),
       ],
-      'Long': [
-        'Ukur lilitan lubang lengan dari pola badan: ${armhole.toStringAsFixed(1)} cm.',
-        'Panjang lengan: ${sleeveLength.toStringAsFixed(1)} cm.',
-        'Lebar lengan di pergelangan: 22-25 cm.',
-        'Lukis kepala lengan dengan tinggi 14-16 cm.',
-        'Tambah dart siku jika perlu.',
+      'Peter Pan': [
+        PatternStep(
+          stepNumber: 1,
+          title: 'Langkah 1 - Sediakan Pola Asas',
+          instructions: [
+            'Ukur panjang garis leher dari pola badan.',
+            'Kolar Peter Pan adalah kolar rata (flat collar) tanpa stand.',
+            'Sediakan kertas pola baru.',
+          ],
+          diagramType: DiagramType.collarModification,
+        ),
+        PatternStep(
+          stepNumber: 2,
+          title: 'Langkah 2 - Lukis Bentuk Kolar',
+          instructions: [
+            'Letakkan pola hadapan dan belakang dengan bahu bertemu.',
+            'Trace garis leher dari kedua-dua pola.',
+            'Lukis bentuk bulat lembut untuk outer edge.',
+            'Lebar kolar: 5-7 cm dari garis leher.',
+          ],
+          diagramType: DiagramType.collarModification,
+        ),
+        PatternStep(
+          stepNumber: 3,
+          title: 'Langkah 3 - Siapkan Pola',
+          instructions: [
+            'Potong 2 helai kolar (kanan dan kiri) dari fabrik.',
+            'Potong 2 helai dari interlining.',
+            'Tambah kelim jahitan 0.7-1 cm.',
+            'Tandakan notch untuk padanan dengan bahu.',
+          ],
+          diagramType: DiagramType.collarModification,
+        ),
       ],
-      'Puff': [
-        'Ukur lilitan lubang lengan dari pola badan.',
-        'Tambah volume di kepala lengan: 1.5-2x lebar asal.',
-        'Panjang lengan puff: 20-30 cm.',
-        'Kumpul (gather) di kepala dan hem lengan.',
-        'Nisbah gathering: 2:1.',
+      'Mandarin': [
+        PatternStep(
+          stepNumber: 1,
+          title: 'Langkah 1 - Ukur dan Lukis',
+          instructions: [
+            'Ukur panjang garis leher dari pola badan.',
+            'Lukis segi empat tepat.',
+            'Panjang: ukuran garis leher + 2 cm (pertindihan).',
+            'Tinggi kolar: 3-4 cm.',
+          ],
+          diagramType: DiagramType.collarModification,
+        ),
+        PatternStep(
+          stepNumber: 2,
+          title: 'Langkah 2 - Bentuk Kolar',
+          instructions: [
+            'Lengkungkan bahagian bawah (leher) mengikut bentuk garis leher.',
+            'Bahagian atas boleh lurus atau sedikit melengkung.',
+            'Bulatkan sudut-sudut hujung kolar.',
+            'Kolar berdiri tegak apabila dijahit.',
+          ],
+          diagramType: DiagramType.collarModification,
+        ),
+        PatternStep(
+          stepNumber: 3,
+          title: 'Langkah 3 - Siapkan',
+          instructions: [
+            'Tambah kelim jahitan 0.7-1 cm.',
+            'Gunakan interlining untuk ketegaran.',
+            'Tandakan tengah belakang dan tengah hadapan.',
+            'Kolar ini sesuai untuk cheongsam atau baju kurung moden.',
+          ],
+          diagramType: DiagramType.collarModification,
+        ),
       ],
-      'Bell': [
-        'Ukur lilitan lubang lengan dari pola badan.',
-        'Panjang lengan: ${sleeveLength.toStringAsFixed(1)} cm.',
-        'Slash dan spread di bahagian bawah.',
-        'Lebar hem: 2-3x lebar pergelangan asal.',
-        'Lukis lengkungan bell yang lancar.',
-      ],
-      'Cap': [
-        'Ukur lilitan lubang lengan dari pola badan.',
-        'Panjang lengan cap: 8-12 cm.',
-        'Lengan cap menutup bahu sahaja.',
-        'Boleh ditambah sedikit gathering.',
+      'Shawl': [
+        PatternStep(
+          stepNumber: 1,
+          title: 'Langkah 1 - Sambung Garis Leher',
+          instructions: [
+            'Sambungkan garis leher belakang ke hadapan pada pola.',
+            'Lukis garisan roll line: 2-3 cm dari tepi hadapan.',
+            'Roll line menentukan di mana kolar mula melipat.',
+          ],
+          diagramType: DiagramType.collarModification,
+        ),
+        PatternStep(
+          stepNumber: 2,
+          title: 'Langkah 2 - Lukis Lapel',
+          instructions: [
+            'Lebar shawl collar: 8-12 cm dari roll line.',
+            'Lukis bentuk lapel yang melengkung.',
+            'Lapel bermula dari butang pertama.',
+            'Bentuk hujung lapel: rounded untuk shawl classic.',
+          ],
+          diagramType: DiagramType.collarModification,
+        ),
+        PatternStep(
+          stepNumber: 3,
+          title: 'Langkah 3 - Siapkan Facing',
+          instructions: [
+            'Trace bahagian kolar sebagai facing.',
+            'Facing termasuk lapel dan bahagian leher belakang.',
+            'Tambah kelim jahitan 1-1.5 cm.',
+            'Gunakan interlining pada facing.',
+          ],
+          diagramType: DiagramType.collarModification,
+        ),
       ],
     };
 
-    return PatternStep(
-      stepNumber: 4,
-      title: 'Pola Lengan: $sleeve',
-      instructions: sleeveInstructions[sleeve] ?? ['Tiada pengubahsuaian.'],
-      diagramType: DiagramType.sleeveModification,
-    );
+    return collarInstructions[collar] ?? [
+      PatternStep(
+        stepNumber: 1,
+        title: 'Kolar',
+        instructions: ['Tiada kolar dipilih.'],
+        diagramType: DiagramType.collarModification,
+      ),
+    ];
   }
 
-  PatternStep _getSkirtModification(String skirt) {
-    final waist = measurements['waist'] ?? 68;
-    final hip = measurements['hip'] ?? 94;
-    final skirtLength = measurements['skirtLength'] ?? 60;
-    
-    Map<String, List<String>> skirtInstructions = {
-      'Straight': [
-        'Ukuran pinggang: ${waist.toStringAsFixed(1)} cm.',
-        'Ukuran pinggul: ${hip.toStringAsFixed(1)} cm.',
-        'Panjang skirt: ${skirtLength.toStringAsFixed(1)} cm.',
-        'Lebar hem sama dengan lebar pinggul.',
-        'Tambah dart di hadapan dan belakang.',
-        'Tambah zip di tengah belakang atau sisi.',
+  /// Get sleeve pattern steps
+  List<PatternStep> getSleeveSteps(String sleeve) {
+    Map<String, List<PatternStep>> sleeveInstructions = {
+      'Short': [
+        PatternStep(
+          stepNumber: 1,
+          title: 'Langkah 1 - Ukuran Asas',
+          instructions: [
+            'Ukur lilitan lubang lengan dari pola badan: ${armhole.toStringAsFixed(1)} cm.',
+            'Panjang lengan pendek: 15-20 cm dari titik bahu.',
+            'Lebar lengan di hem: lilitan lengan atas + 5-6 cm ease.',
+          ],
+          diagramType: DiagramType.sleeveModification,
+        ),
+        PatternStep(
+          stepNumber: 2,
+          title: 'Langkah 2 - Lukis Kepala Lengan',
+          instructions: [
+            'Tinggi kepala lengan: ${(armhole / 3).toStringAsFixed(1)} cm (⅓ lilitan lubang lengan).',
+            'Lebar kepala lengan: ${(armhole / 2 + 2).toStringAsFixed(1)} cm.',
+            'Lukis lengkungan kepala lengan menggunakan French curve.',
+            'Bahagian hadapan lebih cetek, belakang lebih dalam.',
+          ],
+          diagramType: DiagramType.sleeveModification,
+        ),
+        PatternStep(
+          stepNumber: 3,
+          title: 'Langkah 3 - Siapkan Pola',
+          instructions: [
+            'Lukis garisan sisi lengan - sedikit taper ke hem.',
+            'Tambah kelim jahitan 1.5 cm di sekeliling.',
+            'Tandakan notch untuk padanan dengan badan.',
+            'Hem lengan: tambah 2-3 cm untuk lipatan.',
+          ],
+          diagramType: DiagramType.sleeveModification,
+        ),
       ],
-      'A-Line': [
-        'Ukuran pinggang: ${waist.toStringAsFixed(1)} cm.',
-        'Panjang skirt: ${skirtLength.toStringAsFixed(1)} cm.',
-        'Slash dan spread dari pinggul ke hem.',
-        'Tambah 5-8 cm di setiap sisi di hem.',
-        'Hapuskan atau kurangkan dart.',
+      'Long': [
+        PatternStep(
+          stepNumber: 1,
+          title: 'Langkah 1 - Ukuran Asas',
+          instructions: [
+            'Ukur lilitan lubang lengan dari pola badan: ${armhole.toStringAsFixed(1)} cm.',
+            'Panjang lengan: ${sleeveLength.toStringAsFixed(1)} cm dari titik bahu ke pergelangan.',
+            'Lebar pergelangan: 22-25 cm (lilitan pergelangan + ease).',
+          ],
+          diagramType: DiagramType.sleeveModification,
+        ),
+        PatternStep(
+          stepNumber: 2,
+          title: 'Langkah 2 - Lukis Kepala Lengan',
+          instructions: [
+            'Tinggi kepala lengan: ${(armhole / 3 + 1).toStringAsFixed(1)} cm.',
+            'Lebar kepala lengan: ${(armhole / 2 + 2).toStringAsFixed(1)} cm.',
+            'Lukis lengkungan kepala lengan.',
+            'Tandakan titik tertinggi kepala lengan.',
+          ],
+          diagramType: DiagramType.sleeveModification,
+        ),
+        PatternStep(
+          stepNumber: 3,
+          title: 'Langkah 3 - Bentuk Lengan',
+          instructions: [
+            'Lukis garisan sisi lengan - taper dari bahu ke pergelangan.',
+            'Tambah dart siku jika perlu (untuk fitted sleeve).',
+            'Posisi siku: ${(sleeveLength * 0.6).toStringAsFixed(1)} cm dari bahu.',
+          ],
+          diagramType: DiagramType.sleeveModification,
+        ),
+        PatternStep(
+          stepNumber: 4,
+          title: 'Langkah 4 - Siapkan Pola',
+          instructions: [
+            'Tambah kelim jahitan 1.5 cm di sekeliling.',
+            'Tandakan notch untuk padanan.',
+            'Tambah placket opening jika perlu: 10-12 cm dari hem.',
+            'Hem: tambah 3-4 cm untuk cuff atau lipatan.',
+          ],
+          diagramType: DiagramType.sleeveModification,
+        ),
       ],
-      'Flared': [
-        'Ukuran pinggang: ${waist.toStringAsFixed(1)} cm.',
-        'Panjang skirt: ${skirtLength.toStringAsFixed(1)} cm.',
-        'Gunakan kaedah separuh bulatan atau ¾ bulatan.',
-        'Jejari dalam = pinggang ÷ 3.14 = ${(waist / 3.14).toStringAsFixed(1)} cm.',
-        'Jejari luar = jejari dalam + panjang skirt.',
-        'Potong mengikut lengkungan.',
+      'Puff': [
+        PatternStep(
+          stepNumber: 1,
+          title: 'Langkah 1 - Pola Asas',
+          instructions: [
+            'Mulakan dengan pola lengan pendek asas.',
+            'Panjang lengan puff: 20-30 cm.',
+            'Ukur lilitan lubang lengan: ${armhole.toStringAsFixed(1)} cm.',
+          ],
+          diagramType: DiagramType.sleeveModification,
+        ),
+        PatternStep(
+          stepNumber: 2,
+          title: 'Langkah 2 - Slash dan Spread',
+          instructions: [
+            'Lukis 3-4 garisan menegak pada pola lengan.',
+            'Potong garisan-garisan ini.',
+            'Spread (lebarkan) setiap potongan: 3-5 cm.',
+            'Ini menambah volume pada kepala lengan.',
+          ],
+          diagramType: DiagramType.sleeveModification,
+        ),
+        PatternStep(
+          stepNumber: 3,
+          title: 'Langkah 3 - Gathering',
+          instructions: [
+            'Nisbah gathering di kepala: 1.5:1 hingga 2:1.',
+            'Gathering di hem: 1.5:1.',
+            'Jumlah fabrik kepala = ${(armhole * 1.75).toStringAsFixed(1)} cm.',
+            'Gunakan 2 baris jahitan untuk gathering.',
+          ],
+          diagramType: DiagramType.sleeveModification,
+        ),
+        PatternStep(
+          stepNumber: 4,
+          title: 'Langkah 4 - Band/Cuff',
+          instructions: [
+            'Lebar band di hem: sama dengan lilitan lengan atas.',
+            'Tinggi band: 3-5 cm.',
+            'Band memegang gathering di tempatnya.',
+            'Boleh guna elastic atau band kain.',
+          ],
+          diagramType: DiagramType.sleeveModification,
+        ),
       ],
-      'Pleated': [
-        'Ukuran pinggang: ${waist.toStringAsFixed(1)} cm.',
-        'Panjang skirt: ${skirtLength.toStringAsFixed(1)} cm.',
-        'Kira bilangan pleat: pinggang ÷ lebar pleat.',
-        'Lebar pleat standard: 3-5 cm.',
-        'Kedalaman pleat: 2x lebar pleat.',
-        'Jumlah fabrik = 3x ukuran pinggang.',
+      'Bell': [
+        PatternStep(
+          stepNumber: 1,
+          title: 'Langkah 1 - Pola Asas',
+          instructions: [
+            'Mulakan dengan pola lengan panjang asas.',
+            'Panjang lengan: ${sleeveLength.toStringAsFixed(1)} cm.',
+            'Tentukan di mana flare bermula (biasanya dari siku).',
+          ],
+          diagramType: DiagramType.sleeveModification,
+        ),
+        PatternStep(
+          stepNumber: 2,
+          title: 'Langkah 2 - Slash dan Spread',
+          instructions: [
+            'Lukis garisan dari siku ke hem.',
+            'Slash (potong) dari hem ke siku.',
+            'Spread di hem: ${(sleeveLength * 0.5).toStringAsFixed(1)} cm setiap sisi.',
+            'Bahagian atas (bahu ke siku) kekal fitted.',
+          ],
+          diagramType: DiagramType.sleeveModification,
+        ),
+        PatternStep(
+          stepNumber: 3,
+          title: 'Langkah 3 - Lukis Lengkungan',
+          instructions: [
+            'Lukis lengkungan bell yang lancar.',
+            'Hem berbentuk melengkung, bukan lurus.',
+            'Lebar hem: 2-3x lebar pergelangan asal.',
+            'Pastikan kedua-dua sisi simetri.',
+          ],
+          diagramType: DiagramType.sleeveModification,
+        ),
+        PatternStep(
+          stepNumber: 4,
+          title: 'Langkah 4 - Siapkan',
+          instructions: [
+            'Tambah kelim jahitan 1.5 cm.',
+            'Hem: narrow hem 0.5-1 cm atau facing.',
+            'Tandakan notch untuk padanan.',
+            'Lengan bell tidak memerlukan zipper.',
+          ],
+          diagramType: DiagramType.sleeveModification,
+        ),
       ],
-      'Gathered': [
-        'Ukuran pinggang: ${waist.toStringAsFixed(1)} cm.',
-        'Panjang skirt: ${skirtLength.toStringAsFixed(1)} cm.',
-        'Nisbah gathering: 2:1 atau 2.5:1.',
-        'Lebar fabrik = ${(waist * 2).toStringAsFixed(1)} cm hingga ${(waist * 2.5).toStringAsFixed(1)} cm.',
-        'Kumpul sama rata di pinggang.',
-        'Sambung ke band pinggang.',
-      ],
-      'Pencil': [
-        'Ukuran pinggang: ${waist.toStringAsFixed(1)} cm.',
-        'Ukuran pinggul: ${hip.toStringAsFixed(1)} cm.',
-        'Panjang skirt: ${skirtLength.toStringAsFixed(1)} cm.',
-        'Lebar hem: kurang 2-4 cm dari pinggul.',
-        'Tambah slit di belakang: 15-20 cm.',
-        'Dart di hadapan dan belakang wajib.',
-        'Ease minimum untuk keselesaan berjalan.',
+      'Cap': [
+        PatternStep(
+          stepNumber: 1,
+          title: 'Langkah 1 - Ukuran',
+          instructions: [
+            'Lengan cap sangat pendek: 8-12 cm dari bahu.',
+            'Ukur lilitan lubang lengan: ${armhole.toStringAsFixed(1)} cm.',
+            'Lengan cap hanya menutup bahu.',
+          ],
+          diagramType: DiagramType.sleeveModification,
+        ),
+        PatternStep(
+          stepNumber: 2,
+          title: 'Langkah 2 - Lukis Pola',
+          instructions: [
+            'Tinggi kepala lengan: ${(armhole / 4).toStringAsFixed(1)} cm.',
+            'Bentuk seperti separuh bulatan atau sedikit runcing.',
+            'Lebar di bahagian bawah: ${(armhole / 2).toStringAsFixed(1)} cm.',
+          ],
+          diagramType: DiagramType.sleeveModification,
+        ),
+        PatternStep(
+          stepNumber: 3,
+          title: 'Langkah 3 - Variasi',
+          instructions: [
+            'Boleh ditambah sedikit gathering untuk volume.',
+            'Atau biarkan flat untuk look minimalis.',
+            'Tambah kelim jahitan 1 cm.',
+            'Hem: narrow hem atau overlocked edge.',
+          ],
+          diagramType: DiagramType.sleeveModification,
+        ),
       ],
     };
 
-    return PatternStep(
-      stepNumber: 5,
-      title: 'Pola Skirt: $skirt',
-      instructions: skirtInstructions[skirt] ?? ['Tiada pengubahsuaian.'],
-      diagramType: DiagramType.skirtModification,
-    );
+    return sleeveInstructions[sleeve] ?? [
+      PatternStep(
+        stepNumber: 1,
+        title: 'Lengan',
+        instructions: ['Tiada lengan dipilih.'],
+        diagramType: DiagramType.sleeveModification,
+      ),
+    ];
+  }
+
+  /// Get skirt pattern steps
+  List<PatternStep> getSkirtSteps(String skirt) {
+    Map<String, List<PatternStep>> skirtInstructions = {
+      'Straight': [
+        PatternStep(
+          stepNumber: 1,
+          title: 'Langkah 1 - Ukuran Asas',
+          instructions: [
+            'Ukuran pinggang: ${waist.toStringAsFixed(1)} cm.',
+            'Ukuran pinggul: ${hip.toStringAsFixed(1)} cm.',
+            'Panjang skirt: ${skirtLength.toStringAsFixed(1)} cm.',
+            'Jarak pinggang ke pinggul: 18-20 cm.',
+          ],
+          diagramType: DiagramType.skirtModification,
+        ),
+        PatternStep(
+          stepNumber: 2,
+          title: 'Langkah 2 - Lukis Pola Belakang',
+          instructions: [
+            'AB – Panjang skirt = ${skirtLength.toStringAsFixed(1)} cm.',
+            'AC – Jarak pinggang ke pinggul = 20 cm.',
+            'CD – ¼ ukuran pinggul + 1 cm = ${(hip / 4 + 1).toStringAsFixed(1)} cm.',
+            'AE – ¼ ukuran pinggang + 3 cm (untuk dart) = ${(waist / 4 + 3).toStringAsFixed(1)} cm.',
+            'Lukis dart: lebar 3 cm, panjang 12-14 cm.',
+          ],
+          diagramType: DiagramType.skirtModification,
+        ),
+        PatternStep(
+          stepNumber: 3,
+          title: 'Langkah 3 - Lukis Pola Hadapan',
+          instructions: [
+            'Sama seperti belakang tetapi dart lebih kecil.',
+            'AE – ¼ ukuran pinggang + 2.5 cm = ${(waist / 4 + 2.5).toStringAsFixed(1)} cm.',
+            'Dart hadapan: lebar 2.5 cm, panjang 10-12 cm.',
+            'Lebar hem sama dengan lebar pinggul.',
+          ],
+          diagramType: DiagramType.skirtModification,
+        ),
+        PatternStep(
+          stepNumber: 4,
+          title: 'Langkah 4 - Siapkan',
+          instructions: [
+            'Tambah kelim jahitan 1.5 cm di sisi dan pinggang.',
+            'Hem: 3-4 cm.',
+            'Tambah zip di tengah belakang atau sisi: 18-20 cm.',
+            'Tandakan grain line selari dengan tengah.',
+          ],
+          diagramType: DiagramType.skirtModification,
+        ),
+      ],
+      'A-Line': [
+        PatternStep(
+          stepNumber: 1,
+          title: 'Langkah 1 - Ukuran Asas',
+          instructions: [
+            'Mulakan dengan pola straight skirt.',
+            'Ukuran pinggang: ${waist.toStringAsFixed(1)} cm.',
+            'Panjang skirt: ${skirtLength.toStringAsFixed(1)} cm.',
+          ],
+          diagramType: DiagramType.skirtModification,
+        ),
+        PatternStep(
+          stepNumber: 2,
+          title: 'Langkah 2 - Slash dan Spread',
+          instructions: [
+            'Lukis garisan dari dart ke hem.',
+            'Tutup dart dan pindahkan ke hem sebagai flare.',
+            'Atau: tambah 5-8 cm di setiap sisi di hem.',
+            'Flare bermula dari pinggul.',
+          ],
+          diagramType: DiagramType.skirtModification,
+        ),
+        PatternStep(
+          stepNumber: 3,
+          title: 'Langkah 3 - Bentuk A',
+          instructions: [
+            'Lebar hem: ${(hip + 16).toStringAsFixed(1)} cm (pinggul + 16 cm).',
+            'Lukis garisan lurus dari pinggul ke hem.',
+            'Dart dikurangkan atau dihapuskan.',
+            'Pastikan sisi kiri dan kanan simetri.',
+          ],
+          diagramType: DiagramType.skirtModification,
+        ),
+        PatternStep(
+          stepNumber: 4,
+          title: 'Langkah 4 - Siapkan',
+          instructions: [
+            'Tambah kelim jahitan 1.5 cm.',
+            'Hem: 3 cm.',
+            'Zip di sisi atau tengah belakang.',
+            'A-line sesuai untuk semua bentuk badan.',
+          ],
+          diagramType: DiagramType.skirtModification,
+        ),
+      ],
+      'Flared': [
+        PatternStep(
+          stepNumber: 1,
+          title: 'Langkah 1 - Pilih Jenis Flare',
+          instructions: [
+            'Quarter circle (¼ bulatan): flare sederhana.',
+            'Half circle (½ bulatan): flare penuh.',
+            'Full circle: flare maksimum.',
+            'Ukuran pinggang: ${waist.toStringAsFixed(1)} cm.',
+          ],
+          diagramType: DiagramType.skirtModification,
+        ),
+        PatternStep(
+          stepNumber: 2,
+          title: 'Langkah 2 - Kira Jejari',
+          instructions: [
+            'Untuk half circle skirt:',
+            'Jejari dalam (R1) = pinggang ÷ 3.14 = ${(waist / 3.14).toStringAsFixed(1)} cm.',
+            'Jejari luar (R2) = R1 + panjang skirt = ${(waist / 3.14 + skirtLength).toStringAsFixed(1)} cm.',
+          ],
+          diagramType: DiagramType.skirtModification,
+        ),
+        PatternStep(
+          stepNumber: 3,
+          title: 'Langkah 3 - Lukis Pola',
+          instructions: [
+            'Lipat fabrik menjadi 2 atau 4 lapisan.',
+            'Lukis arka dengan jejari R1 untuk pinggang.',
+            'Lukis arka dengan jejari R2 untuk hem.',
+            'Potong mengikut lengkungan.',
+          ],
+          diagramType: DiagramType.skirtModification,
+        ),
+        PatternStep(
+          stepNumber: 4,
+          title: 'Langkah 4 - Siapkan',
+          instructions: [
+            'Tambah kelim jahitan 1.5 cm di pinggang.',
+            'Hem: narrow hem 1 cm (lengkungan sukar di-hem lebar).',
+            'Gantung skirt 24 jam sebelum hem untuk fabrik jatuh.',
+            'Zip di sisi atau tengah belakang.',
+          ],
+          diagramType: DiagramType.skirtModification,
+        ),
+      ],
+      'Pleated': [
+        PatternStep(
+          stepNumber: 1,
+          title: 'Langkah 1 - Kira Pleat',
+          instructions: [
+            'Ukuran pinggang: ${waist.toStringAsFixed(1)} cm.',
+            'Lebar pleat standard: 3-5 cm.',
+            'Bilangan pleat: pinggang ÷ lebar pleat = ${(waist / 4).toStringAsFixed(0)} pleat.',
+            'Kedalaman pleat: 2x lebar pleat.',
+          ],
+          diagramType: DiagramType.skirtModification,
+        ),
+        PatternStep(
+          stepNumber: 2,
+          title: 'Langkah 2 - Kira Fabrik',
+          instructions: [
+            'Jumlah fabrik = 3x ukuran pinggang = ${(waist * 3).toStringAsFixed(1)} cm.',
+            'Panjang skirt: ${skirtLength.toStringAsFixed(1)} cm.',
+            'Tambahan untuk seam dan hem.',
+          ],
+          diagramType: DiagramType.skirtModification,
+        ),
+        PatternStep(
+          stepNumber: 3,
+          title: 'Langkah 3 - Tandakan Pleat',
+          instructions: [
+            'Tandakan garisan pleat pada fabrik.',
+            'Jarak antara garisan = kedalaman pleat.',
+            'Semua pleat menghadap arah yang sama (knife pleat).',
+            'Atau berselang-seli (box pleat).',
+          ],
+          diagramType: DiagramType.skirtModification,
+        ),
+        PatternStep(
+          stepNumber: 4,
+          title: 'Langkah 4 - Siapkan',
+          instructions: [
+            'Lipat dan press pleat.',
+            'Jahit pleat di pinggang untuk mengunci.',
+            'Boleh stitch pleat hingga pinggul atau biarkan bebas.',
+            'Pasang waistband dan zip.',
+          ],
+          diagramType: DiagramType.skirtModification,
+        ),
+      ],
+      'Gathered': [
+        PatternStep(
+          stepNumber: 1,
+          title: 'Langkah 1 - Kira Gathering',
+          instructions: [
+            'Ukuran pinggang: ${waist.toStringAsFixed(1)} cm.',
+            'Nisbah gathering: 2:1 atau 2.5:1.',
+            'Lebar fabrik = ${(waist * 2).toStringAsFixed(1)} cm hingga ${(waist * 2.5).toStringAsFixed(1)} cm.',
+          ],
+          diagramType: DiagramType.skirtModification,
+        ),
+        PatternStep(
+          stepNumber: 2,
+          title: 'Langkah 2 - Potong Fabrik',
+          instructions: [
+            'Potong segi empat tepat fabrik.',
+            'Lebar: seperti dikira di atas.',
+            'Panjang: ${skirtLength.toStringAsFixed(1)} cm + hem + seam allowance.',
+            'Boleh potong 1 atau 2 panel.',
+          ],
+          diagramType: DiagramType.skirtModification,
+        ),
+        PatternStep(
+          stepNumber: 3,
+          title: 'Langkah 3 - Gathering',
+          instructions: [
+            'Jahit 2 baris gathering stitch di pinggang.',
+            'Jarak dari tepi: 0.5 cm dan 1 cm.',
+            'Tarik benang untuk gather hingga = ukuran pinggang.',
+            'Agihkan gathering sama rata.',
+          ],
+          diagramType: DiagramType.skirtModification,
+        ),
+        PatternStep(
+          stepNumber: 4,
+          title: 'Langkah 4 - Siapkan',
+          instructions: [
+            'Jahit sisi skirt.',
+            'Sambung ke waistband.',
+            'Waistband: ${waist.toStringAsFixed(1)} cm + 3 cm (pertindihan).',
+            'Tinggi waistband: 3-4 cm.',
+            'Hem: 3 cm.',
+          ],
+          diagramType: DiagramType.skirtModification,
+        ),
+      ],
+      'Pencil': [
+        PatternStep(
+          stepNumber: 1,
+          title: 'Langkah 1 - Ukuran',
+          instructions: [
+            'Ukuran pinggang: ${waist.toStringAsFixed(1)} cm.',
+            'Ukuran pinggul: ${hip.toStringAsFixed(1)} cm.',
+            'Panjang skirt: ${skirtLength.toStringAsFixed(1)} cm (biasanya knee length).',
+            'Pencil skirt adalah fitted skirt.',
+          ],
+          diagramType: DiagramType.skirtModification,
+        ),
+        PatternStep(
+          stepNumber: 2,
+          title: 'Langkah 2 - Lukis Pola',
+          instructions: [
+            'Sama seperti straight skirt untuk bahagian atas.',
+            'Lebar hem: kurangkan 2-4 cm dari pinggul.',
+            'Hem: ${(hip - 4).toStringAsFixed(1)} cm.',
+            'Taper bermula dari pinggul ke hem.',
+          ],
+          diagramType: DiagramType.skirtModification,
+        ),
+        PatternStep(
+          stepNumber: 3,
+          title: 'Langkah 3 - Dart dan Slit',
+          instructions: [
+            'Dart di hadapan dan belakang adalah wajib.',
+            'Dart belakang: 3 cm lebar, 14 cm panjang.',
+            'Dart hadapan: 2.5 cm lebar, 10 cm panjang.',
+            'Tambah slit di belakang: 15-20 cm untuk memudahkan berjalan.',
+          ],
+          diagramType: DiagramType.skirtModification,
+        ),
+        PatternStep(
+          stepNumber: 4,
+          title: 'Langkah 4 - Siapkan',
+          instructions: [
+            'Tambah kelim jahitan 1.5 cm.',
+            'Zip di tengah belakang: 18-20 cm.',
+            'Hem: 3 cm.',
+            'Lining disyorkan untuk pencil skirt.',
+            'Ease minimum untuk keselesaan berjalan.',
+          ],
+          diagramType: DiagramType.skirtModification,
+        ),
+      ],
+    };
+
+    return skirtInstructions[skirt] ?? [
+      PatternStep(
+        stepNumber: 1,
+        title: 'Skirt',
+        instructions: ['Tiada skirt dipilih.'],
+        diagramType: DiagramType.skirtModification,
+      ),
+    ];
   }
 }
 
