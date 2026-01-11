@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../models/pattern_models.dart';
-import '../painters/pattern_diagram_painter.dart';
 import '../utils/pattern_drafting_instructions.dart';
 
 class PreviewAndNotes extends StatefulWidget {
@@ -35,24 +34,20 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
   }
 
   void _buildTabs() {
-    // Build tabs based on selected styles
     _tabTitles = [
-      'Badan', // Always show bodice (front & back)
+      'Badan',
     ];
     
-    // Add collar tab if selected
     if (widget.styleSelections.collar != null && 
         widget.styleSelections.collar != 'No Collar') {
       _tabTitles.add('Kolar');
     }
     
-    // Add sleeve tab if selected
     if (widget.styleSelections.sleeve != null && 
         widget.styleSelections.sleeve != 'Sleeveless') {
       _tabTitles.add('Lengan');
     }
     
-    // Add skirt tab
     if (widget.styleSelections.skirt != null) {
       _tabTitles.add('Skirt');
     }
@@ -85,6 +80,30 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
     };
   }
 
+  // Get image path based on diagram type
+  String _getImagePath(DiagramType type) {
+    switch (type) {
+      case DiagramType.backStep1:
+        return 'assets/images/patterns/bodice_step_1.jpeg';
+      case DiagramType.backStep2:
+        return 'assets/images/patterns/bodice_step_2.jpeg';
+      case DiagramType.backStep3:
+        return 'assets/images/patterns/bodice_step_3.jpeg';
+      case DiagramType.backStep4:
+        return 'assets/images/patterns/bodice_step_4.jpeg';
+      case DiagramType.frontStep1:
+        return 'assets/images/patterns/bodice_step_1.jpeg';
+      case DiagramType.frontStep2:
+        return 'assets/images/patterns/bodice_step_2.jpeg';
+      case DiagramType.frontStep3:
+        return 'assets/images/patterns/bodice_step_3.jpeg';
+      case DiagramType.frontStep4:
+        return 'assets/images/patterns/bodice_step_4.jpeg';
+      default:
+        return 'assets/images/patterns/placeholder.png';
+    }
+  }
+
   @override
   void dispose() {
     _tabController.dispose();
@@ -114,7 +133,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
           Container(
             padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
             decoration: const BoxDecoration(
-              color: Color(0xFF5d4037),
+              color: Color(0xFF8b5cf6),
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
@@ -142,7 +161,6 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
                   ],
                 ),
                 const SizedBox(height: 8),
-                // Style summary chips
                 _buildStyleSummaryChips(isSmallScreen),
               ],
             ),
@@ -150,14 +168,14 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
 
           // Tab bar
           Container(
-            color: const Color(0xFFefebe9),
+            color: const Color(0xFFf3f0ff),
             child: TabBar(
               controller: _tabController,
               isScrollable: _tabTitles.length > 3,
               labelColor: Colors.white,
-              unselectedLabelColor: const Color(0xFF5d4037),
+              unselectedLabelColor: const Color(0xFF8b5cf6),
               indicator: const BoxDecoration(
-                color: Color(0xFF5d4037),
+                color: Color(0xFF8b5cf6),
               ),
               indicatorSize: TabBarIndicatorSize.tab,
               labelStyle: TextStyle(
@@ -388,11 +406,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
       margin: EdgeInsets.only(bottom: isSmallScreen ? 12 : 16),
       padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.brown.shade700, Colors.brown.shade500],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: const Color(0xFF8b5cf6),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -412,7 +426,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
             subtitle,
             style: TextStyle(
               fontSize: isSmallScreen ? 10 : 12,
-              color: Colors.brown.shade100,
+              color: const Color(0xFFe5dbff),
               fontStyle: FontStyle.italic,
             ),
           ),
@@ -474,7 +488,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
         text,
         style: TextStyle(
           fontSize: isSmallScreen ? 10 : 12,
-          color: const Color(0xFF5d4037),
+          color: const Color(0xFF8b5cf6),
         ),
       ),
     );
@@ -488,10 +502,10 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE0E0E0)),
+        border: Border.all(color: const Color(0xFFe5dbff)),
         boxShadow: [
           BoxShadow(
-            color: Colors.brown.withOpacity(0.08),
+            color: const Color(0xFF8b5cf6).withOpacity(0.08),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -504,7 +518,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
           Container(
             padding: EdgeInsets.all(isSmallScreen ? 10 : 12),
             decoration: const BoxDecoration(
-              color: Color(0xFFEFEBE9),
+              color: Color(0xFFf3f0ff),
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(11),
                 topRight: Radius.circular(11),
@@ -516,7 +530,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
                   width: isSmallScreen ? 26 : 32,
                   height: isSmallScreen ? 26 : 32,
                   decoration: const BoxDecoration(
-                    color: Color(0xFF5d4037),
+                    color: Color(0xFF8b5cf6),
                     shape: BoxShape.circle,
                   ),
                   child: Center(
@@ -537,7 +551,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
                     style: TextStyle(
                       fontSize: isSmallScreen ? 12 : 14,
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFF4E342E),
+                      color: const Color(0xFF6b21a8),
                     ),
                   ),
                 ),
@@ -552,41 +566,40 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Diagram on top for mobile
+                      // Image on top for mobile
                       Center(
                         child: Container(
                           width: 140,
                           height: 150,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFAFAFA),
+                            color: const Color(0xFFf9f5ff),
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: const Color(0xFFE0E0E0)),
+                            border: Border.all(color: const Color(0xFFe5dbff)),
                           ),
-                          child: Stack(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(7),
-                                child: CustomPaint(
-                                  size: const Size(140, 150),
-                                  painter: PatternDiagramPainter(
-                                    diagramType: step.diagramType,
-                                    measurements: _getMeasurementsMap(),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(7),
+                            child: Image.asset(
+                              _getImagePath(step.diagramType),
+                              fit: BoxFit.contain,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.image, color: Colors.grey.shade400, size: 30),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        'Rajah ${step.stepNumber}',
+                                        style: TextStyle(
+                                          color: Colors.grey.shade500,
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 4,
-                                left: 4,
-                                child: Text(
-                                  '✓',
-                                  style: TextStyle(
-                                    color: Colors.green.shade600,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
+                                );
+                              },
+                            ),
                           ),
                         ),
                       ),
@@ -597,42 +610,41 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
                 : Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Diagram on left for desktop
+                      // Image on left for desktop
                       if (shouldShowDiagram)
                         Container(
                           width: isSmallScreen ? 120 : 150,
                           height: isSmallScreen ? 140 : 170,
                           margin: const EdgeInsets.only(right: 14),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFAFAFA),
+                            color: const Color(0xFFf9f5ff),
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: const Color(0xFFE0E0E0)),
+                            border: Border.all(color: const Color(0xFFe5dbff)),
                           ),
-                          child: Stack(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(7),
-                                child: CustomPaint(
-                                  size: Size(isSmallScreen ? 120 : 150, isSmallScreen ? 140 : 170),
-                                  painter: PatternDiagramPainter(
-                                    diagramType: step.diagramType,
-                                    measurements: _getMeasurementsMap(),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(7),
+                            child: Image.asset(
+                              _getImagePath(step.diagramType),
+                              fit: BoxFit.contain,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.image, color: Colors.grey.shade400, size: 30),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        'Rajah ${step.stepNumber}',
+                                        style: TextStyle(
+                                          color: Colors.grey.shade500,
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 6,
-                                left: 6,
-                                child: Text(
-                                  '✓',
-                                  style: TextStyle(
-                                    color: Colors.green.shade600,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
+                                );
+                              },
+                            ),
                           ),
                         ),
 
@@ -664,7 +676,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
             height: 5,
             margin: EdgeInsets.only(top: isSmallScreen ? 5 : 6, right: 8),
             decoration: const BoxDecoration(
-              color: Color(0xFF8D6E63),
+              color: Color(0xFF8b5cf6),
               shape: BoxShape.circle,
             ),
           ),
