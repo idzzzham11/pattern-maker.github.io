@@ -3,6 +3,7 @@ import 'dart:math';
 import '../utils/pattern_drafting_instructions.dart';
 
 /// Painter for pattern drafting diagrams showing step-by-step construction
+/// Matches the textbook reference images exactly
 class PatternDiagramPainter extends CustomPainter {
   final DiagramType diagramType;
   final Map<String, double> measurements;
@@ -70,16 +71,21 @@ class PatternDiagramPainter extends CustomPainter {
     ..style = PaintingStyle.fill;
 
   // Helper to draw a labeled point
-  void _drawPoint(Canvas canvas, Offset position, String label, {bool alignRight = false, bool alignBottom = false}) {
-    // Draw point
-    canvas.drawCircle(position, 3, _pointPaint);
+  void _drawPoint(Canvas canvas, Offset position, String label, {
+    bool alignRight = false, 
+    bool alignBottom = false,
+    bool alignTop = false,
+    bool alignLeft = false,
+  }) {
+    // Draw small circle for point
+    canvas.drawCircle(position, 2.5, _pointPaint);
     
     // Draw label
     final textSpan = TextSpan(
       text: label,
       style: TextStyle(
         color: labelColor,
-        fontSize: 12,
+        fontSize: 10,
         fontWeight: FontWeight.bold,
       ),
     );
@@ -89,231 +95,472 @@ class PatternDiagramPainter extends CustomPainter {
     );
     textPainter.layout();
     
-    double dx = position.dx + (alignRight ? -textPainter.width - 6 : 6);
-    double dy = position.dy + (alignBottom ? 4 : -textPainter.height - 2);
+    double dx = position.dx;
+    double dy = position.dy;
+    
+    if (alignRight) {
+      dx = position.dx - textPainter.width - 5;
+    } else if (alignLeft) {
+      dx = position.dx + 5;
+    } else {
+      dx = position.dx - textPainter.width / 2;
+    }
+    
+    if (alignBottom) {
+      dy = position.dy + 4;
+    } else if (alignTop) {
+      dy = position.dy - textPainter.height - 3;
+    } else {
+      dy = position.dy - textPainter.height / 2;
+    }
     
     textPainter.paint(canvas, Offset(dx, dy));
   }
 
   // Helper to draw dashed line
-  void _drawDashedLine(Canvas canvas, Offset start, Offset end) {
-    final path = Path();
+  void _drawDashedLine(Canvas canvas, Offset start, Offset end, {double dashLength = 5, double gapLength = 3}) {
     final distance = (end - start).distance;
-    final dashLength = 5.0;
-    final gapLength = 3.0;
+    if (distance == 0) return;
+    
     final dx = (end.dx - start.dx) / distance;
     final dy = (end.dy - start.dy) / distance;
     
     double currentDistance = 0;
     bool drawing = true;
     
-    path.moveTo(start.dx, start.dy);
-    
     while (currentDistance < distance) {
       final segmentLength = drawing ? dashLength : gapLength;
-      currentDistance += segmentLength;
-      
-      if (currentDistance > distance) {
-        currentDistance = distance;
-      }
-      
-      final x = start.dx + dx * currentDistance;
-      final y = start.dy + dy * currentDistance;
+      final nextDistance = (currentDistance + segmentLength).clamp(0.0, distance);
       
       if (drawing) {
-        path.lineTo(x, y);
-      } else {
-        path.moveTo(x, y);
+        final startX = start.dx + dx * currentDistance;
+        final startY = start.dy + dy * currentDistance;
+        final endX = start.dx + dx * nextDistance;
+        final endY = start.dy + dy * nextDistance;
+        canvas.drawLine(Offset(startX, startY), Offset(endX, endY), _dashedPaint);
       }
       
+      currentDistance = nextDistance;
       drawing = !drawing;
     }
+  }
+
+  // Helper to draw right angle marker
+  void _drawRightAngle(Canvas canvas, Offset corner, Offset dir1, Offset dir2, double size) {
+    final p1 = Offset(corner.dx + dir1.dx * size, corner.dy + dir1.dy * size);
+    final p2 = Offset(corner.dx + dir1.dx * size + dir2.dx * size, corner.dy + dir1.dy * size + dir2.dy * size);
+    final p3 = Offset(corner.dx + dir2.dx * size, corner.dy + dir2.dy * size);
     
+    final path = Path();
+    path.moveTo(p1.dx, p1.dy);
+    path.lineTo(p2.dx, p2.dy);
+    path.lineTo(p3.dx, p3.dy);
     canvas.drawPath(path, _dashedPaint);
   }
 
-  // Helper to draw measurement annotation
-  void _drawMeasurement(Canvas canvas, Offset start, Offset end, String label, {bool outside = true}) {
-    final midX = (start.dx + end.dx) / 2;
-    final midY = (start.dy + end.dy) / 2;
-    
-    final textSpan = TextSpan(
-      text: label,
-      style: TextStyle(
-        color: labelColor,
-        fontSize: 9,
-        fontStyle: FontStyle.italic,
-      ),
-    );
-    final textPainter = TextPainter(
-      text: textSpan,
-      textDirection: TextDirection.ltr,
-    );
-    textPainter.layout();
-    
-    final offset = outside ? 8.0 : -textPainter.height - 4;
-    textPainter.paint(canvas, Offset(midX - textPainter.width / 2, midY + offset));
-  }
+  // ==================== BACK BODICE STEPS ====================
 
-  // BACK BODICE STEP 1 - Basic lines
+  // BACK BODICE STEP 1 - Basic lines: A, B, C, D
   void _drawBackStep1(Canvas canvas, Size size) {
-    final scale = size.width / 200;
-    final margin = 30 * scale;
+    final w = size.width;
+    final h = size.height;
+    final margin = 20.0;
     
-    // Points
-    final A = Offset(size.width - margin, margin);
-    final B = Offset(size.width - margin, size.height - margin);
-    final C = Offset(margin, margin);
-    final D = Offset(margin, margin + 40 * scale);
+    // Points matching reference image
+    final A = Offset(w - margin - 10, margin + 10);           // Top right
+    final B = Offset(w - margin - 10, h - margin - 10);       // Bottom right
+    final C = Offset(margin + 30, margin + 10);               // Top left
+    final D = Offset(margin + 30, margin + 40);               // Below C
     
-    // Draw lines
-    // AB - vertical line
-    canvas.drawLine(A, B, _linePaint);
+    // Draw AB - vertical dashed line (main center line)
+    _drawDashedLine(canvas, A, B);
     
-    // AC - horizontal line (dashed)
-    _drawDashedLine(canvas, A, C);
+    // Draw CA - horizontal dashed line
+    _drawDashedLine(canvas, C, A);
     
-    // CD - short vertical line
+    // Draw CD - short vertical solid line
     canvas.drawLine(C, D, _linePaint);
+    
+    // Draw right angle markers
+    _drawRightAngle(canvas, C, Offset(1, 0), Offset(0, 1), 6);
+    _drawRightAngle(canvas, A, Offset(-1, 0), Offset(0, 1), 6);
     
     // Draw points with labels
-    _drawPoint(canvas, A, 'A');
-    _drawPoint(canvas, B, 'B', alignBottom: true);
-    _drawPoint(canvas, C, 'C', alignRight: true);
-    _drawPoint(canvas, D, 'D', alignRight: true, alignBottom: true);
+    _drawPoint(canvas, C, 'C', alignRight: true, alignTop: true);
+    _drawPoint(canvas, A, 'A', alignLeft: true, alignTop: true);
+    _drawPoint(canvas, D, 'D', alignRight: true);
+    _drawPoint(canvas, B, 'B', alignLeft: true, alignBottom: true);
   }
 
-  // BACK BODICE STEP 2 - Neckline
+  // BACK BODICE STEP 2 - Add neckline: E, F
   void _drawBackStep2(Canvas canvas, Size size) {
-    final scale = size.width / 200;
-    final margin = 30 * scale;
+    final w = size.width;
+    final h = size.height;
+    final margin = 20.0;
     
     // Points
-    final A = Offset(size.width - margin, margin);
-    final B = Offset(size.width - margin, size.height - margin);
-    final C = Offset(margin, margin);
-    final D = Offset(margin, margin + 40 * scale);
-    final E = Offset(margin + 50 * scale, margin + 15 * scale);
-    final F = Offset(size.width - margin - 20 * scale, margin);
+    final A = Offset(w - margin - 10, margin + 10);
+    final B = Offset(w - margin - 10, h - margin - 10);
+    final C = Offset(margin + 30, margin + 10);
+    final D = Offset(margin + 30, margin + 40);
+    final E = Offset(margin + 70, margin + 10);               // On CA line
+    final F = Offset(w - margin - 10, margin + 35);           // Below A on AB line
     
-    // Draw lines
+    // Draw construction lines
+    _drawDashedLine(canvas, C, A);
     canvas.drawLine(A, B, _linePaint);
-    _drawDashedLine(canvas, A, C);
     canvas.drawLine(C, D, _linePaint);
     
-    // DE - shoulder line
+    // Draw shoulder line D to E
     canvas.drawLine(D, E, _linePaint);
     
-    // EF - curved neckline
+    // Draw curved neckline E to F
     final neckPath = Path();
     neckPath.moveTo(E.dx, E.dy);
     neckPath.quadraticBezierTo(
-      E.dx + 20 * scale, E.dy - 10 * scale,
+      E.dx + 25, F.dy - 5,
       F.dx, F.dy,
     );
     canvas.drawPath(neckPath, _linePaint);
     
+    // Right angle markers
+    _drawRightAngle(canvas, C, Offset(1, 0), Offset(0, 1), 6);
+    _drawRightAngle(canvas, A, Offset(-1, 0), Offset(0, 1), 6);
+    _drawRightAngle(canvas, F, Offset(-1, 0), Offset(0, -1), 5);
+    
     // Draw points
-    _drawPoint(canvas, A, 'A');
-    _drawPoint(canvas, B, 'B', alignBottom: true);
-    _drawPoint(canvas, C, 'C', alignRight: true);
+    _drawPoint(canvas, C, 'C', alignRight: true, alignTop: true);
+    _drawPoint(canvas, A, 'A', alignLeft: true, alignTop: true);
     _drawPoint(canvas, D, 'D', alignRight: true);
-    _drawPoint(canvas, E, 'E');
-    _drawPoint(canvas, F, 'F', alignRight: true);
+    _drawPoint(canvas, E, 'E', alignTop: true);
+    _drawPoint(canvas, F, 'F', alignLeft: true);
+    _drawPoint(canvas, B, 'B', alignLeft: true, alignBottom: true);
   }
 
-  // BACK BODICE STEP 3 - Armhole
+  // BACK BODICE STEP 3 - Add armhole: G, H, I, J, K, L
   void _drawBackStep3(Canvas canvas, Size size) {
-    final scale = size.width / 200;
-    final margin = 25 * scale;
+    final w = size.width;
+    final h = size.height;
+    final margin = 18.0;
     
     // Points
-    final A = Offset(size.width - margin, margin);
-    final B = Offset(size.width - margin, size.height - margin);
-    final C = Offset(margin + 20 * scale, margin);
-    final D = Offset(margin, margin + 35 * scale);
-    final E = Offset(margin + 50 * scale, margin + 15 * scale);
-    final F = Offset(size.width - margin - 15 * scale, margin);
-    final G = Offset(size.width - margin, margin + (size.height - 2 * margin) * 0.55);
-    final H = Offset(margin, margin + (size.height - 2 * margin) * 0.55);
-    final I = Offset(size.width - margin, margin + (size.height - 2 * margin) * 0.28);
-    final J = Offset(margin + 60 * scale, margin + (size.height - 2 * margin) * 0.28);
-    final K = Offset(margin, margin + (size.height - 2 * margin) * 0.38);
-    final L = Offset(margin + 25 * scale, margin + (size.height - 2 * margin) * 0.45);
+    final A = Offset(w - margin - 10, margin + 8);
+    final B = Offset(w - margin - 10, h - margin - 8);
+    final C = Offset(margin + 25, margin + 8);
+    final D = Offset(margin + 25, margin + 35);
+    final E = Offset(margin + 65, margin + 8);
+    final F = Offset(w - margin - 10, margin + 30);
+    
+    // Armhole points
+    final chestLevel = margin + 75;   // J-I level
+    final armholeLevel = margin + 105; // H-G level
+    
+    final G = Offset(w - margin - 10, armholeLevel);          // Right side armhole level
+    final H = Offset(margin + 25, armholeLevel);              // Left side armhole level
+    final I = Offset(w - margin - 10, chestLevel);            // Right side chest level
+    final J = Offset(margin + 70, chestLevel);                // Middle chest level
+    final K = Offset(margin + 55, armholeLevel);              // Below J
+    final L = Offset(margin + 38, armholeLevel - 18);         // Armhole curve point
     
     // Draw construction lines (dashed)
-    _drawDashedLine(canvas, A, C);
-    _drawDashedLine(canvas, I, J);
-    _drawDashedLine(canvas, G, H);
+    _drawDashedLine(canvas, C, A);
+    _drawDashedLine(canvas, J, I);
+    _drawDashedLine(canvas, H, G);
     
     // Draw main lines
     canvas.drawLine(A, B, _linePaint);
     canvas.drawLine(C, D, _linePaint);
-    canvas.drawLine(D, E, _linePaint);
+    canvas.drawLine(D, E, _linePaint);  // Shoulder
     
     // Neckline curve
     final neckPath = Path();
     neckPath.moveTo(E.dx, E.dy);
-    neckPath.quadraticBezierTo(E.dx + 15 * scale, E.dy - 8 * scale, F.dx, F.dy);
+    neckPath.quadraticBezierTo(E.dx + 20, F.dy - 5, F.dx, F.dy);
     canvas.drawPath(neckPath, _linePaint);
     
-    // Armhole curve D -> J -> L -> H
+    // Armhole curve: D -> J -> L -> H
     final armholePath = Path();
     armholePath.moveTo(D.dx, D.dy);
-    armholePath.quadraticBezierTo(D.dx + 20 * scale, J.dy - 10 * scale, J.dx, J.dy);
-    armholePath.quadraticBezierTo(J.dx - 10 * scale, L.dy, L.dx, L.dy);
-    armholePath.quadraticBezierTo(L.dx - 15 * scale, H.dy - 15 * scale, H.dx, H.dy);
+    armholePath.quadraticBezierTo(D.dx + 15, D.dy + 20, J.dx, J.dy);
+    armholePath.quadraticBezierTo(J.dx - 15, J.dy + 15, L.dx, L.dy);
+    armholePath.quadraticBezierTo(L.dx - 8, L.dy + 12, H.dx, H.dy);
     canvas.drawPath(armholePath, _linePaint);
     
+    // Right angle markers
+    _drawRightAngle(canvas, C, Offset(1, 0), Offset(0, 1), 5);
+    _drawRightAngle(canvas, G, Offset(-1, 0), Offset(0, -1), 5);
+    
     // Draw points
-    _drawPoint(canvas, A, 'A');
-    _drawPoint(canvas, B, 'B', alignBottom: true);
-    _drawPoint(canvas, C, 'C');
+    _drawPoint(canvas, C, 'C', alignRight: true, alignTop: true);
+    _drawPoint(canvas, E, 'E', alignTop: true);
+    _drawPoint(canvas, A, 'A', alignLeft: true, alignTop: true);
     _drawPoint(canvas, D, 'D', alignRight: true);
-    _drawPoint(canvas, E, 'E');
-    _drawPoint(canvas, F, 'F');
-    _drawPoint(canvas, G, 'G');
+    _drawPoint(canvas, F, 'F', alignLeft: true);
+    _drawPoint(canvas, J, 'J', alignTop: true);
+    _drawPoint(canvas, I, 'I', alignLeft: true);
+    _drawPoint(canvas, L, 'L', alignRight: true);
     _drawPoint(canvas, H, 'H', alignRight: true);
-    _drawPoint(canvas, I, 'I');
-    _drawPoint(canvas, J, 'J');
-    _drawPoint(canvas, K, 'K', alignRight: true);
-    _drawPoint(canvas, L, 'L');
+    _drawPoint(canvas, K, 'K', alignTop: true);
+    _drawPoint(canvas, G, 'G', alignLeft: true);
+    _drawPoint(canvas, B, 'B', alignLeft: true, alignBottom: true);
   }
 
-  // BACK BODICE STEP 4 - Complete with dart
+  // BACK BODICE STEP 4 - Complete with dart and fill
   void _drawBackStep4(Canvas canvas, Size size) {
-    final scale = size.width / 200;
-    final margin = 25 * scale;
+    final w = size.width;
+    final h = size.height;
+    final margin = 18.0;
     
     // Points
-    final A = Offset(size.width - margin, margin);
-    final B = Offset(size.width - margin, size.height - margin);
-    final C = Offset(margin + 20 * scale, margin);
-    final D = Offset(margin, margin + 35 * scale);
-    final E = Offset(margin + 50 * scale, margin + 15 * scale);
-    final F = Offset(size.width - margin - 15 * scale, margin);
-    final G = Offset(size.width - margin, margin + (size.height - 2 * margin) * 0.55);
-    final H = Offset(margin, margin + (size.height - 2 * margin) * 0.55);
-    final I = Offset(size.width - margin, margin + (size.height - 2 * margin) * 0.28);
-    final J = Offset(margin + 60 * scale, margin + (size.height - 2 * margin) * 0.28);
-    final L = Offset(margin + 25 * scale, margin + (size.height - 2 * margin) * 0.45);
-    final M = Offset(size.width - margin - 40 * scale, size.height - margin);
-    final N = Offset(size.width - margin - 25 * scale, margin + (size.height - 2 * margin) * 0.55);
-    final O = Offset(size.width - margin - 40 * scale, size.height - margin);
-    final P = Offset(size.width - margin - 55 * scale, size.height - margin);
-    final Q = Offset(margin, size.height - margin);
+    final A = Offset(w - margin - 10, margin + 8);
+    final B = Offset(w - margin - 10, h - margin - 8);
+    final C = Offset(margin + 25, margin + 8);
+    final D = Offset(margin + 25, margin + 35);
+    final E = Offset(margin + 65, margin + 8);
+    final F = Offset(w - margin - 10, margin + 30);
+    
+    final chestLevel = margin + 75;
+    final armholeLevel = margin + 105;
+    
+    final G = Offset(w - margin - 10, armholeLevel);
+    final H = Offset(margin + 25, armholeLevel);
+    final I = Offset(w - margin - 10, chestLevel);
+    final J = Offset(margin + 70, chestLevel);
+    final K = Offset(margin + 55, armholeLevel);
+    final L = Offset(margin + 38, armholeLevel - 18);
+    
+    // Waistline points
+    final waistY = h - margin - 8;
+    final M = Offset(margin + 25, waistY);                    // Bottom left
+    final Q = Offset(margin + 45, waistY);                    // Left of dart
+    final N = Offset(w - margin - 55, armholeLevel + 15);     // Dart apex
+    final P = Offset(w - margin - 65, waistY);                // Dart left leg
+    final O = Offset(w - margin - 45, waistY);                // Dart right leg
     
     // Draw filled pattern shape
     final patternPath = Path();
     patternPath.moveTo(F.dx, F.dy);
-    patternPath.quadraticBezierTo(E.dx + 15 * scale, E.dy - 8 * scale, E.dx, E.dy);
+    
+    // Neckline
+    patternPath.quadraticBezierTo(E.dx + 20, F.dy - 5, E.dx, E.dy);
     patternPath.lineTo(D.dx, D.dy);
-    patternPath.quadraticBezierTo(D.dx + 20 * scale, J.dy - 10 * scale, J.dx, J.dy);
-    patternPath.quadraticBezierTo(J.dx - 10 * scale, L.dy, L.dx, L.dy);
-    patternPath.quadraticBezierTo(L.dx - 15 * scale, H.dy - 15 * scale, H.dx, H.dy);
+    
+    // Armhole
+    patternPath.quadraticBezierTo(D.dx + 15, D.dy + 20, J.dx, J.dy);
+    patternPath.quadraticBezierTo(J.dx - 15, J.dy + 15, L.dx, L.dy);
+    patternPath.quadraticBezierTo(L.dx - 8, L.dy + 12, H.dx, H.dy);
+    
+    // Left side down to waist
+    patternPath.lineTo(M.dx, M.dy);
+    patternPath.lineTo(Q.dx, Q.dy);
+    
+    // Dart
+    patternPath.lineTo(P.dx, P.dy);
+    patternPath.lineTo(N.dx, N.dy);
+    patternPath.lineTo(O.dx, O.dy);
+    
+    // Bottom to B
+    patternPath.lineTo(B.dx, B.dy);
+    patternPath.lineTo(A.dx, A.dy);
+    patternPath.lineTo(F.dx, F.dy);
+    patternPath.close();
+    
+    // Fill and stroke
+    canvas.drawPath(patternPath, _fillPaint);
+    canvas.drawPath(patternPath, _linePaint);
+    
+    // Dart lines (emphasized)
+    canvas.drawLine(N, P, _linePaint);
+    canvas.drawLine(N, O, _linePaint);
+    
+    // Construction lines (dashed)
+    _drawDashedLine(canvas, C, A);
+    _drawDashedLine(canvas, J, I);
+    _drawDashedLine(canvas, H, G);
+    
+    // Draw points
+    _drawPoint(canvas, C, 'C', alignRight: true, alignTop: true);
+    _drawPoint(canvas, E, 'E', alignTop: true);
+    _drawPoint(canvas, A, 'A', alignLeft: true, alignTop: true);
+    _drawPoint(canvas, D, 'D', alignRight: true);
+    _drawPoint(canvas, F, 'F', alignLeft: true);
+    _drawPoint(canvas, J, 'J', alignTop: true);
+    _drawPoint(canvas, I, 'I', alignLeft: true);
+    _drawPoint(canvas, L, 'L', alignRight: true);
+    _drawPoint(canvas, H, 'H', alignRight: true);
+    _drawPoint(canvas, K, 'K', alignTop: true);
+    _drawPoint(canvas, G, 'G', alignLeft: true);
+    _drawPoint(canvas, N, 'N', alignTop: true);
+    _drawPoint(canvas, M, 'M', alignRight: true, alignBottom: true);
+    _drawPoint(canvas, Q, 'Q', alignBottom: true);
+    _drawPoint(canvas, P, 'P', alignBottom: true);
+    _drawPoint(canvas, O, 'O', alignBottom: true);
+    _drawPoint(canvas, B, 'B', alignLeft: true, alignBottom: true);
+  }
+
+  // ==================== FRONT BODICE STEPS ====================
+  // Front bodice has deeper neckline and different dart placement
+
+  void _drawFrontStep1(Canvas canvas, Size size) {
+    final w = size.width;
+    final h = size.height;
+    final margin = 20.0;
+    
+    final A = Offset(w - margin - 10, margin + 10);
+    final B = Offset(w - margin - 10, h - margin - 10);
+    final C = Offset(margin + 30, margin + 10);
+    final D = Offset(margin + 30, margin + 35);
+    
+    _drawDashedLine(canvas, A, B);
+    _drawDashedLine(canvas, C, A);
+    canvas.drawLine(C, D, _linePaint);
+    
+    _drawRightAngle(canvas, C, Offset(1, 0), Offset(0, 1), 6);
+    _drawRightAngle(canvas, A, Offset(-1, 0), Offset(0, 1), 6);
+    
+    _drawPoint(canvas, C, 'C', alignRight: true, alignTop: true);
+    _drawPoint(canvas, A, 'A', alignLeft: true, alignTop: true);
+    _drawPoint(canvas, D, 'D', alignRight: true);
+    _drawPoint(canvas, B, 'B', alignLeft: true, alignBottom: true);
+  }
+
+  void _drawFrontStep2(Canvas canvas, Size size) {
+    final w = size.width;
+    final h = size.height;
+    final margin = 20.0;
+    
+    final A = Offset(w - margin - 10, margin + 10);
+    final B = Offset(w - margin - 10, h - margin - 10);
+    final C = Offset(margin + 30, margin + 10);
+    final D = Offset(margin + 30, margin + 35);
+    final E = Offset(margin + 65, margin + 10);
+    final F = Offset(w - margin - 10, margin + 45);  // Deeper neckline for front
+    
+    _drawDashedLine(canvas, C, A);
+    canvas.drawLine(A, B, _linePaint);
+    canvas.drawLine(C, D, _linePaint);
+    canvas.drawLine(D, E, _linePaint);
+    
+    // Deeper curved neckline for front
+    final neckPath = Path();
+    neckPath.moveTo(E.dx, E.dy);
+    neckPath.quadraticBezierTo(
+      E.dx + 30, F.dy - 10,
+      F.dx, F.dy,
+    );
+    canvas.drawPath(neckPath, _linePaint);
+    
+    _drawRightAngle(canvas, C, Offset(1, 0), Offset(0, 1), 6);
+    _drawRightAngle(canvas, A, Offset(-1, 0), Offset(0, 1), 6);
+    _drawRightAngle(canvas, F, Offset(-1, 0), Offset(0, -1), 5);
+    
+    _drawPoint(canvas, C, 'C', alignRight: true, alignTop: true);
+    _drawPoint(canvas, A, 'A', alignLeft: true, alignTop: true);
+    _drawPoint(canvas, D, 'D', alignRight: true);
+    _drawPoint(canvas, E, 'E', alignTop: true);
+    _drawPoint(canvas, F, 'F', alignLeft: true);
+    _drawPoint(canvas, B, 'B', alignLeft: true, alignBottom: true);
+  }
+
+  void _drawFrontStep3(Canvas canvas, Size size) {
+    final w = size.width;
+    final h = size.height;
+    final margin = 18.0;
+    
+    final A = Offset(w - margin - 10, margin + 8);
+    final B = Offset(w - margin - 10, h - margin - 8);
+    final C = Offset(margin + 25, margin + 8);
+    final D = Offset(margin + 25, margin + 35);
+    final E = Offset(margin + 65, margin + 8);
+    final F = Offset(w - margin - 10, margin + 40);
+    
+    final chestLevel = margin + 75;
+    final armholeLevel = margin + 105;
+    
+    final G = Offset(w - margin - 10, armholeLevel);
+    final H = Offset(margin + 25, armholeLevel);
+    final I = Offset(w - margin - 10, chestLevel);
+    final J = Offset(margin + 70, chestLevel);
+    final K = Offset(margin + 55, armholeLevel);
+    final L = Offset(margin + 38, armholeLevel - 18);
+    
+    _drawDashedLine(canvas, C, A);
+    _drawDashedLine(canvas, J, I);
+    _drawDashedLine(canvas, H, G);
+    
+    canvas.drawLine(A, B, _linePaint);
+    canvas.drawLine(C, D, _linePaint);
+    canvas.drawLine(D, E, _linePaint);
+    
+    final neckPath = Path();
+    neckPath.moveTo(E.dx, E.dy);
+    neckPath.quadraticBezierTo(E.dx + 25, F.dy - 8, F.dx, F.dy);
+    canvas.drawPath(neckPath, _linePaint);
+    
+    final armholePath = Path();
+    armholePath.moveTo(D.dx, D.dy);
+    armholePath.quadraticBezierTo(D.dx + 15, D.dy + 20, J.dx, J.dy);
+    armholePath.quadraticBezierTo(J.dx - 15, J.dy + 15, L.dx, L.dy);
+    armholePath.quadraticBezierTo(L.dx - 8, L.dy + 12, H.dx, H.dy);
+    canvas.drawPath(armholePath, _linePaint);
+    
+    _drawRightAngle(canvas, C, Offset(1, 0), Offset(0, 1), 5);
+    _drawRightAngle(canvas, G, Offset(-1, 0), Offset(0, -1), 5);
+    
+    _drawPoint(canvas, C, 'C', alignRight: true, alignTop: true);
+    _drawPoint(canvas, E, 'E', alignTop: true);
+    _drawPoint(canvas, A, 'A', alignLeft: true, alignTop: true);
+    _drawPoint(canvas, D, 'D', alignRight: true);
+    _drawPoint(canvas, F, 'F', alignLeft: true);
+    _drawPoint(canvas, J, 'J', alignTop: true);
+    _drawPoint(canvas, I, 'I', alignLeft: true);
+    _drawPoint(canvas, L, 'L', alignRight: true);
+    _drawPoint(canvas, H, 'H', alignRight: true);
+    _drawPoint(canvas, K, 'K', alignTop: true);
+    _drawPoint(canvas, G, 'G', alignLeft: true);
+    _drawPoint(canvas, B, 'B', alignLeft: true, alignBottom: true);
+  }
+
+  void _drawFrontStep4(Canvas canvas, Size size) {
+    final w = size.width;
+    final h = size.height;
+    final margin = 18.0;
+    
+    final A = Offset(w - margin - 10, margin + 8);
+    final B = Offset(w - margin - 10, h - margin - 8);
+    final C = Offset(margin + 25, margin + 8);
+    final D = Offset(margin + 25, margin + 35);
+    final E = Offset(margin + 65, margin + 8);
+    final F = Offset(w - margin - 10, margin + 40);
+    
+    final chestLevel = margin + 75;
+    final armholeLevel = margin + 105;
+    
+    final G = Offset(w - margin - 10, armholeLevel);
+    final H = Offset(margin + 25, armholeLevel);
+    final I = Offset(w - margin - 10, chestLevel);
+    final J = Offset(margin + 70, chestLevel);
+    final K = Offset(margin + 55, armholeLevel);
+    final L = Offset(margin + 38, armholeLevel - 18);
+    
+    final waistY = h - margin - 8;
+    final M = Offset(margin + 25, waistY);
+    final Q = Offset(margin + 45, waistY);
+    final N = Offset(w - margin - 55, armholeLevel + 15);
+    final P = Offset(w - margin - 65, waistY);
+    final O = Offset(w - margin - 45, waistY);
+    
+    final patternPath = Path();
+    patternPath.moveTo(F.dx, F.dy);
+    patternPath.quadraticBezierTo(E.dx + 25, F.dy - 8, E.dx, E.dy);
+    patternPath.lineTo(D.dx, D.dy);
+    patternPath.quadraticBezierTo(D.dx + 15, D.dy + 20, J.dx, J.dy);
+    patternPath.quadraticBezierTo(J.dx - 15, J.dy + 15, L.dx, L.dy);
+    patternPath.quadraticBezierTo(L.dx - 8, L.dy + 12, H.dx, H.dy);
+    patternPath.lineTo(M.dx, M.dy);
     patternPath.lineTo(Q.dx, Q.dy);
     patternPath.lineTo(P.dx, P.dy);
-    patternPath.lineTo(N.dx, N.dy); // Dart point
+    patternPath.lineTo(N.dx, N.dy);
     patternPath.lineTo(O.dx, O.dy);
     patternPath.lineTo(B.dx, B.dy);
     patternPath.lineTo(A.dx, A.dy);
@@ -323,227 +570,39 @@ class PatternDiagramPainter extends CustomPainter {
     canvas.drawPath(patternPath, _fillPaint);
     canvas.drawPath(patternPath, _linePaint);
     
-    // Draw dart lines
     canvas.drawLine(N, P, _linePaint);
     canvas.drawLine(N, O, _linePaint);
     
-    // Draw construction lines (dashed)
-    _drawDashedLine(canvas, I, J);
-    _drawDashedLine(canvas, G, H);
+    _drawDashedLine(canvas, C, A);
+    _drawDashedLine(canvas, J, I);
+    _drawDashedLine(canvas, H, G);
     
-    // Draw points
-    _drawPoint(canvas, A, 'A');
-    _drawPoint(canvas, B, 'B');
-    _drawPoint(canvas, C, 'C');
+    _drawPoint(canvas, C, 'C', alignRight: true, alignTop: true);
+    _drawPoint(canvas, E, 'E', alignTop: true);
+    _drawPoint(canvas, A, 'A', alignLeft: true, alignTop: true);
     _drawPoint(canvas, D, 'D', alignRight: true);
-    _drawPoint(canvas, E, 'E');
-    _drawPoint(canvas, F, 'F');
-    _drawPoint(canvas, G, 'G');
-    _drawPoint(canvas, H, 'H', alignRight: true);
-    _drawPoint(canvas, I, 'I');
-    _drawPoint(canvas, J, 'J');
-    _drawPoint(canvas, M, 'M', alignBottom: true);
-    _drawPoint(canvas, N, 'N');
-    _drawPoint(canvas, O, 'O', alignBottom: true);
-    _drawPoint(canvas, P, 'P', alignBottom: true);
-    _drawPoint(canvas, Q, 'Q', alignRight: true, alignBottom: true);
-  }
-
-  // FRONT BODICE STEP 1
-  void _drawFrontStep1(Canvas canvas, Size size) {
-    final scale = size.width / 200;
-    final margin = 30 * scale;
-    
-    final A = Offset(size.width - margin, margin);
-    final B = Offset(size.width - margin, size.height - margin);
-    final C = Offset(margin, margin);
-    final D = Offset(margin, margin + 35 * scale);
-    
-    canvas.drawLine(A, B, _linePaint);
-    _drawDashedLine(canvas, A, C);
-    canvas.drawLine(C, D, _linePaint);
-    
-    _drawPoint(canvas, A, 'A');
-    _drawPoint(canvas, B, 'B', alignBottom: true);
-    _drawPoint(canvas, C, 'C', alignRight: true);
-    _drawPoint(canvas, D, 'D', alignRight: true, alignBottom: true);
-  }
-
-  // FRONT BODICE STEP 2
-  void _drawFrontStep2(Canvas canvas, Size size) {
-    final scale = size.width / 200;
-    final margin = 30 * scale;
-    
-    final A = Offset(size.width - margin, margin);
-    final B = Offset(size.width - margin, size.height - margin);
-    final C = Offset(margin, margin);
-    final D = Offset(margin, margin + 35 * scale);
-    final E = Offset(margin + 50 * scale, margin + 12 * scale);
-    final F = Offset(size.width - margin - 25 * scale, margin);
-    final G = Offset(size.width - margin - 10 * scale, margin + 20 * scale);
-    
-    canvas.drawLine(A, B, _linePaint);
-    _drawDashedLine(canvas, A, C);
-    canvas.drawLine(C, D, _linePaint);
-    canvas.drawLine(D, E, _linePaint);
-    
-    // Deeper front neckline curve
-    final neckPath = Path();
-    neckPath.moveTo(E.dx, E.dy);
-    neckPath.quadraticBezierTo(E.dx + 30 * scale, G.dy, G.dx, G.dy);
-    neckPath.quadraticBezierTo(G.dx + 5 * scale, F.dy + 5 * scale, F.dx, F.dy);
-    canvas.drawPath(neckPath, _linePaint);
-    
-    _drawPoint(canvas, A, 'A');
-    _drawPoint(canvas, B, 'B', alignBottom: true);
-    _drawPoint(canvas, C, 'C', alignRight: true);
-    _drawPoint(canvas, D, 'D', alignRight: true);
-    _drawPoint(canvas, E, 'E');
-    _drawPoint(canvas, F, 'F');
-    _drawPoint(canvas, G, 'G');
-  }
-
-  // FRONT BODICE STEP 3
-  void _drawFrontStep3(Canvas canvas, Size size) {
-    final scale = size.width / 200;
-    final margin = 25 * scale;
-    
-    final A = Offset(size.width - margin, margin);
-    final B = Offset(size.width - margin, size.height - margin);
-    final C = Offset(margin + 20 * scale, margin);
-    final D = Offset(margin, margin + 32 * scale);
-    final E = Offset(margin + 50 * scale, margin + 12 * scale);
-    final F = Offset(size.width - margin - 20 * scale, margin);
-    final G = Offset(size.width - margin - 8 * scale, margin + 18 * scale);
-    final H = Offset(size.width - margin, margin + (size.height - 2 * margin) * 0.5);
-    final I = Offset(margin, margin + (size.height - 2 * margin) * 0.5);
-    final J = Offset(size.width - margin, margin + (size.height - 2 * margin) * 0.25);
-    final K = Offset(margin + 55 * scale, margin + (size.height - 2 * margin) * 0.25);
-    final L = Offset(margin, margin + (size.height - 2 * margin) * 0.35);
-    final M = Offset(margin + 20 * scale, margin + (size.height - 2 * margin) * 0.42);
-    
-    // Construction lines
-    _drawDashedLine(canvas, A, C);
-    _drawDashedLine(canvas, J, K);
-    _drawDashedLine(canvas, H, I);
-    
-    // Main lines
-    canvas.drawLine(A, B, _linePaint);
-    canvas.drawLine(C, D, _linePaint);
-    canvas.drawLine(D, E, _linePaint);
-    
-    // Neckline
-    final neckPath = Path();
-    neckPath.moveTo(E.dx, E.dy);
-    neckPath.quadraticBezierTo(E.dx + 25 * scale, G.dy, G.dx, G.dy);
-    neckPath.quadraticBezierTo(G.dx + 5 * scale, F.dy + 3 * scale, F.dx, F.dy);
-    canvas.drawPath(neckPath, _linePaint);
-    
-    // Armhole
-    final armholePath = Path();
-    armholePath.moveTo(D.dx, D.dy);
-    armholePath.quadraticBezierTo(D.dx + 15 * scale, K.dy - 8 * scale, K.dx, K.dy);
-    armholePath.quadraticBezierTo(K.dx - 8 * scale, M.dy, M.dx, M.dy);
-    armholePath.quadraticBezierTo(M.dx - 12 * scale, I.dy - 12 * scale, I.dx, I.dy);
-    canvas.drawPath(armholePath, _linePaint);
-    
-    _drawPoint(canvas, A, 'A');
-    _drawPoint(canvas, B, 'B', alignBottom: true);
-    _drawPoint(canvas, C, 'C');
-    _drawPoint(canvas, D, 'D', alignRight: true);
-    _drawPoint(canvas, E, 'E');
-    _drawPoint(canvas, F, 'F');
-    _drawPoint(canvas, G, 'G');
-    _drawPoint(canvas, H, 'H');
-    _drawPoint(canvas, I, 'I', alignRight: true);
-    _drawPoint(canvas, J, 'J');
-    _drawPoint(canvas, K, 'K');
+    _drawPoint(canvas, F, 'F', alignLeft: true);
+    _drawPoint(canvas, J, 'J', alignTop: true);
+    _drawPoint(canvas, I, 'I', alignLeft: true);
     _drawPoint(canvas, L, 'L', alignRight: true);
-    _drawPoint(canvas, M, 'M');
-  }
-
-  // FRONT BODICE STEP 4 - Complete with dart
-  void _drawFrontStep4(Canvas canvas, Size size) {
-    final scale = size.width / 200;
-    final margin = 25 * scale;
-    
-    final A = Offset(size.width - margin, margin);
-    final B = Offset(size.width - margin, size.height - margin);
-    final C = Offset(margin + 20 * scale, margin);
-    final D = Offset(margin, margin + 32 * scale);
-    final E = Offset(margin + 50 * scale, margin + 12 * scale);
-    final F = Offset(size.width - margin - 20 * scale, margin);
-    final G = Offset(size.width - margin - 8 * scale, margin + 18 * scale);
-    final H = Offset(size.width - margin, margin + (size.height - 2 * margin) * 0.5);
-    final I = Offset(margin, margin + (size.height - 2 * margin) * 0.5);
-    final J = Offset(size.width - margin, margin + (size.height - 2 * margin) * 0.25);
-    final K = Offset(margin + 55 * scale, margin + (size.height - 2 * margin) * 0.25);
-    final M = Offset(margin + 20 * scale, margin + (size.height - 2 * margin) * 0.42);
-    final N = Offset(size.width - margin, margin + (size.height - 2 * margin) * 0.55);
-    final O = Offset(size.width - margin - 35 * scale, size.height - margin);
-    final P = Offset(margin, size.height - margin);
-    final Q = Offset(size.width - margin - 25 * scale, margin + (size.height - 2 * margin) * 0.5);
-    final R = Offset(size.width - margin - 35 * scale, size.height - margin);
-    final S = Offset(size.width - margin - 50 * scale, size.height - margin);
-    final T = Offset(size.width - margin - 60 * scale, size.height - margin);
-    
-    // Draw filled pattern
-    final patternPath = Path();
-    patternPath.moveTo(F.dx, F.dy);
-    patternPath.quadraticBezierTo(G.dx + 5 * scale, F.dy + 3 * scale, G.dx, G.dy);
-    patternPath.quadraticBezierTo(E.dx + 25 * scale, G.dy, E.dx, E.dy);
-    patternPath.lineTo(D.dx, D.dy);
-    patternPath.quadraticBezierTo(D.dx + 15 * scale, K.dy - 8 * scale, K.dx, K.dy);
-    patternPath.quadraticBezierTo(K.dx - 8 * scale, M.dy, M.dx, M.dy);
-    patternPath.quadraticBezierTo(M.dx - 12 * scale, I.dy - 12 * scale, I.dx, I.dy);
-    patternPath.lineTo(P.dx, P.dy);
-    patternPath.lineTo(S.dx, S.dy);
-    patternPath.lineTo(Q.dx, Q.dy); // Dart point
-    patternPath.lineTo(R.dx, R.dy);
-    patternPath.lineTo(B.dx, B.dy);
-    patternPath.lineTo(A.dx, A.dy);
-    patternPath.lineTo(F.dx, F.dy);
-    patternPath.close();
-    
-    canvas.drawPath(patternPath, _fillPaint);
-    canvas.drawPath(patternPath, _linePaint);
-    
-    // Dart lines
-    canvas.drawLine(Q, S, _linePaint);
-    canvas.drawLine(Q, R, _linePaint);
-    
-    // Construction lines
-    _drawDashedLine(canvas, J, K);
-    _drawDashedLine(canvas, H, I);
-    
-    _drawPoint(canvas, A, 'A');
-    _drawPoint(canvas, B, 'B');
-    _drawPoint(canvas, C, 'C');
-    _drawPoint(canvas, D, 'D', alignRight: true);
-    _drawPoint(canvas, E, 'E');
-    _drawPoint(canvas, F, 'F');
-    _drawPoint(canvas, G, 'G');
-    _drawPoint(canvas, H, 'H');
-    _drawPoint(canvas, I, 'I', alignRight: true);
-    _drawPoint(canvas, J, 'J');
-    _drawPoint(canvas, K, 'K');
-    _drawPoint(canvas, M, 'M');
-    _drawPoint(canvas, N, 'N');
+    _drawPoint(canvas, H, 'H', alignRight: true);
+    _drawPoint(canvas, K, 'K', alignTop: true);
+    _drawPoint(canvas, G, 'G', alignLeft: true);
+    _drawPoint(canvas, N, 'N', alignTop: true);
+    _drawPoint(canvas, M, 'M', alignRight: true, alignBottom: true);
+    _drawPoint(canvas, Q, 'Q', alignBottom: true);
+    _drawPoint(canvas, P, 'P', alignBottom: true);
     _drawPoint(canvas, O, 'O', alignBottom: true);
-    _drawPoint(canvas, P, 'P', alignRight: true, alignBottom: true);
-    _drawPoint(canvas, Q, 'Q');
-    _drawPoint(canvas, R, 'R', alignBottom: true);
-    _drawPoint(canvas, S, 'S', alignBottom: true);
+    _drawPoint(canvas, B, 'B', alignLeft: true, alignBottom: true);
   }
 
   void _drawGenericDiagram(Canvas canvas, Size size) {
-    // Draw a simple placeholder diagram
     final rect = Rect.fromLTWH(20, 20, size.width - 40, size.height - 40);
     canvas.drawRect(rect, _linePaint);
     
     final textSpan = TextSpan(
-      text: 'Rajah akan ditambah',
-      style: TextStyle(color: labelColor, fontSize: 14),
+      text: 'Rajah',
+      style: TextStyle(color: labelColor, fontSize: 12),
     );
     final textPainter = TextPainter(
       text: textSpan,
