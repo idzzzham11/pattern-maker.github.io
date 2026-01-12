@@ -394,6 +394,93 @@ class PatternDraftingInstructions {
     ];
   }
 
+  /// Get basic sleeve pattern steps (Pola Asas Lengan) - 6 steps
+  List<PatternStep> getBasicSleeveSteps() {
+    final bicep = armhole * 0.85; // Estimated bicep from armhole
+    final elbow = bicep * 0.85;   // Estimated elbow measurement
+    
+    return [
+      PatternStep(
+        stepNumber: 1,
+        title: 'Langkah 1 - Garis Asas',
+        instructions: [
+          'AB – Ukuran labuh lengan atas. Tandakan garisan ini.',
+          'BC – Ukuran labuh lengan bawah. Tandakan C pada AB.',
+          'AC – Tinggi kepala lengan, kira-kira ⅓ lilit lubang lengan = ${(armhole / 3).toStringAsFixed(1)} cm.',
+          'CD – ½ ukuran bisep + 4 cm elaun = ${(bicep / 2 + 4).toStringAsFixed(1)} cm.',
+          'Lukis garisan bersudut tepat dari C.',
+          'CE – ½ ukuran bisep + 4 cm elaun = ${(bicep / 2 + 4).toStringAsFixed(1)} cm.',
+          'Lukis garisan bersudut tepat dari C.',
+        ],
+        diagramType: DiagramType.sleeveStep1,
+      ),
+      PatternStep(
+        stepNumber: 2,
+        title: 'Langkah 2 - Garisan Siku',
+        instructions: [
+          'BF – ½ BC. Tandakan F pada AB.',
+          'FG – ½ ukuran siku + 1.25 cm = ${(elbow / 2 + 1.25).toStringAsFixed(1)} cm.',
+          'Lukis garisan bersudut tepat dari F.',
+          'FH – ½ ukuran siku + 1.25 cm = ${(elbow / 2 + 1.25).toStringAsFixed(1)} cm.',
+          'Lukis garisan bersudut tepat dari F.',
+        ],
+        diagramType: DiagramType.sleeveStep2,
+      ),
+      PatternStep(
+        stepNumber: 3,
+        title: 'Langkah 3 - Garisan Pergelangan',
+        instructions: [
+          'BI – Sama dengan GF – 2.5 cm.',
+          'Lukis garisan bersudut tepat dari B.',
+          'BJ – Sama dengan BI.',
+          'Lukis garisan bersudut tepat dari B.',
+          'IK – Lukis garisan dari I melalui G dan D sehingga memotong garisan dari A. Tandakan titik K.',
+          'JL – Lukis garisan dari J melalui H dan E sehingga memotong garisan dari A. Tandakan titik L.',
+        ],
+        diagramType: DiagramType.sleeveStep3,
+      ),
+      PatternStep(
+        stepNumber: 4,
+        title: 'Langkah 4 - Titik Lengkung Kepala Lengan',
+        instructions: [
+          'AM – ¼ AK. Tandakan M pada AK.',
+          'DN – ¼ DC. Tandakan N pada DC. Sambungkan M–N.',
+          'MO – ½ MN. Tandakan O pada MN.',
+          'AP – ¼ AL. Tandakan P pada AL.',
+          'QE – ¼ CE. Tandakan Q pada CE. Sambungkan P–Q.',
+          'PR – ½ PQ. Tandakan R pada PQ.',
+        ],
+        diagramType: DiagramType.sleeveStep4,
+      ),
+      PatternStep(
+        stepNumber: 5,
+        title: 'Langkah 5 - Lengkung Kepala Lengan',
+        instructions: [
+          'AD – Lukis garisan melengkung dari A melalui O ke D.',
+          'Alihkan M dan N kira-kira 1.25 cm seperti ilustrasi.',
+          'Ini menjadi kepala lengan hadapan.',
+          'AE – Lukis garisan melengkung dari A melalui R ke E.',
+          'Alihkan P dan Q kira-kira 1.25 cm seperti ilustrasi.',
+        ],
+        diagramType: DiagramType.sleeveStep5,
+      ),
+      PatternStep(
+        stepNumber: 6,
+        title: 'Langkah 6 - Dart Siku & Kemasan',
+        instructions: [
+          'ET lebih panjang daripada DI.',
+          'Tandakan dart siku di kedua-dua sisi H, kira-kira 9 cm panjang.',
+          'Lebar dart ≈ 3 cm supaya ET (dengan dart ditutup) sama dengan DI.',
+          'Tambah 1 cm elaun jahitan di sekeliling pola kecuali kelim (IT) yang perlu kira-kira 3 cm.',
+          'Buat satu takuk di kepala lengan hadapan dan dua takuk di kepala lengan belakang.',
+          'Tandakan arah benang (grainline) dari A ke B.',
+          'Padankan dengan lubang lengan hadapan dan belakang. Buat takuk yang sepadan.',
+        ],
+        diagramType: DiagramType.sleeveStep6,
+      ),
+    ];
+  }
+
   /// Get sleeve pattern steps
   List<PatternStep> getSleeveSteps(String sleeve) {
     Map<String, List<PatternStep>> sleeveInstructions = {
@@ -606,6 +693,83 @@ class PatternDraftingInstructions {
         title: 'Lengan',
         instructions: ['Tiada lengan dipilih.'],
         diagramType: DiagramType.sleeveModification,
+      ),
+    ];
+  }
+
+  /// Get basic skirt pattern steps (Pola Asas Skirt) - Front and Back
+  List<PatternStep> getBasicSkirtFrontSteps() {
+    final quarterHip = hip / 4;
+    final quarterWaist = waist / 4;
+    
+    return [
+      PatternStep(
+        stepNumber: 1,
+        title: 'Langkah 1 - Rangka Asas',
+        instructions: [
+          'AB – Panjang tengah hadapan = ${skirtLength.toStringAsFixed(1)} cm.',
+          'AC – 16.5 cm ke bawah dari pinggang.',
+          'CD – ¼ ukuran punggung + 1.25 cm elaun = ${(quarterHip + 1.25).toStringAsFixed(1)} cm.',
+          'BE – Sama dengan CD. Lukis garisan bersudut tepat dari B.',
+          'EF – Sama dengan AB + 6 mm. Lukis garisan dari E melalui D ke F.',
+          'AF – Sambung dengan lengkung lembut.',
+          'BG – ¼ sweep. Panjangkan BE ke G.',
+          'AH – ¼ pinggang + 1.25 cm elaun = ${(quarterWaist + 1.25).toStringAsFixed(1)} cm.',
+          'HI – Naikkan 1.25 cm. Lengkungkan garisan dari A ke I.',
+          'JD – Sambungkan.',
+        ],
+        diagramType: DiagramType.skirtFrontStep1,
+      ),
+      PatternStep(
+        stepNumber: 2,
+        title: 'Langkah 2 - Kelim & Dart',
+        instructions: [
+          'BK – Sama dengan ½ BG. Lukis garisan bersudut tepat dari sisi ke K.',
+          'Lengkungkan kelim dengan lembut.',
+          'Lukis garisan punggung selari dengan kelim.',
+          'Dart pilihan 1.25 cm sepanjang 10 cm boleh dibuat di tengah pinggang sebagai ganti basi.',
+        ],
+        diagramType: DiagramType.skirtFrontStep2,
+      ),
+    ];
+  }
+
+  List<PatternStep> getBasicSkirtBackSteps() {
+    final quarterHip = hip / 4;
+    final quarterWaist = waist / 4;
+    
+    return [
+      PatternStep(
+        stepNumber: 1,
+        title: 'Langkah 1 - Rangka Asas',
+        instructions: [
+          'AB – Panjang tengah hadapan + 1.25 cm = ${(skirtLength + 1.25).toStringAsFixed(1)} cm.',
+          'AC – 18 cm ke bawah dari pinggang.',
+          'CD – ¼ ukuran punggung + 1.25 cm elaun = ${(quarterHip + 1.25).toStringAsFixed(1)} cm.',
+          'BE – Sama dengan CD. Lukis garisan bersudut tepat dari B.',
+          'EF – Sama dengan AB – 6 mm. Lukis garisan dari E melalui D ke F.',
+          'AF – Lengkungkan garisan ini dengan lembut.',
+          'BG – ¼ sweep (kelebaran kelim). Panjangkan BE ke G. Sambungkan G ke D.',
+          'CH – 10 cm hingga 11 cm, bergantung pada saiz punggung.',
+          'AJ – Sama dengan CH. Sambungkan H ke J.',
+          'Bentukkan dart berbentuk V (1.25 cm di setiap sisi J).',
+          'AK – ¼ pinggang + 2.5 cm untuk dart = ${(quarterWaist + 2.5).toStringAsFixed(1)} cm.',
+          'KL – Naikkan 1.25 cm. Lengkungkan garisan dari A melalui J ke L.',
+          'LD – Sambungkan.',
+        ],
+        diagramType: DiagramType.skirtBackStep1,
+      ),
+      PatternStep(
+        stepNumber: 2,
+        title: 'Langkah 2 - Kelim & Garisan Punggung',
+        instructions: [
+          'BM – Sama dengan ½ BG.',
+          'Lukis garisan bersudut tepat dari jahitan sisi ke titik M seperti ditunjukkan.',
+          'Lengkungkan kelim dengan lembut.',
+          'Lukis garisan punggung (hip line) selari dengan kelim.',
+          '(Garisan ini hanya sebagai penunjuk kedudukan punggung.)',
+        ],
+        diagramType: DiagramType.skirtBackStep2,
       ),
     ];
   }
@@ -929,6 +1093,16 @@ enum DiagramType {
   necklineModification,
   collarModification,
   bodiceModification,
+  sleeveStep1,
+  sleeveStep2,
+  sleeveStep3,
+  sleeveStep4,
+  sleeveStep5,
+  sleeveStep6,
   sleeveModification,
+  skirtFrontStep1,
+  skirtFrontStep2,
+  skirtBackStep1,
+  skirtBackStep2,
   skirtModification,
 }

@@ -83,6 +83,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
   // Get image path based on diagram type
   String _getImagePath(DiagramType type) {
     switch (type) {
+      // Back Bodice steps
       case DiagramType.backStep1:
         return 'assets/images/patterns/bodice_step_1.jpeg';
       case DiagramType.backStep2:
@@ -91,6 +92,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
         return 'assets/images/patterns/bodice_step_3.jpeg';
       case DiagramType.backStep4:
         return 'assets/images/patterns/bodice_step_4.jpeg';
+      // Front Bodice - uses same images as back for now
       case DiagramType.frontStep1:
         return 'assets/images/patterns/bodice_step_1.jpeg';
       case DiagramType.frontStep2:
@@ -99,8 +101,31 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
         return 'assets/images/patterns/bodice_step_3.jpeg';
       case DiagramType.frontStep4:
         return 'assets/images/patterns/bodice_step_4.jpeg';
+      // Sleeve steps 1-6
+      case DiagramType.sleeveStep1:
+        return 'assets/images/patterns/sleeve_step_1.jpeg';
+      case DiagramType.sleeveStep2:
+        return 'assets/images/patterns/sleeve_step_2.jpeg';
+      case DiagramType.sleeveStep3:
+        return 'assets/images/patterns/sleeve_step_3.jpeg';
+      case DiagramType.sleeveStep4:
+        return 'assets/images/patterns/sleeve_step_4.jpeg';
+      case DiagramType.sleeveStep5:
+        return 'assets/images/patterns/sleeve_step_5.jpeg';
+      case DiagramType.sleeveStep6:
+        return 'assets/images/patterns/sleeve_step_6.jpeg';
+      // Skirt Front steps
+      case DiagramType.skirtFrontStep1:
+        return 'assets/images/patterns/skirt_front_step_1.jpeg';
+      case DiagramType.skirtFrontStep2:
+        return 'assets/images/patterns/skirt_front_step_2.jpeg';
+      // Skirt Back steps
+      case DiagramType.skirtBackStep1:
+        return 'assets/images/patterns/skirt_back_step_1.jpeg';
+      case DiagramType.skirtBackStep2:
+        return 'assets/images/patterns/skirt_back_step_2.jpeg';
       default:
-        return 'assets/images/patterns/placeholder.png';
+        return '';
     }
   }
 
@@ -368,9 +393,18 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
         _buildMeasurementsSummary(isSmallScreen),
         SizedBox(height: isSmallScreen ? 12 : 16),
         
+        // Section: Basic Sleeve Pattern (Pola Asas Lengan)
+        _buildSectionHeader('POLA ASAS LENGAN', 'Basic Sleeve Pattern', isSmallScreen),
+        ..._instructions.getBasicSleeveSteps().map(
+          (step) => _buildStepCard(step, isSmallScreen, showDiagram: true),
+        ),
+        
+        SizedBox(height: isSmallScreen ? 16 : 20),
+        
+        // Section: Style Modification
         _buildSectionHeader(
-          'POLA LENGAN: ${sleeve.toUpperCase()}',
-          'Sleeve Pattern',
+          'PENGUBAHSUAIAN LENGAN: ${sleeve.toUpperCase()}',
+          'Sleeve Style Modification',
           isSmallScreen,
         ),
         ..._instructions.getSleeveSteps(sleeve).map(
@@ -389,9 +423,26 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
         _buildMeasurementsSummary(isSmallScreen),
         SizedBox(height: isSmallScreen ? 12 : 16),
         
+        // Section: Basic Skirt Front Pattern
+        _buildSectionHeader('POLA ASAS SKIRT HADAPAN', 'Basic Front Skirt Pattern', isSmallScreen),
+        ..._instructions.getBasicSkirtFrontSteps().map(
+          (step) => _buildStepCard(step, isSmallScreen, showDiagram: true),
+        ),
+        
+        SizedBox(height: isSmallScreen ? 16 : 20),
+        
+        // Section: Basic Skirt Back Pattern
+        _buildSectionHeader('POLA ASAS SKIRT BELAKANG', 'Basic Back Skirt Pattern', isSmallScreen),
+        ..._instructions.getBasicSkirtBackSteps().map(
+          (step) => _buildStepCard(step, isSmallScreen, showDiagram: true),
+        ),
+        
+        SizedBox(height: isSmallScreen ? 16 : 20),
+        
+        // Section: Style Modification
         _buildSectionHeader(
-          'POLA SKIRT: ${skirt.toUpperCase()}',
-          'Skirt Pattern',
+          'PENGUBAHSUAIAN SKIRT: ${skirt.toUpperCase()}',
+          'Skirt Style Modification',
           isSmallScreen,
         ),
         ..._instructions.getSkirtSteps(skirt).map(
@@ -703,6 +754,16 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
            type == DiagramType.frontStep1 ||
            type == DiagramType.frontStep2 ||
            type == DiagramType.frontStep3 ||
-           type == DiagramType.frontStep4;
+           type == DiagramType.frontStep4 ||
+           type == DiagramType.sleeveStep1 ||
+           type == DiagramType.sleeveStep2 ||
+           type == DiagramType.sleeveStep3 ||
+           type == DiagramType.sleeveStep4 ||
+           type == DiagramType.sleeveStep5 ||
+           type == DiagramType.sleeveStep6 ||
+           type == DiagramType.skirtFrontStep1 ||
+           type == DiagramType.skirtFrontStep2 ||
+           type == DiagramType.skirtBackStep1 ||
+           type == DiagramType.skirtBackStep2;
   }
 }
