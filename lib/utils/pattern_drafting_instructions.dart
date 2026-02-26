@@ -141,58 +141,165 @@ class PatternDraftingInstructions {
     ];
   }
 
-  /// Get neckline modification steps
-  PatternStep getNecklineSteps(String neckline) {
-    Map<String, List<String>> necklineInstructions = {
-      'Round': [
-        'Garis leher bulat standard - tiada pengubahsuaian diperlukan.',
-        'Kedalaman garis leher hadapan: 7-8 cm dari titik bahu.',
-        'Kedalaman garis leher belakang: 2-3 cm dari titik bahu.',
-        'Lukis lengkungan lancar menggunakan French curve.',
-      ],
-      'V-Neck': [
-        'Tandakan kedalaman V pada tengah hadapan: 15-20 cm dari titik bahu.',
-        'Tandakan lebar V pada garisan bahu: 5-7 cm dari titik leher.',
-        'Lukis garisan lurus dari titik bahu ke kedalaman V.',
-        'Pastikan kedua-dua sisi simetri.',
-        'Garis leher belakang kekal bulat standard.',
-      ],
-      'Square': [
-        'Tandakan lebar garis leher segi empat: 15-18 cm.',
-        'Kedalaman depan: 8-10 cm dari titik bahu.',
-        'Lukis garisan mendatar untuk bahagian atas.',
-        'Lukis garisan menegak di kedua-dua sisi.',
-        'Bulatkan sudut sedikit (0.5-1 cm) untuk keselesaan.',
-      ],
-      'Sweetheart': [
-        'Tandakan lebar atas: sama dengan V-neck (5-7 cm dari titik leher).',
-        'Kedalaman: 12-15 cm dari titik bahu.',
-        'Lukis dua lengkungan simetri membentuk hati.',
-        'Titik tengah hadapan sedikit naik (2-3 cm) membentuk puncak hati.',
-        'Halus semua lengkungan dengan French curve.',
-      ],
-      'Boat': [
-        'Lebarkan garis leher ke arah bahu: 3-5 cm ke luar.',
-        'Kedalaman minimum di tengah hadapan: 2-3 cm.',
-        'Kedalaman di tengah belakang: 2 cm.',
-        'Lukis garisan hampir mendatar dari bahu ke bahu.',
-        'Sedikit lengkung di tengah untuk keselesaan.',
-      ],
-      'Scoop': [
-        'Lukis lengkungan U dalam.',
-        'Kedalaman depan: 12-18 cm dari titik bahu.',
-        'Lebar: 12-15 cm (separuh dari keseluruhan).',
-        'Pastikan lengkungan lancar dan simetri.',
-        'Garis leher belakang lebih cetek: 5-7 cm.',
-      ],
-    };
+  /// Get neckline modification steps - returns List<PatternStep> for each neckline style
+  List<PatternStep> getNecklineSteps(String neckline) {
+    switch (neckline) {
+      case 'Basic Neckline':
+        return [
+          PatternStep(
+            stepNumber: 1,
+            title: 'Garis Leher Asas',
+            instructions: [
+              'Garis leher asas standard - tiada pengubahsuaian diperlukan.',
+              'Kedalaman garis leher hadapan: 7-8 cm dari titik bahu.',
+              'Kedalaman garis leher belakang: 2-3 cm dari titik bahu.',
+              'Lukis lengkungan lancar menggunakan French curve.',
+            ],
+            diagramType: DiagramType.necklineModification,
+          ),
+        ];
 
-    return PatternStep(
-      stepNumber: 1,
-      title: 'Pengubahsuaian Garis Leher $neckline',
-      instructions: necklineInstructions[neckline] ?? ['Tiada pengubahsuaian diperlukan.'],
-      diagramType: DiagramType.necklineModification,
-    );
+      case 'Boat Neckline':
+        return [
+          PatternStep(
+            stepNumber: 1,
+            title: 'Garis Leher Bot',
+            instructions: [
+              'Tandakan garis leher bot kira-kira 5 cm (2 inci) dari lubang lengan atau mengikut kehendak.',
+              'Bentukkan garisan melengkung sehingga bertemu di tengah hadapan leher.',
+            ],
+            diagramType: DiagramType.necklineBoatStep1,
+          ),
+        ];
+
+      case 'Cowl Neckline':
+        return [
+          PatternStep(
+            stepNumber: 1,
+            title: 'Langkah 1 - Tandakan Panel',
+            instructions: [
+              'Tandakan dan garis bentuk V-neck: 10 cm (4 inci) ke bawah dari tengah hadapan, 2.5 cm (1 inci) dari garis leher di bahu.',
+              'Panel A: Lukis garisan sedikit melengkung dari V-neck ke tanda 2.5 cm (1 inci) dari V-neck di bahu.',
+              'Panel B: Lukis garisan melengkung 2.5 cm (1 inci) ke bawah dari V-neck hingga ke bahu di lubang lengan.',
+              'Panel C: Lukis garisan melengkung 2.5 cm (1 inci) ke bawah dari panel B, dari tengah hadapan ke tanda separuh pada lubang lengan.',
+            ],
+            diagramType: DiagramType.necklineCowlStep1,
+          ),
+          PatternStep(
+            stepNumber: 2,
+            title: 'Langkah 2 - Potong dan Buka',
+            instructions: [
+              'Potong bentuk V-neck.',
+              'Gunting garisan dari tengah hadapan ke bahu dan lubang lengan supaya bahagian A hingga D masih bersambung.',
+              'Lukis garisan tegak dan buka bahagian A hingga D (untuk menghasilkan lipatan kain).',
+              'Pastikan bahagian A hingga D menyentuh garisan tegak seperti ditunjukkan.',
+              'Panjangkan tengah hadapan sebanyak 6 mm (¼ inci) supaya kelim selari dengan tengah hadapan.',
+            ],
+            diagramType: DiagramType.necklineCowlStep2,
+          ),
+          PatternStep(
+            stepNumber: 3,
+            title: 'Langkah 3 - Kemasan',
+            instructions: [
+              'Pendekkan garisan darts sebanyak 5 cm (2 inci).',
+              'Tambah 2.5 cm (1 inci) lebihan kelim pada leher.',
+              'Tambah 1 cm (⅜ inci) basi jahitan.',
+              'Tandakan arah ira kain secara serong (bias).',
+            ],
+            diagramType: DiagramType.necklineCowlStep3,
+          ),
+        ];
+
+      case 'Crossover Neckline':
+        return [
+          PatternStep(
+            stepNumber: 1,
+            title: 'Langkah 1 - Tandakan Garis Leher',
+            instructions: [
+              'Reka bentuk ini sesuai untuk blouse balut (wrap top).',
+              'Tambahkan tali pada bahagian sisi yang berlipat.',
+              'Sediakan bukaan di jahitan sisi kanan untuk memasukkan tali.',
+              'Tandakan bahagian badan hadapan kiri dan kanan dengan mengurangkan 1 cm (⅜ inci) di garis tengah hadapan (GTH) pada kedua-dua sisi.',
+              'Tandakan garis leher melengkung: 3 cm (1¼ inci) dari garis leher hingga ke jahitan sisi kira-kira 8 cm (3¼ inci) di atas garis pinggang.',
+            ],
+            diagramType: DiagramType.necklineCrossoverStep1,
+          ),
+          PatternStep(
+            stepNumber: 2,
+            title: 'Langkah 2 - Potong dan Bahagikan',
+            instructions: [
+              'Potong bahagian hadapan dengan garis leher baru.',
+              'Gunting dart A dan tutup.',
+              'Kemaskan garis leher.',
+              'Bahagikan 8 cm jahitan sisi kepada 4 bahagian (jarak 2 cm setiap satu).',
+              'Bahagikan sisi dart B kepada 3 bahagian seperti ditunjukkan dalam rajah.',
+              'Sambungkan tanda-tanda ini untuk proses guntingan.',
+            ],
+            diagramType: DiagramType.necklineCrossoverStep2,
+          ),
+          PatternStep(
+            stepNumber: 3,
+            title: 'Langkah 3 - Buka Dart',
+            instructions: [
+              'Potong dart B.',
+              'Gunting garisan tetapi pastikan semua bahagian masih bercantum di pangkal dart.',
+              'Buka bahagian secara sekata seperti dalam rajah.',
+              'Tutup dart B.',
+            ],
+            diagramType: DiagramType.necklineCrossoverStep3,
+          ),
+          PatternStep(
+            stepNumber: 4,
+            title: 'Langkah 4 - Kemasan',
+            instructions: [
+              'Tandakan arah ira kain sebaiknya secara serong (bias) untuk padanan lebih baik.',
+              'Tambahkan basi jahitan di sekeliling.',
+              'Hasilkan tanda pada bahagian lipatan (tucks) dengan tepat.',
+            ],
+            diagramType: DiagramType.necklineCrossoverStep4,
+          ),
+        ];
+
+      case 'Deep Scoop Neckline':
+        return [
+          PatternStep(
+            stepNumber: 1,
+            title: 'Garis Leher Scoop Dalam',
+            instructions: [
+              'Tandakan bentuk garis leher U kira-kira: 5 cm (2 inci) dari garis leher, 13 cm (5¼ inci) ke bawah dari tengah hadapan.',
+              'Kurangkan garis leher di bahagian tengah hadapan sebanyak 1 cm (⅜ inci) untuk mengelakkan bahagian leher menganga.',
+              'Ukuran scoop neckline bagi pakaian tanpa lengan (sleeveless):',
+              'Tandakan bahu 2 cm (¾ inci) lebih sempit di lubang lengan.',
+              'Kurangkan lubang lengan sebanyak 1 cm (⅜ inci).',
+              'Naikkan lubang lengan sebanyak 2 cm (¾ inci) seperti ditunjukkan.',
+            ],
+            diagramType: DiagramType.necklineDeepScoopStep1,
+          ),
+        ];
+
+      case 'V Neckline':
+        return [
+          PatternStep(
+            stepNumber: 1,
+            title: 'Garis Leher V',
+            instructions: [
+              'Tandakan bentuk V kira-kira: 3 cm (1¼ inci) dari garis leher, 13 cm (5¼ inci) ke bawah dari tengah hadapan leher.',
+              'Hasilkan garisan yang sedikit melengkung untuk bentuk yang lebih cantik.',
+            ],
+            diagramType: DiagramType.necklineVStep1,
+          ),
+        ];
+
+      default:
+        return [
+          PatternStep(
+            stepNumber: 1,
+            title: 'Garis Leher',
+            instructions: ['Tiada pengubahsuaian diperlukan.'],
+            diagramType: DiagramType.necklineModification,
+          ),
+        ];
+    }
   }
 
   /// Get bodice style modification steps
@@ -396,8 +503,8 @@ class PatternDraftingInstructions {
 
   /// Get basic sleeve pattern steps (Pola Asas Lengan) - 6 steps
   List<PatternStep> getBasicSleeveSteps() {
-    final bicep = armhole * 0.85; // Estimated bicep from armhole
-    final elbow = bicep * 0.85;   // Estimated elbow measurement
+    final bicep = armhole * 0.85;
+    final elbow = bicep * 0.85;
     
     return [
       PatternStep(
@@ -697,7 +804,7 @@ class PatternDraftingInstructions {
     ];
   }
 
-  /// Get basic skirt pattern steps (Pola Asas Skirt) - Front and Back
+  /// Get basic skirt pattern steps (Pola Asas Skirt) - Front
   List<PatternStep> getBasicSkirtFrontSteps() {
     final quarterHip = hip / 4;
     final quarterWaist = waist / 4;
@@ -734,6 +841,7 @@ class PatternDraftingInstructions {
     ];
   }
 
+  /// Get basic skirt pattern steps (Pola Asas Skirt) - Back
   List<PatternStep> getBasicSkirtBackSteps() {
     final quarterHip = hip / 4;
     final quarterWaist = waist / 4;
@@ -1082,17 +1190,33 @@ class PatternStep {
 
 /// Types of diagrams that can be drawn
 enum DiagramType {
+  // Bodice Back
   backStep1,
   backStep2,
   backStep3,
   backStep4,
+  // Bodice Front
   frontStep1,
   frontStep2,
   frontStep3,
   frontStep4,
+  // Neckline styles
   necklineModification,
+  necklineBoatStep1,
+  necklineCowlStep1,
+  necklineCowlStep2,
+  necklineCowlStep3,
+  necklineCrossoverStep1,
+  necklineCrossoverStep2,
+  necklineCrossoverStep3,
+  necklineCrossoverStep4,
+  necklineDeepScoopStep1,
+  necklineVStep1,
+  // Collar
   collarModification,
+  // Bodice modifications
   bodiceModification,
+  // Sleeve
   sleeveStep1,
   sleeveStep2,
   sleeveStep3,
@@ -1100,6 +1224,7 @@ enum DiagramType {
   sleeveStep5,
   sleeveStep6,
   sleeveModification,
+  // Skirt
   skirtFrontStep1,
   skirtFrontStep2,
   skirtBackStep1,
