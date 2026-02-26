@@ -29,8 +29,13 @@ class Measurements {
 class StyleOption {
   final String name;
   final String description;
+  final String? imagePath; // Optional image path for styles with images
 
-  StyleOption({required this.name, required this.description});
+  StyleOption({
+    required this.name,
+    required this.description,
+    this.imagePath,
+  });
 }
 
 class StyleSelections {
@@ -60,15 +65,41 @@ class StyleSelections {
 }
 
 class StyleOptions {
+  // Necklines - 6 styles with images
   static final List<StyleOption> necklines = [
-    StyleOption(name: 'Round', description: 'Leher bulat standard'),
-    StyleOption(name: 'V-Neck', description: 'Leher berbentuk V'),
-    StyleOption(name: 'Square', description: 'Leher segi empat'),
-    StyleOption(name: 'Sweetheart', description: 'Leher bentuk hati'),
-    StyleOption(name: 'Boat', description: 'Leher melebar horizontal'),
-    StyleOption(name: 'Scoop', description: 'Leher U dalam'),
+    StyleOption(
+      name: 'Basic Neckline',
+      description: 'Leher asas standard',
+      imagePath: 'assets/images/necklines/basic_neckline.jpg',
+    ),
+    StyleOption(
+      name: 'Boat Neckline',
+      description: 'Leher melebar horizontal',
+      imagePath: 'assets/images/necklines/boat_neckline.jpg',
+    ),
+    StyleOption(
+      name: 'Cowl Neckline',
+      description: 'Leher drape jatuh',
+      imagePath: 'assets/images/necklines/cowl_neckline.jpg',
+    ),
+    StyleOption(
+      name: 'Crossover Neckline',
+      description: 'Leher bersilang',
+      imagePath: 'assets/images/necklines/crossover_neckline.jpg',
+    ),
+    StyleOption(
+      name: 'Deep Scoop Neckline',
+      description: 'Leher U dalam',
+      imagePath: 'assets/images/necklines/deep_scoop_neckline.jpg',
+    ),
+    StyleOption(
+      name: 'V Neckline',
+      description: 'Leher berbentuk V',
+      imagePath: 'assets/images/necklines/v_neckline.jpg',
+    ),
   ];
 
+  // Collars - 5 styles
   static final List<StyleOption> collars = [
     StyleOption(name: 'No Collar', description: 'Tiada kolar'),
     StyleOption(name: 'Shirt Collar', description: 'Kolar kemeja standard'),
@@ -77,6 +108,7 @@ class StyleOptions {
     StyleOption(name: 'Shawl', description: 'Kolar selendang'),
   ];
 
+  // Bodices - 5 styles
   static final List<StyleOption> bodices = [
     StyleOption(name: 'Basic Fitted', description: 'Badan fitted standard'),
     StyleOption(name: 'Dart Front', description: 'Dengan dart depan'),
@@ -85,6 +117,7 @@ class StyleOptions {
     StyleOption(name: 'Peplum', description: 'Dengan peplum di pinggang'),
   ];
 
+  // Sleeves - 6 styles
   static final List<StyleOption> sleeves = [
     StyleOption(name: 'Sleeveless', description: 'Tanpa lengan'),
     StyleOption(name: 'Short', description: 'Lengan pendek'),
@@ -94,6 +127,7 @@ class StyleOptions {
     StyleOption(name: 'Cap', description: 'Lengan cap kecil'),
   ];
 
+  // Skirts - 6 styles
   static final List<StyleOption> skirts = [
     StyleOption(name: 'Straight', description: 'Skirt lurus'),
     StyleOption(name: 'A-Line', description: 'Skirt A melebar'),

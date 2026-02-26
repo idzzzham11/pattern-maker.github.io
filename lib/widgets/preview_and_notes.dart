@@ -72,7 +72,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
 
   Map<String, String> _getStylesMap() {
     return {
-      'neckline': widget.styleSelections.neckline ?? 'Round',
+      'neckline': widget.styleSelections.neckline ?? 'Basic Neckline',
       'collar': widget.styleSelections.collar ?? 'No Collar',
       'bodice': widget.styleSelections.bodice ?? 'Basic Fitted',
       'sleeve': widget.styleSelections.sleeve ?? 'Sleeveless',
@@ -101,6 +101,27 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
         return 'assets/images/patterns/bodice_step_3.jpeg';
       case DiagramType.frontStep4:
         return 'assets/images/patterns/bodice_step_4.jpeg';
+      // Neckline styles
+      case DiagramType.necklineBoatStep1:
+        return 'assets/images/necklines/neckline_boat_step_1.png';
+      case DiagramType.necklineCowlStep1:
+        return 'assets/images/necklines/neckline_cowl_step_1.jpg';
+      case DiagramType.necklineCowlStep2:
+        return 'assets/images/necklines/neckline_cowl_step_2.jpg';
+      case DiagramType.necklineCowlStep3:
+        return 'assets/images/necklines/neckline_cowl_step_3.jpg';
+      case DiagramType.necklineCrossoverStep1:
+        return 'assets/images/necklines/neckline_crossover_step_1.jpg';
+      case DiagramType.necklineCrossoverStep2:
+        return 'assets/images/necklines/neckline_crossover_step_2.jpg';
+      case DiagramType.necklineCrossoverStep3:
+        return 'assets/images/necklines/neckline_crossover_step_3.jpg';
+      case DiagramType.necklineCrossoverStep4:
+        return 'assets/images/necklines/neckline_crossover_step_4.jpg';
+      case DiagramType.necklineDeepScoopStep1:
+        return 'assets/images/necklines/neckline_deep_scoop_step_1.png';
+      case DiagramType.necklineVStep1:
+        return 'assets/images/necklines/neckline_v_step_1.png';
       // Sleeve steps 1-6
       case DiagramType.sleeveStep1:
         return 'assets/images/patterns/sleeve_step_1.jpeg';
@@ -316,7 +337,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
   }
 
   Widget _buildBodiceTab(bool isSmallScreen) {
-    final neckline = widget.styleSelections.neckline ?? 'Round';
+    final neckline = widget.styleSelections.neckline ?? 'Basic Neckline';
     final bodice = widget.styleSelections.bodice ?? 'Basic Fitted';
     
     return ListView(
@@ -347,7 +368,9 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
           'Neckline Modification',
           isSmallScreen,
         ),
-        _buildStepCard(_instructions.getNecklineSteps(neckline), isSmallScreen, showDiagram: false),
+        ..._instructions.getNecklineSteps(neckline).map(
+          (step) => _buildStepCard(step, isSmallScreen, showDiagram: true),
+        ),
         
         // Section: Bodice Style Modification (if not basic)
         if (bodice != 'Basic Fitted') ...[
@@ -755,12 +778,25 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
            type == DiagramType.frontStep2 ||
            type == DiagramType.frontStep3 ||
            type == DiagramType.frontStep4 ||
+           // Neckline styles with images
+           type == DiagramType.necklineBoatStep1 ||
+           type == DiagramType.necklineCowlStep1 ||
+           type == DiagramType.necklineCowlStep2 ||
+           type == DiagramType.necklineCowlStep3 ||
+           type == DiagramType.necklineCrossoverStep1 ||
+           type == DiagramType.necklineCrossoverStep2 ||
+           type == DiagramType.necklineCrossoverStep3 ||
+           type == DiagramType.necklineCrossoverStep4 ||
+           type == DiagramType.necklineDeepScoopStep1 ||
+           type == DiagramType.necklineVStep1 ||
+           // Sleeve steps
            type == DiagramType.sleeveStep1 ||
            type == DiagramType.sleeveStep2 ||
            type == DiagramType.sleeveStep3 ||
            type == DiagramType.sleeveStep4 ||
            type == DiagramType.sleeveStep5 ||
            type == DiagramType.sleeveStep6 ||
+           // Skirt steps
            type == DiagramType.skirtFrontStep1 ||
            type == DiagramType.skirtFrontStep2 ||
            type == DiagramType.skirtBackStep1 ||

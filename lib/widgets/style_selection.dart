@@ -269,6 +269,9 @@ class _StyleCardState extends State<_StyleCard> {
 
   @override
   Widget build(BuildContext context) {
+    // Check if this option has an image path
+    final hasImage = widget.option.imagePath != null && widget.option.imagePath!.isNotEmpty;
+
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
@@ -308,15 +311,11 @@ class _StyleCardState extends State<_StyleCard> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Icon
+              // Icon or Image
               Expanded(
-                child: CustomPaint(
-                  size: const Size(100, 100),
-                  painter: StyleIconPainter(
-                    styleName: widget.option.name,
-                    category: widget.category,
-                  ),
-                ),
+                child: hasImage
+                    ? _buildImageIcon()
+                    : _buildPaintedIcon(),
               ),
               const SizedBox(height: 8),
               
@@ -346,6 +345,38 @@ class _StyleCardState extends State<_StyleCard> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  // Build image from assets
+  Widget _buildImageIcon() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: const Color(0xFFF5F5F5),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: Image.asset(
+          widget.option.imagePath!,
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) {
+            // Fallback to painted icon if image fails to load
+            return _buildPaintedIcon();
+          },
+        ),
+      ),
+    );
+  }
+
+  // Build painted icon using CustomPainter
+  Widget _buildPaintedIcon() {
+    return CustomPaint(
+      size: const Size(100, 100),
+      painter: StyleIconPainter(
+        styleName: widget.option.name,
+        category: widget.category,
       ),
     );
   }
