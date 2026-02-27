@@ -99,13 +99,38 @@ class StyleOptions {
     ),
   ];
 
-  // Collars - 5 styles
+  // Collars - 6 styles with images
   static final List<StyleOption> collars = [
-    StyleOption(name: 'No Collar', description: 'Tiada kolar'),
-    StyleOption(name: 'Shirt Collar', description: 'Kolar kemeja standard'),
-    StyleOption(name: 'Peter Pan', description: 'Kolar bulat lembut'),
-    StyleOption(name: 'Mandarin', description: 'Kolar tegak Cina'),
-    StyleOption(name: 'Shawl', description: 'Kolar selendang'),
+    StyleOption(
+      name: 'No Collar',
+      description: 'Tiada kolar',
+      imagePath: 'assets/images/collars/no_collar.jpg',
+    ),
+    StyleOption(
+      name: 'Mandarin Collar',
+      description: 'Kolar tegak Cina',
+      imagePath: 'assets/images/collars/mandarin_collar.jpg',
+    ),
+    StyleOption(
+      name: 'One Piece Shirt Collar',
+      description: 'Kolar kemeja satu keping',
+      imagePath: 'assets/images/collars/one_piece_shirt_collar.jpg',
+    ),
+    StyleOption(
+      name: 'Peter Pan Collar',
+      description: 'Kolar bulat lembut',
+      imagePath: 'assets/images/collars/peter_pan_collar.jpg',
+    ),
+    StyleOption(
+      name: 'Sailor Collar',
+      description: 'Kolar pelaut',
+      imagePath: 'assets/images/collars/sailor_collar.jpg',
+    ),
+    StyleOption(
+      name: 'Shawl Collar',
+      description: 'Kolar selendang',
+      imagePath: 'assets/images/collars/shawl_collar.jpg',
+    ),
   ];
 
   // Bodices - 5 styles

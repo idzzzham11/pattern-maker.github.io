@@ -103,7 +103,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
         return 'assets/images/patterns/bodice_step_4.jpeg';
       // Neckline styles
       case DiagramType.necklineBoatStep1:
-        return 'assets/images/necklines/neckline_boat_step_1.png';
+        return 'assets/images/necklines/neckline_boat_step_1.jpg';
       case DiagramType.necklineCowlStep1:
         return 'assets/images/necklines/neckline_cowl_step_1.jpg';
       case DiagramType.necklineCowlStep2:
@@ -119,9 +119,26 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
       case DiagramType.necklineCrossoverStep4:
         return 'assets/images/necklines/neckline_crossover_step_4.jpg';
       case DiagramType.necklineDeepScoopStep1:
-        return 'assets/images/necklines/neckline_deep_scoop_step_1.png';
+        return 'assets/images/necklines/neckline_deep_scoop_step_1.jpg';
       case DiagramType.necklineVStep1:
-        return 'assets/images/necklines/neckline_v_step_1.png';
+        return 'assets/images/necklines/neckline_v_step_1.jpg';
+      // Collar styles
+      case DiagramType.collarMandarinStep1:
+        return 'assets/images/collars/collar_mandarin_step_1.jpg';
+      case DiagramType.collarShirtStep1:
+        return 'assets/images/collars/collar_shirt_step_1.jpg';
+      case DiagramType.collarShirtStep2:
+        return 'assets/images/collars/collar_shirt_step_2.jpg';
+      case DiagramType.collarPeterPanStep1:
+        return 'assets/images/collars/collar_peter_pan_step_1.jpg';
+      case DiagramType.collarPeterPanStep2:
+        return 'assets/images/collars/collar_peter_pan_step_2.jpg';
+      case DiagramType.collarSailorStep1:
+        return 'assets/images/collars/collar_sailor_step_1.jpg';
+      case DiagramType.collarShawlStep1:
+        return 'assets/images/collars/collar_shawl_step_1.jpg';
+      case DiagramType.collarShawlStep2:
+        return 'assets/images/collars/collar_shawl_step_2.jpg';
       // Sleeve steps 1-6
       case DiagramType.sleeveStep1:
         return 'assets/images/patterns/sleeve_step_1.jpeg';
@@ -387,7 +404,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
   }
 
   Widget _buildCollarTab(bool isSmallScreen) {
-    final collar = widget.styleSelections.collar ?? 'Shirt Collar';
+    final collar = widget.styleSelections.collar ?? 'No Collar';
     
     return ListView(
       padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
@@ -401,7 +418,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
           isSmallScreen,
         ),
         ..._instructions.getCollarSteps(collar).map(
-          (step) => _buildStepCard(step, isSmallScreen, showDiagram: false),
+          (step) => _buildStepCard(step, isSmallScreen, showDiagram: true),
         ),
       ],
     );
@@ -789,6 +806,15 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
            type == DiagramType.necklineCrossoverStep4 ||
            type == DiagramType.necklineDeepScoopStep1 ||
            type == DiagramType.necklineVStep1 ||
+           // Collar styles with images
+           type == DiagramType.collarMandarinStep1 ||
+           type == DiagramType.collarShirtStep1 ||
+           type == DiagramType.collarShirtStep2 ||
+           type == DiagramType.collarPeterPanStep1 ||
+           type == DiagramType.collarPeterPanStep2 ||
+           type == DiagramType.collarSailorStep1 ||
+           type == DiagramType.collarShawlStep1 ||
+           type == DiagramType.collarShawlStep2 ||
            // Sleeve steps
            type == DiagramType.sleeveStep1 ||
            type == DiagramType.sleeveStep2 ||
