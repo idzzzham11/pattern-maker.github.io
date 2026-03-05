@@ -303,50 +303,245 @@ class PatternDraftingInstructions {
   }
 
   /// Get bodice style modification steps
-  PatternStep getBodiceStyleSteps(String bodice) {
-    Map<String, List<String>> bodiceInstructions = {
-      'Dart Front': [
-        'Tandakan titik bust (BP): ${(bustDistance / 2).toStringAsFixed(1)} cm dari tengah hadapan.',
-        'Ukur dari garis pinggang ke atas untuk ketinggian bust: ${(frontLength * 0.4).toStringAsFixed(1)} cm.',
-        'Lukis dart dari titik bust ke garis pinggang.',
-        'Lebar dart di pinggang: 3-4 cm (setiap sisi 1.5-2 cm).',
-        'Dart tidak sampai ke titik bust - berhenti 2-3 cm sebelum BP.',
-        'Jumlah dart: 2 dart (kiri dan kanan).',
+  /// Get bodice style modification steps
+  List<PatternStep> getBodiceStyleSteps(String bodice) {
+    Map<String, List<PatternStep>> bodiceInstructions = {
+      'Bust Semi Yoke': [
+        PatternStep(
+          stepNumber: 1,
+          title: 'Langkah 1 - Lukis Garisan Pemotongan',
+          instructions: [
+            'Tekap badan depan.',
+            'Lukis garisan melintang dari pertengahan lubang lengan.',
+            'Lukis garisan menegak dari titik lisu dan tandakan X pada titik 90 darjah.',
+            'Lukis garisan pemotongan seperti ditunjukkan pada rajah.',
+            'Potong & pisahkan pola.',
+          ],
+          diagramType: DiagramType.bodiceBustSemiYokeStep1,
+        ),
+        PatternStep(
+          stepNumber: 2,
+          title: 'Langkah 2 - Kembangkan Pola',
+          instructions: [
+            'Tutup dart pinggang (tindih ¾ inci).',
+            'Potong garisan (cut and slash) hingga hampir ke pinggang.',
+            'Kembangkan setiap bahagian ¾ inci.',
+            'Lukis semula bentuk pola yang baru.',
+          ],
+          diagramType: DiagramType.bodiceBustSemiYokeStep2,
+        ),
+      ],
+      'Dart Cluster': [
+        PatternStep(
+          stepNumber: 1,
+          title: 'Langkah 1 - Lukis Garisan Potong',
+          instructions: [
+            'Tekap pola asas badan hadapan.',
+            'Lukis garis panduan 1 inci dari kaki dart.',
+            'Lukis beberapa garisan potong selari.',
+            'Sambungkan ke titik dada.',
+          ],
+          diagramType: DiagramType.bodiceDartClusterStep1,
+        ),
+        PatternStep(
+          stepNumber: 2,
+          title: 'Langkah 2 - Kembangkan',
+          instructions: [
+            'Potong hingga hampir ke titik dada.',
+            'Kembangkan secara sekata.',
+            'Lukis semula kaki dart:',
+            'Lisu tengah → ½ inci bawah garis panduan.',
+            'Lisu luar → sama panjang dengan dart tengah.',
+            'Tambah elaun jahitan.',
+          ],
+          diagramType: DiagramType.bodiceDartClusterStep2,
+        ),
+        PatternStep(
+          stepNumber: 3,
+          title: 'Langkah 3 - Kemasan',
+          instructions: [
+            'Lipat lebihan lisu ke arah tengah depan.',
+            'Bahagian pinggang akan jadi tidak rata.',
+            'Lukis garis penyambung baru.',
+            'Potong lebihan.',
+            'Buka semula dan tandakan.',
+            'Tebuk lubang ½ inci dari titik dart.',
+            'Hasilkan tanda lisu pada pola.',
+            'Tanda ira lurus.',
+          ],
+          diagramType: DiagramType.bodiceDartClusterStep3,
+        ),
+      ],
+      'Double Shoulder Tucks': [
+        PatternStep(
+          stepNumber: 1,
+          title: 'Langkah 1 - Tandakan Kedudukan',
+          instructions: [
+            'Gunakan pola badan dengan dart pinggang dan sisi.',
+            'Tandakan kedudukan lipatan pada bahu & dada (jarak 4 cm).',
+            'Tandakan bahagian A, B dan C.',
+          ],
+          diagramType: DiagramType.bodiceDoubleShoulderTucksStep1,
+        ),
+        PatternStep(
+          stepNumber: 2,
+          title: 'Langkah 2 - Potong dan Kembangkan',
+          instructions: [
+            'Potong sepanjang garisan lipatan dan bahagian atas dart.',
+            'Tutup dart sisi.',
+            'Kembangkan lipatan secara sama rata.',
+          ],
+          diagramType: DiagramType.bodiceDoubleShoulderTucksStep2,
+        ),
+        PatternStep(
+          stepNumber: 3,
+          title: 'Langkah 3 - Kemasan',
+          instructions: [
+            'Tandakan panjang lipatan yang dikehendaki.',
+            'Dart pinggang boleh dijadikan lipatan, atau dilonggarkan ke garisan pinggang.',
+            'Hasilkan tanda di bahu.',
+            'Tambah basi jahitan.',
+          ],
+          diagramType: DiagramType.bodiceDoubleShoulderTucksStep3,
+        ),
+      ],
+      'Flange Inset': [
+        PatternStep(
+          stepNumber: 1,
+          title: 'Langkah 1 - Tekap Pola',
+          instructions: [
+            'Tekap pola badan depan & belakang.',
+            'Tandakan A = 1 inci dari kaki dart.',
+            'Tandakan B = ½ inci dari hujung bahu.',
+            'Sambungkan A ke B.',
+          ],
+          diagramType: DiagramType.bodiceFlangeInsetStep1,
+        ),
+        PatternStep(
+          stepNumber: 2,
+          title: 'Langkah 2 - Bentuk Lubang Lengan',
+          instructions: [
+            'Bentukkan semula lubang lengan.',
+            'Tandakan bahagian untuk kedutan: 2 inci dari garis tengah belakang.',
+            'Hasilkan garisan tambahan pada garisan tengah belakang sebanyak 1 inci.',
+          ],
+          diagramType: DiagramType.bodiceFlangeInsetStep2,
+        ),
+        PatternStep(
+          stepNumber: 3,
+          title: 'Langkah 3 - Gunting Pola',
+          instructions: [
+            'Gunting pola mengikut kepingan seperti rajah.',
+          ],
+          diagramType: DiagramType.bodiceFlangeInsetStep3,
+        ),
+        PatternStep(
+          stepNumber: 4,
+          title: 'Langkah 4 - Lukis Garisan Flange',
+          instructions: [
+            'Lukiskan satu garisan menegak pada kertas sama panjang dengan panjang flange bahagian hadapan dan belakang.',
+            'Menggunakan ukuran A–B pada badan hadapan (front bodice), tandakan kedudukan hujung bahu (label B).',
+            'Lipat kertas.',
+          ],
+          diagramType: DiagramType.bodiceFlangeInsetStep4,
+        ),
+        PatternStep(
+          stepNumber: 5,
+          title: 'Langkah 5 - Bentuk Flange',
+          instructions: [
+            'Dari lipatan di titik B, lukis garisan bersudut tepat keluar mengikut lebar flange yang dikehendaki (contoh: 3 inci).',
+            'Sambungkan ke titik flange A menggunakan ukuran A–B bahagian hadapan dan belakang seperti ditunjukkan.',
+          ],
+          diagramType: DiagramType.bodiceFlangeInsetStep5,
+        ),
+        PatternStep(
+          stepNumber: 6,
+          title: 'Langkah 6 - Kemasan',
+          instructions: [
+            'Tanda takik (notches) untuk bahagian hadapan dan belakang.',
+            'Gunting pola mengikut bentuk flange yang telah dilukis.',
+          ],
+          diagramType: DiagramType.bodiceFlangeInsetStep6,
+        ),
+      ],
+      'Pin Tucks': [
+        PatternStep(
+          stepNumber: 1,
+          title: 'Langkah 1 - Lukis Bentuk Bib',
+          instructions: [
+            'Tekap pola & lukis bentuk bib.',
+            'Gunting pola pada bentuk bib yang telah dilukis.',
+            'Lukis garisan tuck pertama: 1/16 inci dari tengah depan.',
+            'Lukis garisan selari: jarak ¼ inci.',
+          ],
+          diagramType: DiagramType.bodicePinTucksStep1,
+        ),
+        PatternStep(
+          stepNumber: 2,
+          title: 'Langkah 2 - Lukis Garisan Lipatan',
+          instructions: [
+            'Lukis empat set garisan selari, selebar 1/8 inci, untuk menghasilkan ruang lipatan.',
+            'Jarakkan 1/4 inci antara satu sama lain.',
+            'Lukis garisan lipatan pertama kira-kira 6 inci dari tepi kertas.',
+            'Ini akan memberi ruang untuk memotong pada bahagian lipatan.',
+            'Basi sebenar bergantung kepada bilangan lipatan dan jumlah pengambilan bagi sesuatu reka bentuk.',
+          ],
+          diagramType: DiagramType.bodicePinTucksStep2,
+        ),
+        PatternStep(
+          stepNumber: 3,
+          title: 'Langkah 3 - Lipat dan Potong',
+          instructions: [
+            'Lipat kertas pada setiap tuck.',
+            'Tekap bentuk bib.',
+            'Potong & buka.',
+            'Ulang langkah bagi bahagian bertentangan.',
+          ],
+          diagramType: DiagramType.bodicePinTucksStep3,
+        ),
       ],
       'Princess Line': [
-        'Lukis garisan princess dari pertengahan bahu atau dari lubang lengan.',
-        'Garisan melalui titik bust ke hem.',
-        'Jarak dari tengah hadapan ke garisan princess: ${(bustDistance / 2).toStringAsFixed(1)} cm.',
-        'Potong pola mengikut garisan princess.',
-        'Tambah kelim jahitan 1.5 cm di setiap sisi potongan.',
-        'Hasilkan 2 panel: panel tengah (CF) dan panel sisi.',
-        'Labelkan setiap panel dengan jelas.',
-      ],
-      'Wrap Style': [
-        'Tambah lebar pertindihan di tengah hadapan: 8-10 cm.',
-        'Lukis garisan wrap dari titik bahu ke pinggang sisi.',
-        'Garisan wrap melintasi badan secara diagonal.',
-        'Tandakan kedudukan butang atau tali pengikat.',
-        'Pastikan pertindihan cukup untuk menutup badan.',
-        'Tambah facing untuk kemasan tepi: 5-6 cm.',
-      ],
-      'Peplum': [
-        'Pendekkan badan di garis pinggang - potong pada garisan pinggang.',
-        'Ukur panjang peplum: 15-20 cm dari pinggang.',
-        'Lukis pola peplum separuh bulatan atau flared.',
-        'Lebar peplum di hem: 1.5x hingga 2x lebar pinggang.',
-        'Jejari dalam peplum = ukuran pinggang ÷ 3.14 = ${(waist / 3.14).toStringAsFixed(1)} cm.',
-        'Jejari luar = jejari dalam + panjang peplum.',
-        'Sambung peplum ke badan di garis pinggang.',
+        PatternStep(
+          stepNumber: 1,
+          title: 'Langkah 1 - Tandakan Garis Panel',
+          instructions: [
+            'Tandakan garis panel kira-kira 14 cm dari bahu.',
+            'Lukis garis melengkung ke titik dart (depan & belakang).',
+          ],
+          diagramType: DiagramType.bodicePrincessLineStep1,
+        ),
+        PatternStep(
+          stepNumber: 2,
+          title: 'Langkah 2 - Potong Panel',
+          instructions: [
+            'Tandakan titik silang di sisi titik dada (depan) dan titik dart (belakang).',
+            'Potong dari lubang lengan ke pinggang.',
+            'Buang dart pinggang.',
+            'Potong dart sisi dan tutup.',
+          ],
+          diagramType: DiagramType.bodicePrincessLineStep2,
+        ),
+        PatternStep(
+          stepNumber: 3,
+          title: 'Langkah 3 - Kemasan',
+          instructions: [
+            'Lukis bentuk panel sisi di bahagian dada dengan kemas.',
+            'Tambah basi jahitan.',
+            'Hasilkan notch tanda.',
+          ],
+          diagramType: DiagramType.bodicePrincessLineStep3,
+        ),
       ],
     };
 
-    return PatternStep(
-      stepNumber: 1,
-      title: 'Pengubahsuaian Badan $bodice',
-      instructions: bodiceInstructions[bodice] ?? ['Tiada pengubahsuaian diperlukan.'],
-      diagramType: DiagramType.bodiceModification,
-    );
+    return bodiceInstructions[bodice] ?? [
+      PatternStep(
+        stepNumber: 1,
+        title: 'Pengubahsuaian Badan',
+        instructions: ['Tiada pengubahsuaian diperlukan.'],
+        diagramType: DiagramType.bodiceModification,
+      ),
+    ];
   }
 
   /// Get collar pattern steps
@@ -1265,6 +1460,26 @@ enum DiagramType {
   collarShawlStep2,
   // Bodice modifications
   bodiceModification,
+  bodiceBustSemiYokeStep1,
+  bodiceBustSemiYokeStep2,
+  bodiceDartClusterStep1,
+  bodiceDartClusterStep2,
+  bodiceDartClusterStep3,
+  bodiceDoubleShoulderTucksStep1,
+  bodiceDoubleShoulderTucksStep2,
+  bodiceDoubleShoulderTucksStep3,
+  bodiceFlangeInsetStep1,
+  bodiceFlangeInsetStep2,
+  bodiceFlangeInsetStep3,
+  bodiceFlangeInsetStep4,
+  bodiceFlangeInsetStep5,
+  bodiceFlangeInsetStep6,
+  bodicePinTucksStep1,
+  bodicePinTucksStep2,
+  bodicePinTucksStep3,
+  bodicePrincessLineStep1,
+  bodicePrincessLineStep2,
+  bodicePrincessLineStep3,
   // Sleeve
   sleeveStep1,
   sleeveStep2,

@@ -139,6 +139,47 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
         return 'assets/images/collars/collar_shawl_step_1.jpg';
       case DiagramType.collarShawlStep2:
         return 'assets/images/collars/collar_shawl_step_2.jpg';
+      // Bodice styles
+      case DiagramType.bodiceBustSemiYokeStep1:
+        return 'assets/images/bodices/bodice_bust_semi_yoke_step_1.jpg';
+      case DiagramType.bodiceBustSemiYokeStep2:
+        return 'assets/images/bodices/bodice_bust_semi_yoke_step_2.jpg';
+      case DiagramType.bodiceDartClusterStep1:
+        return 'assets/images/bodices/bodice_dart_cluster_step_1.jpg';
+      case DiagramType.bodiceDartClusterStep2:
+        return 'assets/images/bodices/bodice_dart_cluster_step_2.jpg';
+      case DiagramType.bodiceDartClusterStep3:
+        return 'assets/images/bodices/bodice_dart_cluster_step_3.jpg';
+      case DiagramType.bodiceDoubleShoulderTucksStep1:
+        return 'assets/images/bodices/bodice_double_shoulder_tucks_step_1.jpg';
+      case DiagramType.bodiceDoubleShoulderTucksStep2:
+        return 'assets/images/bodices/bodice_double_shoulder_tucks_step_2.jpg';
+      case DiagramType.bodiceDoubleShoulderTucksStep3:
+        return 'assets/images/bodices/bodice_double_shoulder_tucks_step_3.jpg';
+      case DiagramType.bodiceFlangeInsetStep1:
+        return 'assets/images/bodices/bodice_flange_inset_step_1.png';
+      case DiagramType.bodiceFlangeInsetStep2:
+        return 'assets/images/bodices/bodice_flange_inset_step_2.png';
+      case DiagramType.bodiceFlangeInsetStep3:
+        return 'assets/images/bodices/bodice_flange_inset_step_3.png';
+      case DiagramType.bodiceFlangeInsetStep4:
+        return 'assets/images/bodices/bodice_flange_inset_step_4.png';
+      case DiagramType.bodiceFlangeInsetStep5:
+        return 'assets/images/bodices/bodice_flange_inset_step_5.png';
+      case DiagramType.bodiceFlangeInsetStep6:
+        return 'assets/images/bodices/bodice_flange_inset_step_6.png';
+      case DiagramType.bodicePinTucksStep1:
+        return 'assets/images/bodices/bodice_pin_tucks_step_1.png';
+      case DiagramType.bodicePinTucksStep2:
+        return 'assets/images/bodices/bodice_pin_tucks_step_2.png';
+      case DiagramType.bodicePinTucksStep3:
+        return 'assets/images/bodices/bodice_pin_tucks_step_3.png';
+      case DiagramType.bodicePrincessLineStep1:
+        return 'assets/images/bodices/bodice_princess_line_step_1.jpg';
+      case DiagramType.bodicePrincessLineStep2:
+        return 'assets/images/bodices/bodice_princess_line_step_2.jpg';
+      case DiagramType.bodicePrincessLineStep3:
+        return 'assets/images/bodices/bodice_princess_line_step_3.jpg';
       // Sleeve steps 1-6
       case DiagramType.sleeveStep1:
         return 'assets/images/patterns/sleeve_step_1.jpeg';
@@ -355,7 +396,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
 
   Widget _buildBodiceTab(bool isSmallScreen) {
     final neckline = widget.styleSelections.neckline ?? 'Basic Neckline';
-    final bodice = widget.styleSelections.bodice ?? 'Basic Fitted';
+    final bodice = widget.styleSelections.bodice ?? 'Bust Semi Yoke';
     
     return ListView(
       padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
@@ -389,16 +430,17 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
           (step) => _buildStepCard(step, isSmallScreen, showDiagram: true),
         ),
         
-        // Section: Bodice Style Modification (if not basic)
-        if (bodice != 'Basic Fitted') ...[
-          SizedBox(height: isSmallScreen ? 16 : 20),
-          _buildSectionHeader(
-            'PENGUBAHSUAIAN BADAN: ${bodice.toUpperCase()}',
-            'Bodice Modification',
-            isSmallScreen,
-          ),
-          _buildStepCard(_instructions.getBodiceStyleSteps(bodice), isSmallScreen, showDiagram: false),
-        ],
+        SizedBox(height: isSmallScreen ? 16 : 20),
+        
+        // Section: Bodice Style Modification
+        _buildSectionHeader(
+          'PENGUBAHSUAIAN BADAN: ${bodice.toUpperCase()}',
+          'Bodice Modification',
+          isSmallScreen,
+        ),
+        ..._instructions.getBodiceStyleSteps(bodice).map(
+          (step) => _buildStepCard(step, isSmallScreen, showDiagram: true),
+        ),
       ],
     );
   }
@@ -815,6 +857,27 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
            type == DiagramType.collarSailorStep1 ||
            type == DiagramType.collarShawlStep1 ||
            type == DiagramType.collarShawlStep2 ||
+           // Bodice styles with images
+           type == DiagramType.bodiceBustSemiYokeStep1 ||
+           type == DiagramType.bodiceBustSemiYokeStep2 ||
+           type == DiagramType.bodiceDartClusterStep1 ||
+           type == DiagramType.bodiceDartClusterStep2 ||
+           type == DiagramType.bodiceDartClusterStep3 ||
+           type == DiagramType.bodiceDoubleShoulderTucksStep1 ||
+           type == DiagramType.bodiceDoubleShoulderTucksStep2 ||
+           type == DiagramType.bodiceDoubleShoulderTucksStep3 ||
+           type == DiagramType.bodiceFlangeInsetStep1 ||
+           type == DiagramType.bodiceFlangeInsetStep2 ||
+           type == DiagramType.bodiceFlangeInsetStep3 ||
+           type == DiagramType.bodiceFlangeInsetStep4 ||
+           type == DiagramType.bodiceFlangeInsetStep5 ||
+           type == DiagramType.bodiceFlangeInsetStep6 ||
+           type == DiagramType.bodicePinTucksStep1 ||
+           type == DiagramType.bodicePinTucksStep2 ||
+           type == DiagramType.bodicePinTucksStep3 ||
+           type == DiagramType.bodicePrincessLineStep1 ||
+           type == DiagramType.bodicePrincessLineStep2 ||
+           type == DiagramType.bodicePrincessLineStep3 ||
            // Sleeve steps
            type == DiagramType.sleeveStep1 ||
            type == DiagramType.sleeveStep2 ||

@@ -133,13 +133,38 @@ class StyleOptions {
     ),
   ];
 
-  // Bodices - 5 styles
+  // Bodices - 6 styles with images
   static final List<StyleOption> bodices = [
-    StyleOption(name: 'Basic Fitted', description: 'Badan fitted standard'),
-    StyleOption(name: 'Dart Front', description: 'Dengan dart depan'),
-    StyleOption(name: 'Princess Line', description: 'Panel princess seam'),
-    StyleOption(name: 'Wrap Style', description: 'Style bersilang'),
-    StyleOption(name: 'Peplum', description: 'Dengan peplum di pinggang'),
+    StyleOption(
+      name: 'Bust Semi Yoke',
+      description: 'Yoke separuh di bahagian dada',
+      imagePath: 'assets/images/bodices/bust_semi_yoke_bodice.jpg',
+    ),
+    StyleOption(
+      name: 'Dart Cluster',
+      description: 'Kumpulan dart di dada',
+      imagePath: 'assets/images/bodices/dart_cluster_bodice.jpg',
+    ),
+    StyleOption(
+      name: 'Double Shoulder Tucks',
+      description: 'Lipatan berganda di bahu',
+      imagePath: 'assets/images/bodices/double_shoulders_tucks_bodice.jpg',
+    ),
+    StyleOption(
+      name: 'Flange Inset',
+      description: 'Sisipan flange di bahu',
+      imagePath: 'assets/images/bodices/flange_inset_bodice.jpg',
+    ),
+    StyleOption(
+      name: 'Pin Tucks',
+      description: 'Lipatan kecil hiasan',
+      imagePath: 'assets/images/bodices/pin_tucks_bodice.jpg',
+    ),
+    StyleOption(
+      name: 'Princess Line',
+      description: 'Panel princess seam',
+      imagePath: 'assets/images/bodices/princess_line_bodice.jpg',
+    ),
   ];
 
   // Sleeves - 6 styles
