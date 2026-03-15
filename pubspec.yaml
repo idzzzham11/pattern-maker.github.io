@@ -20,7 +20,8 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/patterns/
     - assets/images/necklines/
     - assets/images/collars/
     - assets/images/bodices/
+    - assets/images/sleeves/
+    - assets/images/skirts/
