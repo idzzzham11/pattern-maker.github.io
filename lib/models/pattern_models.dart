@@ -178,27 +178,27 @@ class StyleOptions {
     StyleOption(
       name: 'Cap Sleeve',
       description: 'Lengan cap kecil',
-      imagePath: 'assets/images/sleeves/cap_sleeve.png',
+      imagePath: 'assets/images/sleeves/cap_sleeve.PNG',
     ),
     StyleOption(
       name: 'Circular Hemline Sleeve',
       description: 'Lengan hemline bulat',
-      imagePath: 'assets/images/sleeves/circular_hemline_sleeve.jpg',
+      imagePath: 'assets/images/sleeves/circular_hemline_sleeve.JPG',
     ),
     StyleOption(
       name: 'Lantern Sleeve',
       description: 'Lengan tanglung',
-      imagePath: 'assets/images/sleeves/lantern_sleeve.png',
+      imagePath: 'assets/images/sleeves/lantern_sleeve.PNG',
     ),
     StyleOption(
       name: 'Puff Sleeve',
       description: 'Lengan puff',
-      imagePath: 'assets/images/sleeves/puff_sleeve.png',
+      imagePath: 'assets/images/sleeves/puff_sleeve.PNG',
     ),
     StyleOption(
       name: 'Tulip Sleeve',
       description: 'Lengan tulip',
-      imagePath: 'assets/images/sleeves/tulip_sleeve.png',
+      imagePath: 'assets/images/sleeves/tulip_sleeve.PNG',
     ),
   ];
 
