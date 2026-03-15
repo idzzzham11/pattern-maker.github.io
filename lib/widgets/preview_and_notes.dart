@@ -83,91 +83,92 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
   // Get image path based on diagram type
   String _getImagePath(DiagramType type) {
     switch (type) {
-      // Back Bodice steps
+      // Back Bodice steps - no images
       case DiagramType.backStep1:
-        return 'assets/images/patterns/bodice_step_1.jpeg';
       case DiagramType.backStep2:
-        return 'assets/images/patterns/bodice_step_2.jpeg';
       case DiagramType.backStep3:
-        return 'assets/images/patterns/bodice_step_3.jpeg';
       case DiagramType.backStep4:
-        return 'assets/images/patterns/bodice_step_4.jpeg';
-      // Front Bodice - uses same images as back for now
+      // Front Bodice steps - no images
       case DiagramType.frontStep1:
-        return 'assets/images/patterns/bodice_step_1.jpeg';
       case DiagramType.frontStep2:
-        return 'assets/images/patterns/bodice_step_2.jpeg';
       case DiagramType.frontStep3:
-        return 'assets/images/patterns/bodice_step_3.jpeg';
       case DiagramType.frontStep4:
-        return 'assets/images/patterns/bodice_step_4.jpeg';
+      // Basic sleeve steps - no images
+      case DiagramType.sleeveStep1:
+      case DiagramType.sleeveStep2:
+      case DiagramType.sleeveStep3:
+      case DiagramType.sleeveStep4:
+      case DiagramType.sleeveStep5:
+      case DiagramType.sleeveStep6:
+      // Basic skirt steps - no images
+      case DiagramType.skirtFrontStep1:
+      case DiagramType.skirtFrontStep2:
+      case DiagramType.skirtBackStep1:
+      case DiagramType.skirtBackStep2:
+        return '';
       // Neckline styles
       case DiagramType.necklineBoatStep1:
-        return 'assets/images/necklines/neckline_boat_step_1.jpg';
+        return 'assets/images/necklines/neckline_boat_step_1.png';
       case DiagramType.necklineCowlStep1:
-        return 'assets/images/necklines/neckline_cowl_step_1.jpg';
+        return 'assets/images/necklines/neckline_cowl_step_1.png';
       case DiagramType.necklineCowlStep2:
-        return 'assets/images/necklines/neckline_cowl_step_2.jpg';
+        return 'assets/images/necklines/neckline_cowl_step_2.png';
       case DiagramType.necklineCowlStep3:
-        return 'assets/images/necklines/neckline_cowl_step_3.jpg';
+        return 'assets/images/necklines/neckline_cowl_step_3.png';
       case DiagramType.necklineCrossoverStep1:
-        return 'assets/images/necklines/neckline_crossover_step_1.jpg';
+        return 'assets/images/necklines/neckline_crossover_step_1.png';
       case DiagramType.necklineCrossoverStep2:
-        return 'assets/images/necklines/neckline_crossover_step_2.jpg';
+        return 'assets/images/necklines/neckline_crossover_step_2.png';
       case DiagramType.necklineCrossoverStep3:
-        return 'assets/images/necklines/neckline_crossover_step_3.jpg';
+        return 'assets/images/necklines/neckline_crossover_step_3.png';
       case DiagramType.necklineCrossoverStep4:
-        return 'assets/images/necklines/neckline_crossover_step_4.jpg';
+        return 'assets/images/necklines/neckline_crossover_step_4.png';
       case DiagramType.necklineDeepScoopStep1:
-        return 'assets/images/necklines/neckline_deep_scoop_step_1.jpg';
+        return 'assets/images/necklines/neckline_deep_scoop_step_1.png';
       case DiagramType.necklineVStep1:
-        return 'assets/images/necklines/neckline_v_step_1.jpg';
+        return 'assets/images/necklines/neckline_v_step_1.png';
       // Collar styles
       case DiagramType.collarMandarinStep1:
-        return 'assets/images/collars/collar_mandarin_step_1.jpg';
+        return 'assets/images/collars/collar_mandarin_step_1.png';
       case DiagramType.collarShirtStep1:
-        return 'assets/images/collars/collar_shirt_step_1.jpg';
+        return 'assets/images/collars/collar_one_piece_shirt_step_1.png';
       case DiagramType.collarShirtStep2:
-        return 'assets/images/collars/collar_shirt_step_2.jpg';
+        return 'assets/images/collars/collar_one_piece_shirt_step_2.png';
       case DiagramType.collarPeterPanStep1:
-        return 'assets/images/collars/collar_peter_pan_step_1.jpg';
+        return 'assets/images/collars/collar_peter_pan_step_1.png';
       case DiagramType.collarPeterPanStep2:
-        return 'assets/images/collars/collar_peter_pan_step_2.jpg';
+        return 'assets/images/collars/collar_peter_pan_step_2.png';
       case DiagramType.collarSailorStep1:
-        return 'assets/images/collars/collar_sailor_step_1.jpg';
+        return 'assets/images/collars/collar_sailor_step_1.png';
       case DiagramType.collarShawlStep1:
-        return 'assets/images/collars/collar_shawl_step_1.jpg';
+        return 'assets/images/collars/collar_shawl_step_1.png';
       case DiagramType.collarShawlStep2:
-        return 'assets/images/collars/collar_shawl_step_2.jpg';
+        return 'assets/images/collars/collar_shawl_step_2.png';
+      case DiagramType.collarShawlStep3:
+        return 'assets/images/collars/collar_shawl_step_3.png';
+      case DiagramType.collarShawlStep4:
+        return 'assets/images/collars/collar_shawl_step_4.png';
       // Bodice styles
       case DiagramType.bodiceBustSemiYokeStep1:
-        return 'assets/images/bodices/bodice_bust_semi_yoke_step_1.jpg';
+        return 'assets/images/bodices/bodice_bust_semi_yoke_step_1.png';
       case DiagramType.bodiceBustSemiYokeStep2:
-        return 'assets/images/bodices/bodice_bust_semi_yoke_step_2.jpg';
+        return 'assets/images/bodices/bodice_bust_semi_yoke_step_2.png';
       case DiagramType.bodiceDartClusterStep1:
-        return 'assets/images/bodices/bodice_dart_cluster_step_1.jpg';
+        return 'assets/images/bodices/bodice_dart_cluster_step_1.png';
       case DiagramType.bodiceDartClusterStep2:
-        return 'assets/images/bodices/bodice_dart_cluster_step_2.jpg';
+        return 'assets/images/bodices/bodice_dart_cluster_step_2.png';
       case DiagramType.bodiceDartClusterStep3:
-        return 'assets/images/bodices/bodice_dart_cluster_step_3.jpg';
+        return 'assets/images/bodices/bodice_dart_cluster_step_3.png';
       case DiagramType.bodiceDoubleShoulderTucksStep1:
-        return 'assets/images/bodices/bodice_double_shoulder_tucks_step_1.jpg';
+        return 'assets/images/bodices/bodice_double_shoulder_tucks_step_1.png';
       case DiagramType.bodiceDoubleShoulderTucksStep2:
-        return 'assets/images/bodices/bodice_double_shoulder_tucks_step_2.jpg';
+        return 'assets/images/bodices/bodice_double_shoulder_tucks_step_2.png';
       case DiagramType.bodiceDoubleShoulderTucksStep3:
-        return 'assets/images/bodices/bodice_double_shoulder_tucks_step_3.jpg';
+        return 'assets/images/bodices/bodice_double_shoulder_tucks_step_3.png';
       case DiagramType.bodiceFlangeInsetStep1:
         return 'assets/images/bodices/bodice_flange_inset_step_1.png';
       case DiagramType.bodiceFlangeInsetStep2:
         return 'assets/images/bodices/bodice_flange_inset_step_2.png';
-      case DiagramType.bodiceFlangeInsetStep3:
-        return 'assets/images/bodices/bodice_flange_inset_step_3.png';
-      case DiagramType.bodiceFlangeInsetStep4:
-        return 'assets/images/bodices/bodice_flange_inset_step_4.png';
-      case DiagramType.bodiceFlangeInsetStep5:
-        return 'assets/images/bodices/bodice_flange_inset_step_5.png';
-      case DiagramType.bodiceFlangeInsetStep6:
-        return 'assets/images/bodices/bodice_flange_inset_step_6.png';
       case DiagramType.bodicePinTucksStep1:
         return 'assets/images/bodices/bodice_pin_tucks_step_1.png';
       case DiagramType.bodicePinTucksStep2:
@@ -175,34 +176,40 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
       case DiagramType.bodicePinTucksStep3:
         return 'assets/images/bodices/bodice_pin_tucks_step_3.png';
       case DiagramType.bodicePrincessLineStep1:
-        return 'assets/images/bodices/bodice_princess_line_step_1.jpg';
+        return 'assets/images/bodices/bodice_princess_line_step_1.png';
       case DiagramType.bodicePrincessLineStep2:
-        return 'assets/images/bodices/bodice_princess_line_step_2.jpg';
-      case DiagramType.bodicePrincessLineStep3:
-        return 'assets/images/bodices/bodice_princess_line_step_3.jpg';
-      // Sleeve steps 1-6
-      case DiagramType.sleeveStep1:
-        return 'assets/images/patterns/sleeve_step_1.jpeg';
-      case DiagramType.sleeveStep2:
-        return 'assets/images/patterns/sleeve_step_2.jpeg';
-      case DiagramType.sleeveStep3:
-        return 'assets/images/patterns/sleeve_step_3.jpeg';
-      case DiagramType.sleeveStep4:
-        return 'assets/images/patterns/sleeve_step_4.jpeg';
-      case DiagramType.sleeveStep5:
-        return 'assets/images/patterns/sleeve_step_5.jpeg';
-      case DiagramType.sleeveStep6:
-        return 'assets/images/patterns/sleeve_step_6.jpeg';
-      // Skirt Front steps
-      case DiagramType.skirtFrontStep1:
-        return 'assets/images/patterns/skirt_front_step_1.jpeg';
-      case DiagramType.skirtFrontStep2:
-        return 'assets/images/patterns/skirt_front_step_2.jpeg';
-      // Skirt Back steps
-      case DiagramType.skirtBackStep1:
-        return 'assets/images/patterns/skirt_back_step_1.jpeg';
-      case DiagramType.skirtBackStep2:
-        return 'assets/images/patterns/skirt_back_step_2.jpeg';
+        return 'assets/images/bodices/bodice_princess_line_step_2.png';
+      // Sleeve style steps
+      case DiagramType.sleeveCapStep1:
+        return 'assets/images/sleeves/sleeve_cap_step_1.png';
+      case DiagramType.sleeveCapStep2:
+        return 'assets/images/sleeves/sleeve_cap_step_2.png';
+      case DiagramType.sleeveCircularStep1:
+        return 'assets/images/sleeves/sleeve_circularhemline_step_1.png';
+      case DiagramType.sleeveCircularStep2:
+        return 'assets/images/sleeves/sleeve_circularhemline_step_2.png';
+      case DiagramType.sleeveCircularStep3:
+        return 'assets/images/sleeves/sleeve_circularhemline_step_3.png';
+      case DiagramType.sleeveTulipStep1:
+        return 'assets/images/sleeves/sleeve_tulip_step_1.png';
+      case DiagramType.sleeveTulipStep2:
+        return 'assets/images/sleeves/sleeve_tulip_step_2.png';
+      case DiagramType.sleeveTulipStep3:
+        return 'assets/images/sleeves/sleeve_tulip_step_3.png';
+      case DiagramType.sleeveLanternStep1:
+        return 'assets/images/sleeves/sleeve_lantern_step_1.png';
+      case DiagramType.sleeveLanternStep2:
+        return 'assets/images/sleeves/sleeve_lantern_step_2.png';
+      case DiagramType.sleeveLanternStep3:
+        return 'assets/images/sleeves/sleeve_lantern_step_3.png';
+      case DiagramType.sleeveLanternStep4:
+        return 'assets/images/sleeves/sleeve_lantern_step_4.png';
+      case DiagramType.sleevePuffStep1:
+        return 'assets/images/sleeves/sleeve_puff_step_1.png';
+      case DiagramType.sleevePuffStep2:
+        return 'assets/images/sleeves/sleeve_puff_step_2.png';
+      case DiagramType.sleevePuffStep3:
+        return 'assets/images/sleeves/sleeve_puff_step_3.png';
       default:
         return '';
     }
@@ -490,7 +497,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
           isSmallScreen,
         ),
         ..._instructions.getSleeveSteps(sleeve).map(
-          (step) => _buildStepCard(step, isSmallScreen, showDiagram: false),
+          (step) => _buildStepCard(step, isSmallScreen, showDiagram: true),
         ),
       ],
     );
@@ -699,39 +706,69 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Image on top for mobile
+                      // Image on top for mobile - BIGGER SIZE - TAPPABLE
                       Center(
-                        child: Container(
-                          width: 140,
-                          height: 150,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFf9f5ff),
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: const Color(0xFFe5dbff)),
+                        child: GestureDetector(
+                          onTap: () => _showFullScreenImage(
+                            context,
+                            _getImagePath(step.diagramType),
+                            step.title,
                           ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(7),
-                            child: Image.asset(
-                              _getImagePath(step.diagramType),
-                              fit: BoxFit.contain,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.image, color: Colors.grey.shade400, size: 30),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        'Rajah ${step.stepNumber}',
-                                        style: TextStyle(
-                                          color: Colors.grey.shade500,
-                                          fontSize: 10,
+                          child: Container(
+                            width: 220,
+                            height: 240,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFf9f5ff),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: const Color(0xFFe5dbff)),
+                            ),
+                            child: Stack(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(7),
+                                  child: Image.asset(
+                                    _getImagePath(step.diagramType),
+                                    fit: BoxFit.contain,
+                                    width: 220,
+                                    height: 240,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Center(
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Icon(Icons.image, color: Colors.grey.shade400, size: 30),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              'Rajah ${step.stepNumber}',
+                                              style: TextStyle(
+                                                color: Colors.grey.shade500,
+                                                fontSize: 10,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
-                                    ],
+                                      );
+                                    },
                                   ),
-                                );
-                              },
+                                ),
+                                // Zoom icon hint
+                                Positioned(
+                                  right: 6,
+                                  bottom: 6,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(4),
+                                    decoration: BoxDecoration(
+                                      color: Colors.black.withOpacity(0.5),
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: const Icon(
+                                      Icons.zoom_in,
+                                      color: Colors.white,
+                                      size: 16,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -743,40 +780,73 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
                 : Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Image on left for desktop
+                      // Image on left for desktop - BIGGER SIZE - TAPPABLE
                       if (shouldShowDiagram)
-                        Container(
-                          width: isSmallScreen ? 120 : 150,
-                          height: isSmallScreen ? 140 : 170,
-                          margin: const EdgeInsets.only(right: 14),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFf9f5ff),
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: const Color(0xFFe5dbff)),
+                        GestureDetector(
+                          onTap: () => _showFullScreenImage(
+                            context,
+                            _getImagePath(step.diagramType),
+                            step.title,
                           ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(7),
-                            child: Image.asset(
-                              _getImagePath(step.diagramType),
-                              fit: BoxFit.contain,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.image, color: Colors.grey.shade400, size: 30),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        'Rajah ${step.stepNumber}',
-                                        style: TextStyle(
-                                          color: Colors.grey.shade500,
-                                          fontSize: 10,
-                                        ),
-                                      ),
-                                    ],
+                          child: MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: Container(
+                              width: isSmallScreen ? 180 : 240,
+                              height: isSmallScreen ? 200 : 260,
+                              margin: const EdgeInsets.only(right: 14),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFf9f5ff),
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: const Color(0xFFe5dbff)),
+                              ),
+                              child: Stack(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(7),
+                                    child: Image.asset(
+                                      _getImagePath(step.diagramType),
+                                      fit: BoxFit.contain,
+                                      width: isSmallScreen ? 180 : 240,
+                                      height: isSmallScreen ? 200 : 260,
+                                      errorBuilder: (context, error, stackTrace) {
+                                        return Center(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(Icons.image, color: Colors.grey.shade400, size: 30),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                'Rajah ${step.stepNumber}',
+                                                style: TextStyle(
+                                                  color: Colors.grey.shade500,
+                                                  fontSize: 10,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
                                   ),
-                                );
-                              },
+                                  // Zoom icon hint
+                                  Positioned(
+                                    right: 6,
+                                    bottom: 6,
+                                    child: Container(
+                                      padding: const EdgeInsets.all(4),
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(0.5),
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: const Icon(
+                                        Icons.zoom_in,
+                                        color: Colors.white,
+                                        size: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -794,6 +864,120 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
                   ),
           ),
         ],
+      ),
+    );
+  }
+
+  // Show full screen image dialog with zoom and pan
+  void _showFullScreenImage(BuildContext context, String imagePath, String title) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black87,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.all(0),
+        child: Stack(
+          children: [
+            // Image with zoom and pan
+            Positioned.fill(
+              child: InteractiveViewer(
+                minScale: 0.5,
+                maxScale: 4.0,
+                child: Center(
+                  child: Image.asset(
+                    imagePath,
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Center(
+                        child: Icon(
+                          Icons.broken_image,
+                          color: Colors.white54,
+                          size: 64,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
+            
+            // Title bar at top
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.black.withOpacity(0.7),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+                child: SafeArea(
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            
+            // Close button
+            Positioned(
+              top: 8,
+              right: 8,
+              child: SafeArea(
+                child: IconButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.5),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.close,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            
+            // Hint text at bottom
+            Positioned(
+              bottom: 20,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Text(
+                    'Cubit untuk zum • Ketuk untuk tutup',
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -829,15 +1013,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
   }
 
   bool _shouldShowDiagram(DiagramType type) {
-    return type == DiagramType.backStep1 ||
-           type == DiagramType.backStep2 ||
-           type == DiagramType.backStep3 ||
-           type == DiagramType.backStep4 ||
-           type == DiagramType.frontStep1 ||
-           type == DiagramType.frontStep2 ||
-           type == DiagramType.frontStep3 ||
-           type == DiagramType.frontStep4 ||
-           // Neckline styles with images
+    return // Neckline styles with images
            type == DiagramType.necklineBoatStep1 ||
            type == DiagramType.necklineCowlStep1 ||
            type == DiagramType.necklineCowlStep2 ||
@@ -857,6 +1033,8 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
            type == DiagramType.collarSailorStep1 ||
            type == DiagramType.collarShawlStep1 ||
            type == DiagramType.collarShawlStep2 ||
+           type == DiagramType.collarShawlStep3 ||
+           type == DiagramType.collarShawlStep4 ||
            // Bodice styles with images
            type == DiagramType.bodiceBustSemiYokeStep1 ||
            type == DiagramType.bodiceBustSemiYokeStep2 ||
@@ -868,27 +1046,26 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
            type == DiagramType.bodiceDoubleShoulderTucksStep3 ||
            type == DiagramType.bodiceFlangeInsetStep1 ||
            type == DiagramType.bodiceFlangeInsetStep2 ||
-           type == DiagramType.bodiceFlangeInsetStep3 ||
-           type == DiagramType.bodiceFlangeInsetStep4 ||
-           type == DiagramType.bodiceFlangeInsetStep5 ||
-           type == DiagramType.bodiceFlangeInsetStep6 ||
            type == DiagramType.bodicePinTucksStep1 ||
            type == DiagramType.bodicePinTucksStep2 ||
            type == DiagramType.bodicePinTucksStep3 ||
            type == DiagramType.bodicePrincessLineStep1 ||
            type == DiagramType.bodicePrincessLineStep2 ||
-           type == DiagramType.bodicePrincessLineStep3 ||
-           // Sleeve steps
-           type == DiagramType.sleeveStep1 ||
-           type == DiagramType.sleeveStep2 ||
-           type == DiagramType.sleeveStep3 ||
-           type == DiagramType.sleeveStep4 ||
-           type == DiagramType.sleeveStep5 ||
-           type == DiagramType.sleeveStep6 ||
-           // Skirt steps
-           type == DiagramType.skirtFrontStep1 ||
-           type == DiagramType.skirtFrontStep2 ||
-           type == DiagramType.skirtBackStep1 ||
-           type == DiagramType.skirtBackStep2;
+           // Sleeve style steps
+           type == DiagramType.sleeveCapStep1 ||
+           type == DiagramType.sleeveCapStep2 ||
+           type == DiagramType.sleeveCircularStep1 ||
+           type == DiagramType.sleeveCircularStep2 ||
+           type == DiagramType.sleeveCircularStep3 ||
+           type == DiagramType.sleeveTulipStep1 ||
+           type == DiagramType.sleeveTulipStep2 ||
+           type == DiagramType.sleeveTulipStep3 ||
+           type == DiagramType.sleeveLanternStep1 ||
+           type == DiagramType.sleeveLanternStep2 ||
+           type == DiagramType.sleeveLanternStep3 ||
+           type == DiagramType.sleeveLanternStep4 ||
+           type == DiagramType.sleevePuffStep1 ||
+           type == DiagramType.sleevePuffStep2 ||
+           type == DiagramType.sleevePuffStep3;
   }
 }

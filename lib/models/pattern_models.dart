@@ -168,22 +168,71 @@ class StyleOptions {
   ];
 
   // Sleeves - 6 styles
+  // Sleeves - 6 styles with images
   static final List<StyleOption> sleeves = [
-    StyleOption(name: 'Sleeveless', description: 'Tanpa lengan'),
-    StyleOption(name: 'Short', description: 'Lengan pendek'),
-    StyleOption(name: 'Long', description: 'Lengan panjang'),
-    StyleOption(name: 'Puff', description: 'Lengan puff'),
-    StyleOption(name: 'Bell', description: 'Lengan bell melebar'),
-    StyleOption(name: 'Cap', description: 'Lengan cap kecil'),
+    StyleOption(
+      name: 'Sleeveless',
+      description: 'Tanpa lengan',
+      imagePath: 'assets/images/sleeves/sleeveless_sleeve.jpg',
+    ),
+    StyleOption(
+      name: 'Cap Sleeve',
+      description: 'Lengan cap kecil',
+      imagePath: 'assets/images/sleeves/cap_sleeve.png',
+    ),
+    StyleOption(
+      name: 'Circular Hemline Sleeve',
+      description: 'Lengan hemline bulat',
+      imagePath: 'assets/images/sleeves/circular_hemline_sleeve.jpg',
+    ),
+    StyleOption(
+      name: 'Lantern Sleeve',
+      description: 'Lengan tanglung',
+      imagePath: 'assets/images/sleeves/lantern_sleeve.png',
+    ),
+    StyleOption(
+      name: 'Puff Sleeve',
+      description: 'Lengan puff',
+      imagePath: 'assets/images/sleeves/puff_sleeve.png',
+    ),
+    StyleOption(
+      name: 'Tulip Sleeve',
+      description: 'Lengan tulip',
+      imagePath: 'assets/images/sleeves/tulip_sleeve.png',
+    ),
   ];
 
-  // Skirts - 6 styles
+  // Skirts - 6 styles with images
   static final List<StyleOption> skirts = [
-    StyleOption(name: 'Straight', description: 'Skirt lurus'),
-    StyleOption(name: 'A-Line', description: 'Skirt A melebar'),
-    StyleOption(name: 'Flared', description: 'Skirt berkembang'),
-    StyleOption(name: 'Pleated', description: 'Skirt berlipit'),
-    StyleOption(name: 'Gathered', description: 'Skirt berkumpul'),
-    StyleOption(name: 'Pencil', description: 'Skirt pensil ketat'),
+    StyleOption(
+      name: '12 Gore Graduated Flare',
+      description: 'Skirt 12 gore kembang bergraduat',
+      imagePath: 'assets/images/skirts/12_gore_graduated_flare_skirt.jpg',
+    ),
+    StyleOption(
+      name: 'Full Circle',
+      description: 'Skirt bulatan penuh',
+      imagePath: 'assets/images/skirts/full_circle_skirt.jpg',
+    ),
+    StyleOption(
+      name: 'Godets',
+      description: 'Skirt godets',
+      imagePath: 'assets/images/skirts/godets_skirt.jpg',
+    ),
+    StyleOption(
+      name: 'Mermaid',
+      description: 'Skirt mermaid',
+      imagePath: 'assets/images/skirts/mermaid_skirt.jpg',
+    ),
+    StyleOption(
+      name: 'Skirts With Yoke',
+      description: 'Skirt dengan yoke',
+      imagePath: 'assets/images/skirts/skirts_with_yoke_skirt.jpg',
+    ),
+    StyleOption(
+      name: 'Tiers',
+      description: 'Skirt bertingkat',
+      imagePath: 'assets/images/skirts/tiers_skirt.jpg',
+    ),
   ];
 }
