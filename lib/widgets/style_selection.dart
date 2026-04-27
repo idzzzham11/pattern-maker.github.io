@@ -319,25 +319,14 @@ class _StyleCardState extends State<_StyleCard> {
               ),
               const SizedBox(height: 8),
               
-              // Name
+              // Name (Malay)
               Text(
-                widget.option.name,
+                widget.option.description,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                   color: Color(0xFF1f2937),
-                ),
-              ),
-              const SizedBox(height: 4),
-              
-              // Description
-              Text(
-                widget.option.description,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 10,
-                  color: Color(0xFF6b7280),
                 ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
