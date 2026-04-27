@@ -11,7 +11,7 @@ class PatternMakerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Pattern Maker Studio',
+      title: 'Smart Pattern Studio',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: const Color(0xFFa78bfa),

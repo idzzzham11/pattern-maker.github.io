@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class StepIndicator extends StatelessWidget {
   final int currentStep;
   final List<String> steps;
+  final ValueChanged<int>? onStepTap;
 
   const StepIndicator({
     super.key,
     required this.currentStep,
     required this.steps,
+    this.onStepTap,
   });
 
   @override
@@ -30,22 +32,31 @@ class StepIndicator extends StatelessWidget {
           steps.length * 2 - 1,
           (index) {
             if (index.isEven) {
-              // Step circle
               final stepIndex = index ~/ 2;
               final isActive = stepIndex == currentStep;
               final isCompleted = stepIndex < currentStep;
-              
-              return _StepCircle(
-                number: stepIndex + 1,
-                label: steps[stepIndex],
-                isActive: isActive,
-                isCompleted: isCompleted,
+              final isTappable = isCompleted || isActive;
+
+              return GestureDetector(
+                onTap: isTappable && onStepTap != null
+                    ? () => onStepTap!(stepIndex)
+                    : null,
+                child: MouseRegion(
+                  cursor: isTappable
+                      ? SystemMouseCursors.click
+                      : SystemMouseCursors.basic,
+                  child: _StepCircle(
+                    number: stepIndex + 1,
+                    label: steps[stepIndex],
+                    isActive: isActive,
+                    isCompleted: isCompleted,
+                  ),
+                ),
               );
             } else {
-              // Step line
               final lineIndex = index ~/ 2;
               final isCompleted = lineIndex < currentStep;
-              
+
               return Expanded(
                 child: Container(
                   height: 3,
@@ -83,7 +94,7 @@ class _StepCircle extends StatelessWidget {
   Widget build(BuildContext context) {
     Color backgroundColor;
     Color textColor;
-    
+
     if (isCompleted) {
       backgroundColor = const Color(0xFF10b981);
       textColor = Colors.white;
@@ -117,11 +128,7 @@ class _StepCircle extends StatelessWidget {
           ),
           child: Center(
             child: isCompleted
-                ? const Icon(
-                    Icons.check,
-                    color: Colors.white,
-                    size: 20,
-                  )
+                ? const Icon(Icons.check, color: Colors.white, size: 20)
                 : Text(
                     '$number',
                     style: TextStyle(

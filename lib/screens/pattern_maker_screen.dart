@@ -104,7 +104,7 @@ class _PatternMakerScreenState extends State<PatternMakerScreen> {
                         const SizedBox(width: 8),
                         Flexible(
                           child: Text(
-                            'Pattern Maker Studio',
+                            'Smart Pattern Studio',
                             style: TextStyle(
                               fontSize: isSmallScreen ? 18 : 28,
                               fontWeight: FontWeight.bold,
@@ -164,6 +164,7 @@ class _PatternMakerScreenState extends State<PatternMakerScreen> {
                       StepIndicator(
                         currentStep: _currentStep,
                         steps: const ['Ukuran', 'Style', 'Preview'],
+                        onStepTap: _goToStep,
                       ),
                       SizedBox(height: isSmallScreen ? 16 : 24),
 

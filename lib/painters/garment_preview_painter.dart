@@ -320,7 +320,7 @@ class GarmentPreviewPainter extends CustomPainter {
       double shoulderWidth, double bustWidth, double waistWidth, double scale) {
     
     final armholeDepth = measurements.armhole * scale * 0.8;
-    final backLength = measurements.backLength * scale * 0.6;
+    final backLength = measurements.backCenter * scale * 0.6;
     final neckDepth = 25.0;
 
     final bodicePath = Path();
@@ -628,7 +628,7 @@ class GarmentPreviewPainter extends CustomPainter {
   void _drawCompleteSkirt(Canvas canvas, Paint paint, Paint fillPaint, 
       double waistWidth, double hipWidth, double scale) {
     
-    final backLength = measurements.backLength * scale * 0.6;
+    final backLength = measurements.backCenter * scale * 0.6;
     final skirtLength = 140.0 * scale;
     final hipDepth = 40.0 * scale;
     

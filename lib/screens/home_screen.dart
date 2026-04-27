@@ -34,7 +34,7 @@ class HomeScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Pattern Maker Studio',
+                      'Smart Pattern Studio',
                       style: TextStyle(
                         fontSize: isSmallScreen ? 28 : isMediumScreen ? 36 : 48,
                         fontWeight: FontWeight.bold,
@@ -44,7 +44,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     SizedBox(height: isSmallScreen ? 8 : 16),
                     Text(
-                      'Sistem Drafting Pola Pakaian untuk Pelajar',
+                      'Sistem Mendraf Pola Pakaian untuk Pelajar',
                       style: TextStyle(
                         fontSize: isSmallScreen ? 14 : isMediumScreen ? 16 : 20,
                         color: Colors.grey,
@@ -75,7 +75,7 @@ class HomeScreen extends StatelessWidget {
                           ),
                           SizedBox(height: isSmallScreen ? 16 : 24),
                           Text(
-                            'Buat Pola Pakaian Anda',
+                            'Draf Pola Pakaian Anda',
                             style: TextStyle(
                               fontSize: isSmallScreen ? 18 : isMediumScreen ? 20 : 24,
                               fontWeight: FontWeight.bold,
@@ -85,7 +85,7 @@ class HomeScreen extends StatelessWidget {
                           ),
                           SizedBox(height: isSmallScreen ? 8 : 12),
                           Text(
-                            'Sistem mudah untuk membuat pola pakaian mengikut ukuran dan style pilihan anda',
+                            'Sistem mudah untuk mendraf pola pakaian mengikut ukuran dan stail pilihan anda',
                             style: TextStyle(
                               fontSize: isSmallScreen ? 14 : 16,
                               color: const Color(0xFF6b7280),

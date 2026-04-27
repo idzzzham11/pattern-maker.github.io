@@ -1,28 +1,109 @@
+class SizeChart {
+  static const Map<String, Map<String, double>> data = {
+    'S': {
+      'shoulder': 37,
+      'bust': 86,
+      'waist': 66,
+      'hip': 92,
+      'armhole': 41,
+      'sleeveLength': 56,
+      'frontCenter': 41,
+      'backCenter': 41,
+      'skirtLength': 58,
+    },
+    'M': {
+      'shoulder': 39,
+      'bust': 92,
+      'waist': 72,
+      'hip': 98,
+      'armhole': 43,
+      'sleeveLength': 58,
+      'frontCenter': 43,
+      'backCenter': 43,
+      'skirtLength': 62,
+    },
+    'L': {
+      'shoulder': 41,
+      'bust': 98,
+      'waist': 78,
+      'hip': 104,
+      'armhole': 45,
+      'sleeveLength': 60,
+      'frontCenter': 45,
+      'backCenter': 45,
+      'skirtLength': 66,
+    },
+  };
+
+  static const List<String> rowLabels = [
+    'Bahu',
+    'Dada',
+    'Pinggang',
+    'Pinggul',
+    'Lubang Lengan',
+    'Labuh Lengan',
+    'Garis Tengah Hadapan',
+    'Garis Tengah Belakang',
+    'Labuh Skirt',
+  ];
+
+  static const List<String> rowKeys = [
+    'shoulder',
+    'bust',
+    'waist',
+    'hip',
+    'armhole',
+    'sleeveLength',
+    'frontCenter',
+    'backCenter',
+    'skirtLength',
+  ];
+}
+
 class Measurements {
   String name;
-  String unit;
+  String selectedSize;
   double bust;
   double waist;
   double hip;
   double shoulder;
-  double backLength;
+  double backCenter;
+  double frontCenter;
   double sleeveLength;
   double armhole;
+  double skirtLength;
 
   Measurements({
     this.name = '',
-    this.unit = 'cm',
+    this.selectedSize = '',
     this.bust = 0,
     this.waist = 0,
     this.hip = 0,
     this.shoulder = 0,
-    this.backLength = 0,
+    this.backCenter = 0,
+    this.frontCenter = 0,
     this.sleeveLength = 0,
     this.armhole = 0,
+    this.skirtLength = 0,
   });
 
+  void applySize(String size) {
+    final d = SizeChart.data[size];
+    if (d == null) return;
+    selectedSize = size;
+    shoulder = d['shoulder']!;
+    bust = d['bust']!;
+    waist = d['waist']!;
+    hip = d['hip']!;
+    armhole = d['armhole']!;
+    sleeveLength = d['sleeveLength']!;
+    frontCenter = d['frontCenter']!;
+    backCenter = d['backCenter']!;
+    skirtLength = d['skirtLength']!;
+  }
+
   bool isValid() {
-    return name.isNotEmpty && bust > 0 && waist > 0 && hip > 0;
+    return name.isNotEmpty && selectedSize.isNotEmpty;
   }
 }
 
@@ -178,27 +259,27 @@ class StyleOptions {
     StyleOption(
       name: 'Cap Sleeve',
       description: 'Lengan cap kecil',
-      imagePath: 'assets/images/sleeves/cap_sleeve.PNG',
+      imagePath: 'assets/images/sleeves/cap_sleeve.jpg',
     ),
     StyleOption(
       name: 'Circular Hemline Sleeve',
       description: 'Lengan hemline bulat',
-      imagePath: 'assets/images/sleeves/circular_hemline_sleeve.JPG',
+      imagePath: 'assets/images/sleeves/circular_hemline_sleeve.jpg',
     ),
     StyleOption(
       name: 'Lantern Sleeve',
       description: 'Lengan tanglung',
-      imagePath: 'assets/images/sleeves/lantern_sleeve.PNG',
+      imagePath: 'assets/images/sleeves/lantern_sleeve.jpg',
     ),
     StyleOption(
       name: 'Puff Sleeve',
       description: 'Lengan puff',
-      imagePath: 'assets/images/sleeves/puff_sleeve.PNG',
+      imagePath: 'assets/images/sleeves/puff_sleeve.jpg',
     ),
     StyleOption(
       name: 'Tulip Sleeve',
       description: 'Lengan tulip',
-      imagePath: 'assets/images/sleeves/tulip_sleeve.PNG',
+      imagePath: 'assets/images/sleeves/sleeve_petal_step_1.jpg',
     ),
   ];
 
@@ -227,7 +308,7 @@ class StyleOptions {
     StyleOption(
       name: 'Skirts With Yoke',
       description: 'Skirt dengan yoke',
-      imagePath: 'assets/images/skirts/skirts_with_yoke_skirt.jpg',
+      imagePath: 'assets/images/skirts/skirts_with_yoke.jpg',
     ),
     StyleOption(
       name: 'Tiers',

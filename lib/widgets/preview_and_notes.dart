@@ -61,12 +61,12 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
       'waist': widget.measurements.waist,
       'hip': widget.measurements.hip,
       'shoulderLength': widget.measurements.shoulder,
-      'backLength': widget.measurements.backLength,
-      'frontLength': widget.measurements.backLength + 3,
+      'backLength': widget.measurements.backCenter,
+      'frontLength': widget.measurements.frontCenter,
       'armhole': widget.measurements.armhole,
       'sleeveLength': widget.measurements.sleeveLength,
       'bustDistance': widget.measurements.bust / 5,
-      'skirtLength': 60,
+      'skirtLength': widget.measurements.skirtLength,
     };
   }
 
@@ -83,133 +83,187 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
   // Get image path based on diagram type
   String _getImagePath(DiagramType type) {
     switch (type) {
-      // Back Bodice steps - no images
+      // Back Bodice steps
       case DiagramType.backStep1:
+        return 'assets/images/bodices/basic_backbodice_step_1.jpg';
       case DiagramType.backStep2:
+        return 'assets/images/bodices/basic_backbodice_step_2.jpg';
       case DiagramType.backStep3:
+        return 'assets/images/bodices/basic_backbodice_step_3.jpg';
       case DiagramType.backStep4:
-      // Front Bodice steps - no images
+        return 'assets/images/bodices/basic_backbodice_step_4.jpg';
+      // Front Bodice steps
       case DiagramType.frontStep1:
+        return 'assets/images/bodices/basic_frontbodice_step_1.jpg';
       case DiagramType.frontStep2:
+        return 'assets/images/bodices/basic_frontbodice_step_2.jpg';
       case DiagramType.frontStep3:
+        return 'assets/images/bodices/basic_frontbodice_step_3.jpg';
       case DiagramType.frontStep4:
-      // Basic sleeve steps - no images
+        return 'assets/images/bodices/basic_frontbodice_step_4.jpg';
+      // Basic sleeve steps
       case DiagramType.sleeveStep1:
+        return 'assets/images/sleeves/basic_sleeve_step_1.jpg';
       case DiagramType.sleeveStep2:
+        return 'assets/images/sleeves/basic_sleeve_step_2.jpg';
       case DiagramType.sleeveStep3:
+        return 'assets/images/sleeves/basic_sleeve_step_3.jpg';
       case DiagramType.sleeveStep4:
+        return 'assets/images/sleeves/basic_sleeve_step_4.jpg';
       case DiagramType.sleeveStep5:
+        return 'assets/images/sleeves/basic_sleeve_step_5.jpg';
       case DiagramType.sleeveStep6:
-      // Basic skirt steps - no images
-      case DiagramType.skirtFrontStep1:
-      case DiagramType.skirtFrontStep2:
-      case DiagramType.skirtBackStep1:
-      case DiagramType.skirtBackStep2:
+        return 'assets/images/sleeves/basic_sleeve_step_6.jpg';
+      case DiagramType.sleevePuffStep4:
         return '';
+      // Basic skirt steps
+      case DiagramType.skirtFrontStep1:
+        return 'assets/images/skirts/basic_frontskirt_step_1.jpg';
+      case DiagramType.skirtFrontStep2:
+        return 'assets/images/skirts/basic_frontskirt_step_2.jpg';
+      case DiagramType.skirtBackStep1:
+        return 'assets/images/skirts/basic_backskirt_step_1.jpg';
+      case DiagramType.skirtBackStep2:
+        return 'assets/images/skirts/basic_backskirt_step_2.jpg';
+      // 12 Gore Graduated Flare steps
+      case DiagramType.skirt12GoreStep1:
+        return 'assets/images/skirts/skirt_12goregraduatedflare_step_1.jpg';
+      case DiagramType.skirt12GoreStep2:
+        return 'assets/images/skirts/skirt_12goregraduatedflare_step_2.jpg';
+      case DiagramType.skirt12GoreStep3:
+        return 'assets/images/skirts/skirt_12goregraduatedflare_step_3.jpg';
+      // Skirts With Yoke steps
+      case DiagramType.skirtYokeStep1:
+        return 'assets/images/skirts/skirt_skirtswithyokes_step_1.jpg';
+      case DiagramType.skirtYokeStep2:
+        return 'assets/images/skirts/skirt_skirtswithyokes_step_2.jpg';
+      case DiagramType.skirtYokeStep3:
+        return 'assets/images/skirts/skirt_skirtswithyokes_step_3.jpg';
+      // Tiers steps
+      case DiagramType.skirtTiersStep1:
+        return 'assets/images/skirts/skirt_tiers_step_1.jpg';
+      case DiagramType.skirtTiersStep2:
+        return 'assets/images/skirts/skirt_tiers_step_2.jpg';
+      // Godets steps
+      case DiagramType.skirtGodetsStep1:
+        return 'assets/images/skirts/skirt_godets_step_1.jpg';
+      case DiagramType.skirtGodetsStep2:
+        return 'assets/images/skirts/skirt_godets_step_2.jpg';
+      case DiagramType.skirtGodetsStep3:
+        return 'assets/images/skirts/skirt_godets_step_3.jpg';
+      case DiagramType.skirtGodetsStep4:
+        return 'assets/images/skirts/skirt_godets_step_4.jpg';
+      case DiagramType.skirtGodetsStep5:
+        return 'assets/images/skirts/skirt_godets_step_5.jpg';
+      // Full Circle steps
+      case DiagramType.skirtCircleStep1:
+        return 'assets/images/skirts/skirt_circle_step_1.jpg';
+      case DiagramType.skirtCircleStep2:
+        return 'assets/images/skirts/skirt_circle_step_2.jpg';
       // Neckline styles
       case DiagramType.necklineBoatStep1:
-        return 'assets/images/necklines/neckline_boat_step_1.png';
+        return 'assets/images/necklines/neckline_boat_step_1.jpg';
       case DiagramType.necklineCowlStep1:
-        return 'assets/images/necklines/neckline_cowl_step_1.png';
+        return 'assets/images/necklines/neckline_cowl_step_1.jpg';
       case DiagramType.necklineCowlStep2:
-        return 'assets/images/necklines/neckline_cowl_step_2.png';
+        return 'assets/images/necklines/neckline_cowl_step_2.jpg';
       case DiagramType.necklineCowlStep3:
-        return 'assets/images/necklines/neckline_cowl_step_3.png';
+        return 'assets/images/necklines/neckline_cowl_step_3.jpg';
       case DiagramType.necklineCrossoverStep1:
-        return 'assets/images/necklines/neckline_crossover_step_1.png';
+        return 'assets/images/necklines/neckline_crossover_step_1.jpg';
       case DiagramType.necklineCrossoverStep2:
-        return 'assets/images/necklines/neckline_crossover_step_2.png';
+        return 'assets/images/necklines/neckline_crossover_step_2.jpg';
       case DiagramType.necklineCrossoverStep3:
-        return 'assets/images/necklines/neckline_crossover_step_3.png';
+        return 'assets/images/necklines/neckline_crossover_step_3.jpg';
       case DiagramType.necklineCrossoverStep4:
-        return 'assets/images/necklines/neckline_crossover_step_4.png';
+        return 'assets/images/necklines/neckline_crossover_step_4.jpg';
       case DiagramType.necklineDeepScoopStep1:
-        return 'assets/images/necklines/neckline_deep_scoop_step_1.png';
+        return 'assets/images/necklines/neckline_deepscoop_step_1.jpg';
       case DiagramType.necklineVStep1:
-        return 'assets/images/necklines/neckline_v_step_1.png';
+        return 'assets/images/necklines/neckline_vshape_step_1.jpg';
       // Collar styles
       case DiagramType.collarMandarinStep1:
-        return 'assets/images/collars/collar_mandarin_step_1.png';
+        return 'assets/images/collars/collar_mandarin_step_1.jpg';
       case DiagramType.collarShirtStep1:
-        return 'assets/images/collars/collar_one_piece_shirt_step_1.png';
+        return 'assets/images/collars/collar_one_piece_step_1.jpg';
       case DiagramType.collarShirtStep2:
-        return 'assets/images/collars/collar_one_piece_shirt_step_2.png';
+        return 'assets/images/collars/collar_one_piece_step_2.jpg';
       case DiagramType.collarPeterPanStep1:
-        return 'assets/images/collars/collar_peter_pan_step_1.png';
+        return 'assets/images/collars/collar_peter_pan_step_1.jpg';
       case DiagramType.collarPeterPanStep2:
-        return 'assets/images/collars/collar_peter_pan_step_2.png';
+        return 'assets/images/collars/collar_peter_pan_step_2.jpg';
       case DiagramType.collarSailorStep1:
-        return 'assets/images/collars/collar_sailor_step_1.png';
+        return 'assets/images/collars/collar_sailor_step_1.jpg';
       case DiagramType.collarShawlStep1:
-        return 'assets/images/collars/collar_shawl_step_1.png';
+        return 'assets/images/collars/collar_shawl_step_1.jpg';
       case DiagramType.collarShawlStep2:
-        return 'assets/images/collars/collar_shawl_step_2.png';
+        return 'assets/images/collars/collar_shawl_step_2.jpg';
       case DiagramType.collarShawlStep3:
-        return 'assets/images/collars/collar_shawl_step_3.png';
+        return 'assets/images/collars/collar_shawl_step_3.jpg';
       case DiagramType.collarShawlStep4:
-        return 'assets/images/collars/collar_shawl_step_4.png';
+        return 'assets/images/collars/collar_shawl_step_4.jpg';
       // Bodice styles
       case DiagramType.bodiceBustSemiYokeStep1:
-        return 'assets/images/bodices/bodice_bust_semi_yoke_step_1.png';
+        return 'assets/images/bodices/bodice_bust_semi_yoke_step_1.jpg';
       case DiagramType.bodiceBustSemiYokeStep2:
-        return 'assets/images/bodices/bodice_bust_semi_yoke_step_2.png';
+        return 'assets/images/bodices/bodice_bust_semi_yoke_step_2.jpg';
       case DiagramType.bodiceDartClusterStep1:
-        return 'assets/images/bodices/bodice_dart_cluster_step_1.png';
+        return 'assets/images/bodices/bodice_dart_cluster_step_1.jpg';
       case DiagramType.bodiceDartClusterStep2:
-        return 'assets/images/bodices/bodice_dart_cluster_step_2.png';
+        return 'assets/images/bodices/bodice_dart_cluster_step_2.jpg';
       case DiagramType.bodiceDartClusterStep3:
-        return 'assets/images/bodices/bodice_dart_cluster_step_3.png';
+        return 'assets/images/bodices/bodice_dart_cluster_step_3.jpg';
       case DiagramType.bodiceDoubleShoulderTucksStep1:
-        return 'assets/images/bodices/bodice_double_shoulder_tucks_step_1.png';
+        return 'assets/images/bodices/bodice_double_shoulder_tucks_step_1.jpg';
       case DiagramType.bodiceDoubleShoulderTucksStep2:
-        return 'assets/images/bodices/bodice_double_shoulder_tucks_step_2.png';
+        return 'assets/images/bodices/bodice_double_shoulder_tucks_step_2.jpg';
       case DiagramType.bodiceDoubleShoulderTucksStep3:
-        return 'assets/images/bodices/bodice_double_shoulder_tucks_step_3.png';
+        return 'assets/images/bodices/bodice_double_shoulder_tucks_step_3.jpg';
       case DiagramType.bodiceFlangeInsetStep1:
-        return 'assets/images/bodices/bodice_flange_inset_step_1.png';
+        return 'assets/images/bodices/bodice_flange_inset_step_1.jpg';
       case DiagramType.bodiceFlangeInsetStep2:
-        return 'assets/images/bodices/bodice_flange_inset_step_2.png';
+        return 'assets/images/bodices/bodice_flange_inset_step_2.jpg';
       case DiagramType.bodicePinTucksStep1:
-        return 'assets/images/bodices/bodice_pin_tucks_step_1.png';
+        return 'assets/images/bodices/bodice_pin_tucks_step_1.jpg';
       case DiagramType.bodicePinTucksStep2:
-        return 'assets/images/bodices/bodice_pin_tucks_step_2.png';
+        return 'assets/images/bodices/bodice_pin_tucks_step_2.jpg';
       case DiagramType.bodicePinTucksStep3:
-        return 'assets/images/bodices/bodice_pin_tucks_step_3.png';
+        return 'assets/images/bodices/bodice_pin_tucks_step_3.jpg';
       case DiagramType.bodicePrincessLineStep1:
-        return 'assets/images/bodices/bodice_princess_line_step_1.png';
+        return 'assets/images/bodices/bodice_princess_line_step_1.jpg';
       case DiagramType.bodicePrincessLineStep2:
-        return 'assets/images/bodices/bodice_princess_line_step_2.png';
+        return 'assets/images/bodices/bodice_princess_line_step_2.jpg';
       // Sleeve style steps
       case DiagramType.sleeveCapStep1:
-        return 'assets/images/sleeves/sleeve_cap_step_1.png';
+        return 'assets/images/sleeves/sleeve_cap_step_1.jpg';
       case DiagramType.sleeveCapStep2:
-        return 'assets/images/sleeves/sleeve_cap_step_2.png';
+        return 'assets/images/sleeves/sleeve_cap_step_2.jpg';
       case DiagramType.sleeveCircularStep1:
-        return 'assets/images/sleeves/sleeve_circularhemline_step_1.png';
+        return 'assets/images/sleeves/sleeve_circularhemline_step_1.jpg';
       case DiagramType.sleeveCircularStep2:
-        return 'assets/images/sleeves/sleeve_circularhemline_step_2.png';
+        return 'assets/images/sleeves/sleeve_circularhemline_step_2.jpg';
       case DiagramType.sleeveCircularStep3:
-        return 'assets/images/sleeves/sleeve_circularhemline_step_3.png';
+        return 'assets/images/sleeves/sleeve_circularhemline_step_3.jpg';
       case DiagramType.sleeveTulipStep1:
-        return 'assets/images/sleeves/sleeve_tulip_step_1.png';
+        return 'assets/images/sleeves/sleeve_petal_step_1.jpg';
       case DiagramType.sleeveTulipStep2:
-        return 'assets/images/sleeves/sleeve_tulip_step_2.png';
+        return 'assets/images/sleeves/sleeve_petal_step_2.jpg';
       case DiagramType.sleeveTulipStep3:
-        return 'assets/images/sleeves/sleeve_tulip_step_3.png';
+        return 'assets/images/sleeves/sleeve_petal_step_3.jpg';
       case DiagramType.sleeveLanternStep1:
-        return 'assets/images/sleeves/sleeve_lantern_step_1.png';
+        return 'assets/images/sleeves/sleeve_lantern_step_1.jpg';
       case DiagramType.sleeveLanternStep2:
-        return 'assets/images/sleeves/sleeve_lantern_step_2.png';
+        return 'assets/images/sleeves/sleeve_lantern_step_2.jpg';
       case DiagramType.sleeveLanternStep3:
-        return 'assets/images/sleeves/sleeve_lantern_step_3.png';
+        return 'assets/images/sleeves/sleeve_lantern_step_3.jpg';
       case DiagramType.sleeveLanternStep4:
-        return 'assets/images/sleeves/sleeve_lantern_step_4.png';
+        return 'assets/images/sleeves/sleeve_lantern_step_4.jpg';
       case DiagramType.sleevePuffStep1:
-        return 'assets/images/sleeves/sleeve_puff_step_1.png';
+        return 'assets/images/sleeves/sleeve_puff_step_1.jpg';
       case DiagramType.sleevePuffStep2:
-        return 'assets/images/sleeves/sleeve_puff_step_2.png';
+        return 'assets/images/sleeves/sleeve_puff_step_2.jpg';
       case DiagramType.sleevePuffStep3:
-        return 'assets/images/sleeves/sleeve_puff_step_3.png';
+        return 'assets/images/sleeves/sleeve_puff_step_3.jpg';
       default:
         return '';
     }
@@ -535,7 +589,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
           isSmallScreen,
         ),
         ..._instructions.getSkirtSteps(skirt).map(
-          (step) => _buildStepCard(step, isSmallScreen, showDiagram: false),
+          (step) => _buildStepCard(step, isSmallScreen, showDiagram: true),
         ),
       ],
     );
@@ -598,6 +652,22 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
                   color: const Color(0xFFF57F17),
                 ),
               ),
+              const Spacer(),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF8b5cf6),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  'Saiz ${widget.measurements.selectedSize}',
+                  style: TextStyle(
+                    fontSize: isSmallScreen ? 11 : 13,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 8),
@@ -605,11 +675,13 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
             spacing: 8,
             runSpacing: 6,
             children: [
-              _measurementTag('Dada: ${widget.measurements.bust} ${widget.measurements.unit}', isSmallScreen),
-              _measurementTag('Pinggang: ${widget.measurements.waist} ${widget.measurements.unit}', isSmallScreen),
-              _measurementTag('Pinggul: ${widget.measurements.hip} ${widget.measurements.unit}', isSmallScreen),
-              _measurementTag('Bahu: ${widget.measurements.shoulder} ${widget.measurements.unit}', isSmallScreen),
-              _measurementTag('Labuh Belakang: ${widget.measurements.backLength} ${widget.measurements.unit}', isSmallScreen),
+              _measurementTag('Dada: ${widget.measurements.bust.toStringAsFixed(0)} cm', isSmallScreen),
+              _measurementTag('Pinggang: ${widget.measurements.waist.toStringAsFixed(0)} cm', isSmallScreen),
+              _measurementTag('Pinggul: ${widget.measurements.hip.toStringAsFixed(0)} cm', isSmallScreen),
+              _measurementTag('Bahu: ${widget.measurements.shoulder.toStringAsFixed(0)} cm', isSmallScreen),
+              _measurementTag('Lubang Lengan: ${widget.measurements.armhole.toStringAsFixed(0)} cm', isSmallScreen),
+              _measurementTag('Labuh Lengan: ${widget.measurements.sleeveLength.toStringAsFixed(0)} cm', isSmallScreen),
+              _measurementTag('Labuh Skirt: ${widget.measurements.skirtLength.toStringAsFixed(0)} cm', isSmallScreen),
             ],
           ),
         ],
@@ -1013,7 +1085,49 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
   }
 
   bool _shouldShowDiagram(DiagramType type) {
-    return // Neckline styles with images
+    return // Basic Sleeve steps
+           type == DiagramType.sleeveStep1 ||
+           type == DiagramType.sleeveStep2 ||
+           type == DiagramType.sleeveStep3 ||
+           type == DiagramType.sleeveStep4 ||
+           type == DiagramType.sleeveStep5 ||
+           type == DiagramType.sleeveStep6 ||
+           // Basic Back Bodice steps
+           type == DiagramType.backStep1 ||
+           type == DiagramType.backStep2 ||
+           type == DiagramType.backStep3 ||
+           type == DiagramType.backStep4 ||
+           // Basic Front Bodice steps
+           type == DiagramType.frontStep1 ||
+           type == DiagramType.frontStep2 ||
+           type == DiagramType.frontStep3 ||
+           type == DiagramType.frontStep4 ||
+           // Basic Skirt steps
+           type == DiagramType.skirtFrontStep1 ||
+           type == DiagramType.skirtFrontStep2 ||
+           type == DiagramType.skirtBackStep1 ||
+           type == DiagramType.skirtBackStep2 ||
+           // 12 Gore Graduated Flare steps
+           type == DiagramType.skirt12GoreStep1 ||
+           type == DiagramType.skirt12GoreStep2 ||
+           type == DiagramType.skirt12GoreStep3 ||
+           // Skirts With Yoke steps
+           type == DiagramType.skirtYokeStep1 ||
+           type == DiagramType.skirtYokeStep2 ||
+           type == DiagramType.skirtYokeStep3 ||
+           // Tiers steps
+           type == DiagramType.skirtTiersStep1 ||
+           type == DiagramType.skirtTiersStep2 ||
+           // Godets steps
+           type == DiagramType.skirtGodetsStep1 ||
+           type == DiagramType.skirtGodetsStep2 ||
+           type == DiagramType.skirtGodetsStep3 ||
+           type == DiagramType.skirtGodetsStep4 ||
+           type == DiagramType.skirtGodetsStep5 ||
+           // Full Circle steps
+           type == DiagramType.skirtCircleStep1 ||
+           type == DiagramType.skirtCircleStep2 ||
+           // Neckline styles with images
            type == DiagramType.necklineBoatStep1 ||
            type == DiagramType.necklineCowlStep1 ||
            type == DiagramType.necklineCowlStep2 ||
