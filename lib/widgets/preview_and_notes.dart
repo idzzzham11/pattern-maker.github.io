@@ -244,11 +244,11 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
         return 'assets/images/sleeves/sleeve_circularhemline_step_2.jpg';
       case DiagramType.sleeveCircularStep3:
         return 'assets/images/sleeves/sleeve_circularhemline_step_3.jpg';
-      case DiagramType.sleeveTulipStep1:
+      case DiagramType.sleevePetalStep1:
         return 'assets/images/sleeves/sleeve_petal_step_1.jpg';
-      case DiagramType.sleeveTulipStep2:
+      case DiagramType.sleevePetalStep2:
         return 'assets/images/sleeves/sleeve_petal_step_2.jpg';
-      case DiagramType.sleeveTulipStep3:
+      case DiagramType.sleevePetalStep3:
         return 'assets/images/sleeves/sleeve_petal_step_3.jpg';
       case DiagramType.sleeveLanternStep1:
         return 'assets/images/sleeves/sleeve_lantern_step_1.jpg';
@@ -1171,9 +1171,9 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
            type == DiagramType.sleeveCircularStep1 ||
            type == DiagramType.sleeveCircularStep2 ||
            type == DiagramType.sleeveCircularStep3 ||
-           type == DiagramType.sleeveTulipStep1 ||
-           type == DiagramType.sleeveTulipStep2 ||
-           type == DiagramType.sleeveTulipStep3 ||
+           type == DiagramType.sleevePetalStep1 ||
+           type == DiagramType.sleevePetalStep2 ||
+           type == DiagramType.sleevePetalStep3 ||
            type == DiagramType.sleeveLanternStep1 ||
            type == DiagramType.sleeveLanternStep2 ||
            type == DiagramType.sleeveLanternStep3 ||

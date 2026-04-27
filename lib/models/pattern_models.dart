@@ -277,9 +277,9 @@ class StyleOptions {
       imagePath: 'assets/images/sleeves/puff_sleeve.jpg',
     ),
     StyleOption(
-      name: 'Tulip Sleeve',
-      description: 'Lengan tulip',
-      imagePath: 'assets/images/sleeves/sleeve_petal_step_1.jpg',
+      name: 'Petal Sleeve',
+      description: 'Lengan petal',
+      imagePath: 'assets/images/sleeves/petal_sleeve.jpg',
     ),
   ];
 

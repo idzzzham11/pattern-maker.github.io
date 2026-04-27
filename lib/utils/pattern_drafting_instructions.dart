@@ -942,7 +942,7 @@ class PatternDraftingInstructions {
           diagramType: DiagramType.sleevePuffStep4,
         ),
       ],
-      'Tulip Sleeve': [
+      'Petal Sleeve': [
         PatternStep(
           stepNumber: 1,
           title: 'Langkah 1 - Lukis Petal',
@@ -956,7 +956,7 @@ class PatternDraftingInstructions {
             'Jejak lengkung lengan depan untuk petal depan.',
             'Potong petal belakang daripada kertas.',
           ],
-          diagramType: DiagramType.sleeveTulipStep1,
+          diagramType: DiagramType.sleevePetalStep1,
         ),
         PatternStep(
           stepNumber: 2,
@@ -966,7 +966,7 @@ class PatternDraftingInstructions {
             'Bahagian hadapan lengan: Tekap pola lengan petal dan trim dari C-D sebanyak 1 cm.',
             'Potong pola.',
           ],
-          diagramType: DiagramType.sleeveTulipStep2,
+          diagramType: DiagramType.sleevePetalStep2,
         ),
         PatternStep(
           stepNumber: 3,
@@ -975,7 +975,7 @@ class PatternDraftingInstructions {
             'Selaraskan underseam dan tekap semula bentuk pola.',
             'Lukis tanda-tanda pola.',
           ],
-          diagramType: DiagramType.sleeveTulipStep3,
+          diagramType: DiagramType.sleevePetalStep3,
         ),
       ],
     };
@@ -1363,9 +1363,9 @@ enum DiagramType {
   sleeveCircularStep1,
   sleeveCircularStep2,
   sleeveCircularStep3,
-  sleeveTulipStep1,
-  sleeveTulipStep2,
-  sleeveTulipStep3,
+  sleevePetalStep1,
+  sleevePetalStep2,
+  sleevePetalStep3,
   sleeveLanternStep1,
   sleeveLanternStep2,
   sleeveLanternStep3,
