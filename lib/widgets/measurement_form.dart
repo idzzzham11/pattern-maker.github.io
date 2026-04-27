@@ -16,17 +16,8 @@ class MeasurementForm extends StatefulWidget {
 }
 
 class _MeasurementFormState extends State<MeasurementForm> {
-  final _nameController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _nameController.text = widget.measurements.name;
-  }
-
   @override
   void dispose() {
-    _nameController.dispose();
     super.dispose();
   }
 
@@ -81,10 +72,6 @@ class _MeasurementFormState extends State<MeasurementForm> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Profile name
-                  _buildNameField(),
-                  SizedBox(height: isSmallScreen ? 20 : 28),
-
                   // Size selector
                   Text(
                     'Pilih Saiz',
@@ -136,43 +123,6 @@ class _MeasurementFormState extends State<MeasurementForm> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildNameField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Nama Profile',
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF374151),
-          ),
-        ),
-        const SizedBox(height: 8),
-        TextField(
-          controller: _nameController,
-          onChanged: (value) => widget.measurements.name = value,
-          decoration: InputDecoration(
-            hintText: 'Masukkan nama...',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Color(0xFFe5e7eb), width: 2),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Color(0xFFe5e7eb), width: 2),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Color(0xFFa78bfa), width: 2),
-            ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          ),
-        ),
-      ],
     );
   }
 

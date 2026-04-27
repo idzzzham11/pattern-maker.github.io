@@ -103,7 +103,7 @@ class Measurements {
   }
 
   bool isValid() {
-    return name.isNotEmpty && selectedSize.isNotEmpty;
+    return selectedSize.isNotEmpty;
   }
 }
 
