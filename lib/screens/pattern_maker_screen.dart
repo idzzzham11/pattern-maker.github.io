@@ -163,7 +163,7 @@ class _PatternMakerScreenState extends State<PatternMakerScreen> {
                       // Step Indicator
                       StepIndicator(
                         currentStep: _currentStep,
-                        steps: const ['Ukuran', 'Style', 'Preview'],
+                        steps: const ['Ukuran', 'Ciri Stail', 'Nota Pola'],
                         onStepTap: _goToStep,
                       ),
                       SizedBox(height: isSmallScreen ? 16 : 24),
