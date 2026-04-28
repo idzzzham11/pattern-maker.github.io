@@ -385,7 +385,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
                     const Icon(Icons.arrow_back, color: Color(0xFF6b7280), size: 20),
                     const SizedBox(width: 8),
                     Text(
-                      isSmallScreen ? 'Kembali' : 'Kembali Ubah Style',
+                      isSmallScreen ? 'Kembali' : 'Kembali Ubah Stail',
                       style: TextStyle(
                         fontSize: isSmallScreen ? 13 : 15,
                         fontWeight: FontWeight.w600,
@@ -553,7 +553,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
         // Section: Style Modification
         _buildSectionHeader(
           'PENGUBAHSUAIAN LENGAN: ${sleeve.toUpperCase()}',
-          'Sleeve Style Modification',
+          'Sleeve Stail Modification',
           isSmallScreen,
         ),
         ..._instructions.getSleeveSteps(sleeve).map(
@@ -591,7 +591,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
         // Section: Style Modification
         _buildSectionHeader(
           'PENGUBAHSUAIAN SKIRT: ${skirt.toUpperCase()}',
-          'Skirt Style Modification',
+          'Skirt Stail Modification',
           isSmallScreen,
         ),
         ..._instructions.getSkirtSteps(skirt).map(

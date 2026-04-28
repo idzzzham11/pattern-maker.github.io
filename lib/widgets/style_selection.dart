@@ -50,7 +50,7 @@ class _StyleSelectionState extends State<StyleSelection> {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'Langkah 2: Pilih Style Pakaian',
+                  'Langkah 2: Pilih Stail Pakaian',
                   style: TextStyle(
                     fontSize: isSmallScreen ? 18 : isMediumScreen ? 20 : 24,
                     fontWeight: FontWeight.bold,

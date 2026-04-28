@@ -112,7 +112,7 @@ class _MeasurementFormState extends State<MeasurementForm> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Teruskan ke Pemilihan Style',
+                    'Teruskan ke Pemilihan Stail',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                   SizedBox(width: 8),

@@ -51,7 +51,7 @@ class _PatternMakerScreenState extends State<PatternMakerScreen> {
 
   bool _validateStyles() {
     if (!_styleSelections.isComplete()) {
-      _showToast('Sila pilih semua style (neckline, collar, bodice, sleeve, skirt)');
+      _showToast('Sila pilih semua stail (neckline, collar, bodice, sleeve, skirt)');
       return false;
     }
     return true;
