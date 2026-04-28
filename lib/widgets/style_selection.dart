@@ -319,9 +319,9 @@ class _StyleCardState extends State<_StyleCard> {
               ),
               const SizedBox(height: 8),
               
-              // Name (Malay)
+              // Name
               Text(
-                widget.option.description,
+                widget.option.name,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 13,

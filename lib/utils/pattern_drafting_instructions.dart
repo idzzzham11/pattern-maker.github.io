@@ -1193,14 +1193,33 @@ class PatternDraftingInstructions {
       'Mermaid': [
         PatternStep(
           stepNumber: 1,
-          title: 'Langkah 1 - Pengubahsuaian',
+          title: 'Langkah 1 - Lukis Garisan Asas',
           instructions: [
-            'Skirt mermaid ketat di atas, kembang di bawah.',
-            'Ukuran pinggang: ${waist.toStringAsFixed(1)} cm.',
-            'Ukuran pinggul: ${hip.toStringAsFixed(1)} cm.',
-            'Panjang skirt: ${skirtLength.toStringAsFixed(1)} cm.',
+            'Lukis satu garisan mengikut labuh skirt yang dikehendaki (A–B).',
+            'Tanda titik tengah untuk labuh pinggul (C).',
+            'Tanda satu pertiga antara A dan C (titik D).',
+            'Bahagikan ukuran pinggang dan pinggul kepada 12, kemudian bahagi dua dan rekodkan:',
+            'Pinggang = ${(waist / 12 / 2).toStringAsFixed(1)} cm',
+            'Pinggul = ${(hip / 12 / 2).toStringAsFixed(1)} cm',
           ],
-          diagramType: DiagramType.skirtModification,
+          diagramType: DiagramType.skirtMermaidStep1,
+        ),
+        PatternStep(
+          stepNumber: 2,
+          title: 'Langkah 2 - Lukis Garisan Sisi',
+          instructions: [
+            'Lukis garisan bersudut tepat keluar dari kedua-dua sisi di titik A (pinggang) dan C (pinggul) menggunakan ukuran yang direkodkan dalam Langkah 1.',
+            'Ukuran abdomen adalah 1/8 inci kurang daripada ukuran pinggul.',
+          ],
+          diagramType: DiagramType.skirtMermaidStep2,
+        ),
+        PatternStep(
+          stepNumber: 3,
+          title: 'Langkah 3 - Bentuk Lengkung',
+          instructions: [
+            'Lukis garisan yang menghubungkan bentuk luar dan bentukkan sedikit lengkung keluar ke arah pinggang.',
+          ],
+          diagramType: DiagramType.skirtMermaidStep3,
         ),
       ],
       'Skirts With Yoke': [
@@ -1400,4 +1419,8 @@ enum DiagramType {
   // Full Circle
   skirtCircleStep1,
   skirtCircleStep2,
+  // Mermaid
+  skirtMermaidStep1,
+  skirtMermaidStep2,
+  skirtMermaidStep3,
 }

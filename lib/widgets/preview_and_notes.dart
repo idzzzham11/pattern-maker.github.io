@@ -160,6 +160,12 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
         return 'assets/images/skirts/skirt_circle_step_1.jpg';
       case DiagramType.skirtCircleStep2:
         return 'assets/images/skirts/skirt_circle_step_2.jpg';
+      case DiagramType.skirtMermaidStep1:
+        return 'assets/images/skirts/skirt_mermaid_step_1.jpg';
+      case DiagramType.skirtMermaidStep2:
+        return 'assets/images/skirts/skirt_mermaid_step_2.jpg';
+      case DiagramType.skirtMermaidStep3:
+        return 'assets/images/skirts/skirt_mermaid_step_3.jpg';
       // Neckline styles
       case DiagramType.necklineBoatStep1:
         return 'assets/images/necklines/neckline_boat_step_1.jpg';
@@ -1127,6 +1133,10 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
            // Full Circle steps
            type == DiagramType.skirtCircleStep1 ||
            type == DiagramType.skirtCircleStep2 ||
+           // Mermaid steps
+           type == DiagramType.skirtMermaidStep1 ||
+           type == DiagramType.skirtMermaidStep2 ||
+           type == DiagramType.skirtMermaidStep3 ||
            // Neckline styles with images
            type == DiagramType.necklineBoatStep1 ||
            type == DiagramType.necklineCowlStep1 ||
