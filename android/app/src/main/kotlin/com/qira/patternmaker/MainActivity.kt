@@ -1,4 +1,4 @@
-package com.example.pattern_maker_app
+package com.qira.patternmaker
 
 import io.flutter.embedding.android.FlutterActivity
 
