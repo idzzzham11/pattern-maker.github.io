@@ -330,7 +330,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
     }
   }
 
-  void _showPrintOptions(BuildContext context) {
+  void _showDownloadOptions(BuildContext context) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -344,7 +344,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Pilih Jenis Cetakan',
+                'Pilih Jenis Muat Turun',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
@@ -354,7 +354,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
                 subtitle: const Text('6 gambar setiap halaman'),
                 onTap: () {
                   Navigator.pop(context);
-                  _printPhotosOnly();
+                  _downloadPhotosOnly();
                 },
               ),
               ListTile(
@@ -363,7 +363,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
                 subtitle: const Text('Gambar dengan arahan langkah demi langkah'),
                 onTap: () {
                   Navigator.pop(context);
-                  _printPhotosAndNotes();
+                  _downloadPhotosAndNotes();
                 },
               ),
             ],
@@ -373,88 +373,111 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
     );
   }
 
-  Future<void> _printPhotosOnly() async {
+  Future<void> _downloadPhotosOnly() async {
     final steps = _getStepsForCurrentTab();
     final stepsWithImages = steps.where((s) => _shouldShowDiagram(s.diagramType)).toList();
     final sectionTitle = _getSectionTitle();
+    const imagesPerPage = 6;
+
+    // Pre-load all images
+    final List<pw.MemoryImage?> loadedImages = List.from(
+      await Future.wait(stepsWithImages.map((step) async {
+        final path = _getImagePath(step.diagramType);
+        try {
+          final bytes = await _loadAssetBytes(path);
+          return pw.MemoryImage(bytes);
+        } catch (_) {
+          return null;
+        }
+      })),
+    );
 
     final pdf = pw.Document();
-    const imagesPerPage = 6;
-    const cols = 2;
-    const rows = 3;
+
+    // A4 usable area: 210mm wide, 297mm tall, minus 16mm margins each side
+    // Each cell: (usable_width - gap) / 2 wide, usable_height / 3 tall
+    const double cellW = (210 - 32 - 8) / 2; // ~85mm
+    const double cellH = (297 - 48 - 16) / 3; // ~77mm
 
     for (int pageStart = 0; pageStart < stepsWithImages.length; pageStart += imagesPerPage) {
-      final pageSteps = stepsWithImages.skip(pageStart).take(imagesPerPage).toList();
+      final pageItems = stepsWithImages
+          .asMap()
+          .entries
+          .skip(pageStart)
+          .take(imagesPerPage)
+          .toList();
 
-      final imageWidgets = List<pw.Widget>.from(
-        await Future.wait(pageSteps.map((step) async {
-          final path = _getImagePath(step.diagramType);
-          try {
-            final bytes = await _loadAssetBytes(path);
-            final image = pw.MemoryImage(bytes);
-            return pw.Column(
+      // Build 3 rows × 2 cols
+      final rows = <pw.Widget>[];
+      for (int row = 0; row < 3; row++) {
+        final leftIdx = pageStart + row * 2;
+        final rightIdx = leftIdx + 1;
+
+        pw.Widget buildCell(int idx) {
+          if (idx >= stepsWithImages.length) return pw.SizedBox(width: cellW, height: cellH);
+          final step = stepsWithImages[idx];
+          final img = loadedImages[idx];
+          return pw.Container(
+            width: cellW,
+            height: cellH,
+            decoration: pw.BoxDecoration(border: pw.Border.all(color: PdfColors.grey300)),
+            padding: const pw.EdgeInsets.all(4),
+            child: pw.Column(
               children: [
                 pw.Expanded(
-                  child: pw.Image(image, fit: pw.BoxFit.contain),
+                  child: img != null
+                      ? pw.Image(img, fit: pw.BoxFit.contain)
+                      : pw.Center(child: pw.Text('—')),
                 ),
-                pw.SizedBox(height: 4),
+                pw.SizedBox(height: 3),
                 pw.Text(
                   'Langkah ${step.stepNumber}: ${step.title}',
-                  style: const pw.TextStyle(fontSize: 8),
+                  style: const pw.TextStyle(fontSize: 7),
                   textAlign: pw.TextAlign.center,
+                  maxLines: 2,
                 ),
               ],
-            );
-          } catch (_) {
-            return pw.Container();
-          }
-        })),
-      );
+            ),
+          );
+        }
 
-      // Pad to full grid
-      while (imageWidgets.length < imagesPerPage) {
-        imageWidgets.add(pw.Container());
+        rows.add(pw.Row(
+          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+          children: [buildCell(leftIdx), buildCell(rightIdx)],
+        ));
+        if (row < 2) rows.add(pw.SizedBox(height: 8));
       }
 
-      pdf.addPage(
-        pw.Page(
-          pageFormat: PdfPageFormat.a4,
-          margin: const pw.EdgeInsets.all(24),
-          build: (_) => pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              if (pageStart == 0) ...[
-                pw.Text('Arahan Pembinaan Pola',
-                    style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold)),
-                pw.Text(sectionTitle,
-                    style: pw.TextStyle(fontSize: 10, color: PdfColors.grey700)),
-                pw.SizedBox(height: 8),
-                pw.Divider(),
-                pw.SizedBox(height: 8),
-              ],
-              pw.Expanded(
-                child: pw.GridView(
-                  crossAxisCount: cols,
-                  childAspectRatio: 1.2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  children: imageWidgets,
-                ),
-              ),
+      pdf.addPage(pw.Page(
+        pageFormat: PdfPageFormat.a4,
+        margin: const pw.EdgeInsets.all(16),
+        build: (_) => pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            if (pageStart == 0) ...[
+              pw.Text('Arahan Pembinaan Pola',
+                  style: pw.TextStyle(fontSize: 13, fontWeight: pw.FontWeight.bold)),
+              pw.Text(sectionTitle,
+                  style: pw.TextStyle(fontSize: 9, color: PdfColors.grey700)),
+              pw.SizedBox(height: 6),
+              pw.Divider(),
+              pw.SizedBox(height: 6),
             ],
-          ),
+            ...rows,
+          ],
         ),
-      );
+      ));
     }
 
-    await Printing.layoutPdf(onLayout: (_) async => pdf.save());
+    final bytes = await pdf.save();
+    await Printing.sharePdf(bytes: bytes, filename: 'pola-${_tabTitles[_tabController.index].toLowerCase()}.pdf');
   }
 
-  Future<void> _printPhotosAndNotes() async {
+  Future<void> _downloadPhotosAndNotes() async {
     final steps = _getStepsForCurrentTab();
     final sectionTitle = _getSectionTitle();
 
-    // Pre-load all images before building PDF
+    // Pre-load all images
     final Map<int, pw.MemoryImage?> images = {};
     await Future.wait(steps.map((step) async {
       if (_shouldShowDiagram(step.diagramType)) {
@@ -497,17 +520,17 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
                   pw.Padding(
                     padding: const pw.EdgeInsets.symmetric(vertical: 6),
                     child: pw.Center(
-                      child: pw.SizedBox(
-                        height: 160,
+                      child: pw.ConstrainedBox(
+                        constraints: const pw.BoxConstraints(maxHeight: 180, maxWidth: 400),
                         child: pw.Image(image, fit: pw.BoxFit.contain),
                       ),
                     ),
                   ),
                 ...step.instructions.map((instruction) => pw.Padding(
-                  padding: const pw.EdgeInsets.only(left: 12, bottom: 2),
+                  padding: const pw.EdgeInsets.only(left: 12, bottom: 3),
                   child: pw.Text('• $instruction', style: const pw.TextStyle(fontSize: 11)),
                 )),
-                pw.SizedBox(height: 12),
+                pw.SizedBox(height: 14),
               ],
             );
           }),
@@ -515,7 +538,8 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
       ),
     );
 
-    await Printing.layoutPdf(onLayout: (_) async => pdf.save());
+    final bytes = await pdf.save();
+    await Printing.sharePdf(bytes: bytes, filename: 'pola-${_tabTitles[_tabController.index].toLowerCase()}-nota.pdf');
   }
 
   Future<Uint8List> _loadAssetBytes(String assetPath) async {
@@ -578,9 +602,9 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
                       ),
                     ),
                     TextButton.icon(
-                      onPressed: () => _showPrintOptions(context),
-                      icon: const Icon(Icons.print, color: Colors.white, size: 18),
-                      label: const Text('Print', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+                      onPressed: () => _showDownloadOptions(context),
+                      icon: const Icon(Icons.download, color: Colors.white, size: 18),
+                      label: const Text('Muat Turun', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
                       style: TextButton.styleFrom(
                         backgroundColor: Colors.white.withValues(alpha: 0.25),
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
