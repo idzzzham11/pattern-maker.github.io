@@ -393,77 +393,78 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
     );
 
     final pdf = pw.Document();
+    final totalPages = (stepsWithImages.length / imagesPerPage).ceil();
 
-    // A4 usable area: 210mm wide, 297mm tall, minus 16mm margins each side
-    // Each cell: (usable_width - gap) / 2 wide, usable_height / 3 tall
-    const double cellW = (210 - 32 - 8) / 2; // ~85mm
-    const double cellH = (297 - 48 - 16) / 3; // ~77mm
+    for (int page = 0; page < totalPages; page++) {
+      final pageStart = page * imagesPerPage;
 
-    for (int pageStart = 0; pageStart < stepsWithImages.length; pageStart += imagesPerPage) {
-      final pageItems = stepsWithImages
-          .asMap()
-          .entries
-          .skip(pageStart)
-          .take(imagesPerPage)
-          .toList();
-
-      // Build 3 rows × 2 cols
-      final rows = <pw.Widget>[];
-      for (int row = 0; row < 3; row++) {
-        final leftIdx = pageStart + row * 2;
-        final rightIdx = leftIdx + 1;
-
-        pw.Widget buildCell(int idx) {
-          if (idx >= stepsWithImages.length) return pw.SizedBox(width: cellW, height: cellH);
-          final step = stepsWithImages[idx];
-          final img = loadedImages[idx];
-          return pw.Container(
-            width: cellW,
-            height: cellH,
-            decoration: pw.BoxDecoration(border: pw.Border.all(color: PdfColors.grey300)),
-            padding: const pw.EdgeInsets.all(4),
-            child: pw.Column(
-              children: [
-                pw.Expanded(
-                  child: img != null
-                      ? pw.Image(img, fit: pw.BoxFit.contain)
-                      : pw.Center(child: pw.Text('—')),
-                ),
-                pw.SizedBox(height: 3),
-                pw.Text(
-                  'Langkah ${step.stepNumber}: ${step.title}',
-                  style: const pw.TextStyle(fontSize: 7),
-                  textAlign: pw.TextAlign.center,
-                  maxLines: 2,
-                ),
-              ],
+      pw.Widget buildCell(int idx) {
+        final isEmpty = idx >= stepsWithImages.length;
+        final step = isEmpty ? null : stepsWithImages[idx];
+        final img = isEmpty ? null : loadedImages[idx];
+        return pw.Expanded(
+          child: pw.Container(
+            margin: const pw.EdgeInsets.all(4),
+            decoration: pw.BoxDecoration(
+              border: pw.Border.all(color: PdfColors.grey300),
             ),
-          );
-        }
+            padding: const pw.EdgeInsets.all(4),
+            child: isEmpty
+                ? pw.SizedBox()
+                : pw.Column(
+                    crossAxisAlignment: pw.CrossAxisAlignment.center,
+                    children: [
+                      pw.Expanded(
+                        child: img != null
+                            ? pw.Image(img, fit: pw.BoxFit.contain)
+                            : pw.Center(child: pw.Text('—')),
+                      ),
+                      pw.SizedBox(height: 3),
+                      pw.Text(
+                        'Langkah ${step!.stepNumber}: ${step.title}',
+                        style: const pw.TextStyle(fontSize: 7),
+                        textAlign: pw.TextAlign.center,
+                        maxLines: 2,
+                      ),
+                    ],
+                  ),
+          ),
+        );
+      }
 
-        rows.add(pw.Row(
-          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-          children: [buildCell(leftIdx), buildCell(rightIdx)],
-        ));
-        if (row < 2) rows.add(pw.SizedBox(height: 8));
+      pw.Widget buildRow(int rowIndex) {
+        final leftIdx = pageStart + rowIndex * 2;
+        final rightIdx = leftIdx + 1;
+        return pw.Expanded(
+          child: pw.Row(
+            crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+            children: [buildCell(leftIdx), buildCell(rightIdx)],
+          ),
+        );
       }
 
       pdf.addPage(pw.Page(
         pageFormat: PdfPageFormat.a4,
-        margin: const pw.EdgeInsets.all(16),
+        margin: const pw.EdgeInsets.all(12),
         build: (_) => pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
-            if (pageStart == 0) ...[
-              pw.Text('Arahan Pembinaan Pola',
-                  style: pw.TextStyle(fontSize: 13, fontWeight: pw.FontWeight.bold)),
-              pw.Text(sectionTitle,
-                  style: pw.TextStyle(fontSize: 9, color: PdfColors.grey700)),
-              pw.SizedBox(height: 6),
+            if (page == 0) ...[
+              pw.Text('Arahan Pembinaan Pola — $sectionTitle',
+                  style: pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold)),
+              pw.SizedBox(height: 4),
               pw.Divider(),
-              pw.SizedBox(height: 6),
+              pw.SizedBox(height: 4),
             ],
-            ...rows,
+            pw.Expanded(
+              child: pw.Column(
+                children: [
+                  buildRow(0),
+                  buildRow(1),
+                  buildRow(2),
+                ],
+              ),
+            ),
           ],
         ),
       ));
