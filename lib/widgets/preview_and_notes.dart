@@ -364,6 +364,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
               ),
               const SizedBox(height: 16),
               ListTile(
+                contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.photo_library, color: Color(0xFF8b5cf6)),
                 title: const Text('Gambar Sahaja'),
                 subtitle: const Text('6 gambar setiap halaman'),
@@ -373,6 +374,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
                 },
               ),
               ListTile(
+                contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.article, color: Color(0xFF8b5cf6)),
                 title: const Text('Gambar & Nota'),
                 subtitle: const Text('Gambar dengan arahan langkah demi langkah'),
