@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 import '../models/pattern_models.dart';
 import '../utils/pattern_drafting_instructions.dart';
 
@@ -275,6 +278,87 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
     }
   }
 
+  Future<void> _printCurrentTab() async {
+    final currentTab = _tabTitles[_tabController.index];
+    final neckline = widget.styleSelections.neckline ?? 'Basic Neckline';
+    final bodice = widget.styleSelections.bodice ?? 'Basic Fitted';
+    final collar = widget.styleSelections.collar ?? 'No Collar';
+    final sleeve = widget.styleSelections.sleeve ?? 'Sleeveless';
+    final skirt = widget.styleSelections.skirt ?? 'Straight';
+
+    List<PatternStep> steps = [];
+    String sectionTitle = currentTab;
+
+    switch (currentTab) {
+      case 'Badan':
+        steps = [
+          ..._instructions.getBackBodiceSteps(),
+          ..._instructions.getFrontBodiceSteps(),
+          ..._instructions.getNecklineSteps(neckline),
+          ..._instructions.getBodiceStyleSteps(bodice),
+        ];
+        sectionTitle = 'Badan - $neckline / $bodice';
+        break;
+      case 'Kolar':
+        steps = _instructions.getCollarSteps(collar);
+        sectionTitle = 'Kolar - $collar';
+        break;
+      case 'Lengan':
+        steps = [
+          ..._instructions.getBasicSleeveSteps(),
+          ..._instructions.getSleeveSteps(sleeve),
+        ];
+        sectionTitle = 'Lengan - $sleeve';
+        break;
+      case 'Skirt':
+        steps = [
+          ..._instructions.getBasicSkirtFrontSteps(),
+          ..._instructions.getBasicSkirtBackSteps(),
+          ..._instructions.getSkirtSteps(skirt),
+        ];
+        sectionTitle = 'Skirt - $skirt';
+        break;
+    }
+
+    final pdf = pw.Document();
+    pdf.addPage(
+      pw.MultiPage(
+        pageFormat: PdfPageFormat.a4,
+        margin: const pw.EdgeInsets.all(32),
+        build: (context) => [
+          pw.Text(
+            'Arahan Pembinaan Pola',
+            style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold),
+          ),
+          pw.Text(
+            sectionTitle,
+            style: pw.TextStyle(fontSize: 14, color: PdfColors.grey700),
+          ),
+          pw.SizedBox(height: 16),
+          pw.Divider(),
+          pw.SizedBox(height: 12),
+          ...steps.map((step) => pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Text(
+                'Langkah ${step.stepNumber}: ${step.title}',
+                style: pw.TextStyle(fontSize: 13, fontWeight: pw.FontWeight.bold),
+              ),
+              pw.SizedBox(height: 4),
+              ...step.instructions.map((instruction) => pw.Padding(
+                padding: const pw.EdgeInsets.only(left: 12, bottom: 2),
+                child: pw.Text('• $instruction', style: const pw.TextStyle(fontSize: 11)),
+              )),
+              pw.SizedBox(height: 10),
+            ],
+          )),
+        ],
+      ),
+    );
+
+    await Printing.layoutPdf(onLayout: (_) async => pdf.save());
+  }
+
   @override
   void dispose() {
     _tabController.dispose();
@@ -328,6 +412,11 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
                           color: Colors.white,
                         ),
                       ),
+                    ),
+                    IconButton(
+                      onPressed: _printCurrentTab,
+                      icon: const Icon(Icons.print, color: Colors.white),
+                      tooltip: 'Print',
                     ),
                   ],
                 ),
