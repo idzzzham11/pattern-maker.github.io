@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -278,7 +279,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
     }
   }
 
-  Future<void> _printCurrentTab() async {
+  List<PatternStep> _getStepsForCurrentTab() {
     final currentTab = _tabTitles[_tabController.index];
     final neckline = widget.styleSelections.neckline ?? 'Basic Neckline';
     final bodice = widget.styleSelections.bodice ?? 'Basic Fitted';
@@ -286,77 +287,237 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
     final sleeve = widget.styleSelections.sleeve ?? 'Sleeveless';
     final skirt = widget.styleSelections.skirt ?? 'Straight';
 
-    List<PatternStep> steps = [];
-    String sectionTitle = currentTab;
-
     switch (currentTab) {
       case 'Badan':
-        steps = [
+        return [
           ..._instructions.getBackBodiceSteps(),
           ..._instructions.getFrontBodiceSteps(),
           ..._instructions.getNecklineSteps(neckline),
           ..._instructions.getBodiceStyleSteps(bodice),
         ];
-        sectionTitle = 'Badan - $neckline / $bodice';
-        break;
       case 'Kolar':
-        steps = _instructions.getCollarSteps(collar);
-        sectionTitle = 'Kolar - $collar';
-        break;
+        return _instructions.getCollarSteps(collar);
       case 'Lengan':
-        steps = [
+        return [
           ..._instructions.getBasicSleeveSteps(),
           ..._instructions.getSleeveSteps(sleeve),
         ];
-        sectionTitle = 'Lengan - $sleeve';
-        break;
       case 'Skirt':
-        steps = [
+        return [
           ..._instructions.getBasicSkirtFrontSteps(),
           ..._instructions.getBasicSkirtBackSteps(),
           ..._instructions.getSkirtSteps(skirt),
         ];
-        sectionTitle = 'Skirt - $skirt';
-        break;
+      default:
+        return [];
     }
+  }
+
+  String _getSectionTitle() {
+    final currentTab = _tabTitles[_tabController.index];
+    final neckline = widget.styleSelections.neckline ?? 'Basic Neckline';
+    final bodice = widget.styleSelections.bodice ?? 'Basic Fitted';
+    final collar = widget.styleSelections.collar ?? 'No Collar';
+    final sleeve = widget.styleSelections.sleeve ?? 'Sleeveless';
+    final skirt = widget.styleSelections.skirt ?? 'Straight';
+    switch (currentTab) {
+      case 'Badan': return 'Badan - $neckline / $bodice';
+      case 'Kolar': return 'Kolar - $collar';
+      case 'Lengan': return 'Lengan - $sleeve';
+      case 'Skirt': return 'Skirt - $skirt';
+      default: return currentTab;
+    }
+  }
+
+  void _showPrintOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (_) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Pilih Jenis Cetakan',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              ListTile(
+                leading: const Icon(Icons.photo_library, color: Color(0xFF8b5cf6)),
+                title: const Text('Gambar Sahaja'),
+                subtitle: const Text('6 gambar setiap halaman'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _printPhotosOnly();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.article, color: Color(0xFF8b5cf6)),
+                title: const Text('Gambar & Nota'),
+                subtitle: const Text('Gambar dengan arahan langkah demi langkah'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _printPhotosAndNotes();
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _printPhotosOnly() async {
+    final steps = _getStepsForCurrentTab();
+    final stepsWithImages = steps.where((s) => _shouldShowDiagram(s.diagramType)).toList();
+    final sectionTitle = _getSectionTitle();
+
+    final pdf = pw.Document();
+    const imagesPerPage = 6;
+    const cols = 2;
+    const rows = 3;
+
+    for (int pageStart = 0; pageStart < stepsWithImages.length; pageStart += imagesPerPage) {
+      final pageSteps = stepsWithImages.skip(pageStart).take(imagesPerPage).toList();
+
+      final imageWidgets = await Future.wait(pageSteps.map((step) async {
+        final path = _getImagePath(step.diagramType);
+        try {
+          final bytes = await _loadAssetBytes(path);
+          final image = pw.MemoryImage(bytes);
+          return pw.Column(
+            children: [
+              pw.Expanded(
+                child: pw.Image(image, fit: pw.BoxFit.contain),
+              ),
+              pw.SizedBox(height: 4),
+              pw.Text(
+                'Langkah ${step.stepNumber}: ${step.title}',
+                style: const pw.TextStyle(fontSize: 8),
+                textAlign: pw.TextAlign.center,
+              ),
+            ],
+          );
+        } catch (_) {
+          return pw.Container();
+        }
+      }));
+
+      // Pad to full grid
+      while (imageWidgets.length < imagesPerPage) {
+        imageWidgets.add(pw.Container());
+      }
+
+      pdf.addPage(
+        pw.Page(
+          pageFormat: PdfPageFormat.a4,
+          margin: const pw.EdgeInsets.all(24),
+          build: (_) => pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              if (pageStart == 0) ...[
+                pw.Text('Arahan Pembinaan Pola',
+                    style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold)),
+                pw.Text(sectionTitle,
+                    style: pw.TextStyle(fontSize: 10, color: PdfColors.grey700)),
+                pw.SizedBox(height: 8),
+                pw.Divider(),
+                pw.SizedBox(height: 8),
+              ],
+              pw.Expanded(
+                child: pw.GridView(
+                  crossAxisCount: cols,
+                  childAspectRatio: 1.2,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  children: imageWidgets,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    await Printing.layoutPdf(onLayout: (_) async => pdf.save());
+  }
+
+  Future<void> _printPhotosAndNotes() async {
+    final steps = _getStepsForCurrentTab();
+    final sectionTitle = _getSectionTitle();
+
+    // Pre-load all images before building PDF
+    final Map<int, pw.MemoryImage?> images = {};
+    await Future.wait(steps.map((step) async {
+      if (_shouldShowDiagram(step.diagramType)) {
+        final path = _getImagePath(step.diagramType);
+        if (path.isNotEmpty) {
+          try {
+            final bytes = await _loadAssetBytes(path);
+            images[step.stepNumber] = pw.MemoryImage(bytes);
+          } catch (_) {
+            images[step.stepNumber] = null;
+          }
+        }
+      }
+    }));
 
     final pdf = pw.Document();
     pdf.addPage(
       pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
         margin: const pw.EdgeInsets.all(32),
-        build: (context) => [
-          pw.Text(
-            'Arahan Pembinaan Pola',
-            style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold),
-          ),
-          pw.Text(
-            sectionTitle,
-            style: pw.TextStyle(fontSize: 14, color: PdfColors.grey700),
-          ),
+        build: (_) => [
+          pw.Text('Arahan Pembinaan Pola',
+              style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold)),
+          pw.Text(sectionTitle,
+              style: pw.TextStyle(fontSize: 14, color: PdfColors.grey700)),
           pw.SizedBox(height: 16),
           pw.Divider(),
           pw.SizedBox(height: 12),
-          ...steps.map((step) => pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              pw.Text(
-                'Langkah ${step.stepNumber}: ${step.title}',
-                style: pw.TextStyle(fontSize: 13, fontWeight: pw.FontWeight.bold),
-              ),
-              pw.SizedBox(height: 4),
-              ...step.instructions.map((instruction) => pw.Padding(
-                padding: const pw.EdgeInsets.only(left: 12, bottom: 2),
-                child: pw.Text('• $instruction', style: const pw.TextStyle(fontSize: 11)),
-              )),
-              pw.SizedBox(height: 10),
-            ],
-          )),
+          ...steps.map((step) {
+            final image = images[step.stepNumber];
+            return pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text(
+                  'Langkah ${step.stepNumber}: ${step.title}',
+                  style: pw.TextStyle(fontSize: 13, fontWeight: pw.FontWeight.bold),
+                ),
+                pw.SizedBox(height: 4),
+                if (image != null)
+                  pw.Padding(
+                    padding: const pw.EdgeInsets.symmetric(vertical: 6),
+                    child: pw.Center(
+                      child: pw.SizedBox(
+                        height: 160,
+                        child: pw.Image(image, fit: pw.BoxFit.contain),
+                      ),
+                    ),
+                  ),
+                ...step.instructions.map((instruction) => pw.Padding(
+                  padding: const pw.EdgeInsets.only(left: 12, bottom: 2),
+                  child: pw.Text('• $instruction', style: const pw.TextStyle(fontSize: 11)),
+                )),
+                pw.SizedBox(height: 12),
+              ],
+            );
+          }),
         ],
       ),
     );
 
     await Printing.layoutPdf(onLayout: (_) async => pdf.save());
+  }
+
+  Future<Uint8List> _loadAssetBytes(String assetPath) async {
+    final byteData = await DefaultAssetBundle.of(context).load(assetPath);
+    return byteData.buffer.asUint8List();
   }
 
   @override
@@ -413,10 +574,15 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
                         ),
                       ),
                     ),
-                    IconButton(
-                      onPressed: _printCurrentTab,
-                      icon: const Icon(Icons.print, color: Colors.white),
-                      tooltip: 'Print',
+                    TextButton.icon(
+                      onPressed: () => _showPrintOptions(context),
+                      icon: const Icon(Icons.print, color: Colors.white, size: 18),
+                      label: const Text('Print', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.white.withValues(alpha: 0.25),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      ),
                     ),
                   ],
                 ),
