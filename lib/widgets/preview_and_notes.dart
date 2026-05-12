@@ -280,6 +280,22 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
     }
   }
 
+  String _pdfSafe(String text) => text
+      .replaceAll('–', '-')   // en-dash –
+      .replaceAll('—', '-')   // em-dash —
+      .replaceAll('−', '-')   // minus sign −
+      .replaceAll('½', '1/2') // ½
+      .replaceAll('¼', '1/4') // ¼
+      .replaceAll('¾', '3/4') // ¾
+      .replaceAll('×', 'x')   // ×
+      .replaceAll('÷', '/')   // ÷
+      .replaceAll('≈', '~')   // ≈
+      .replaceAll('°', ' darjah') // °
+      .replaceAll('’', "'")   // '
+      .replaceAll('‘', "'")   // '
+      .replaceAll('“', '"')   // "
+      .replaceAll('”', '"');  // "
+
   List<PatternStep> _getStepsForCurrentTab() {
     final currentTab = _tabTitles[_tabController.index];
     final neckline = widget.styleSelections.neckline ?? 'Basic Neckline';
@@ -419,7 +435,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
                       ),
                       pw.SizedBox(height: 3),
                       pw.Text(
-                        'Langkah ${step!.stepNumber}: ${step.title}',
+                        _pdfSafe('Langkah ${step!.stepNumber}: ${step.title}'),
                         style: const pw.TextStyle(fontSize: 7),
                         textAlign: pw.TextAlign.center,
                         maxLines: 2,
@@ -448,7 +464,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
             if (page == 0) ...[
-              pw.Text('Arahan Pembinaan Pola — $sectionTitle',
+              pw.Text(_pdfSafe('Arahan Pembinaan Pola - $sectionTitle'),
                   style: pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold)),
               pw.SizedBox(height: 4),
               pw.Divider(),
@@ -498,9 +514,9 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
         pageFormat: PdfPageFormat.a4,
         margin: const pw.EdgeInsets.all(32),
         build: (_) => [
-          pw.Text('Arahan Pembinaan Pola',
+          pw.Text(_pdfSafe('Arahan Pembinaan Pola'),
               style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold)),
-          pw.Text(sectionTitle,
+          pw.Text(_pdfSafe(sectionTitle),
               style: pw.TextStyle(fontSize: 14, color: PdfColors.grey700)),
           pw.SizedBox(height: 16),
           pw.Divider(),
@@ -511,7 +527,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
                 pw.Text(
-                  'Langkah ${step.stepNumber}: ${step.title}',
+                  _pdfSafe('Langkah ${step.stepNumber}: ${step.title}'),
                   style: pw.TextStyle(fontSize: 13, fontWeight: pw.FontWeight.bold),
                 ),
                 pw.SizedBox(height: 4),
@@ -527,7 +543,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
                   ),
                 ...step.instructions.map((instruction) => pw.Padding(
                   padding: const pw.EdgeInsets.only(left: 12, bottom: 3),
-                  child: pw.Text('- $instruction', style: const pw.TextStyle(fontSize: 11)),
+                  child: pw.Text(_pdfSafe('- $instruction'), style: const pw.TextStyle(fontSize: 11)),
                 )),
                 pw.SizedBox(height: 14),
               ],
