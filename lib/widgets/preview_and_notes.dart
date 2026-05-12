@@ -336,9 +336,8 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (_) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+      builder: (_) => Padding(
+          padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -368,7 +367,6 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
               ),
             ],
           ),
-        ),
       ),
     );
   }
@@ -600,16 +598,6 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
-                      ),
-                    ),
-                    TextButton.icon(
-                      onPressed: () => _showDownloadOptions(context),
-                      icon: const Icon(Icons.download, color: Colors.white, size: 18),
-                      label: const Text('Muat Turun', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
-                      style: TextButton.styleFrom(
-                        backgroundColor: Colors.white.withValues(alpha: 0.25),
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       ),
                     ),
                   ],
