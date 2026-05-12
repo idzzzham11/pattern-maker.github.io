@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
@@ -385,28 +386,30 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
     for (int pageStart = 0; pageStart < stepsWithImages.length; pageStart += imagesPerPage) {
       final pageSteps = stepsWithImages.skip(pageStart).take(imagesPerPage).toList();
 
-      final imageWidgets = await Future.wait(pageSteps.map((step) async {
-        final path = _getImagePath(step.diagramType);
-        try {
-          final bytes = await _loadAssetBytes(path);
-          final image = pw.MemoryImage(bytes);
-          return pw.Column(
-            children: [
-              pw.Expanded(
-                child: pw.Image(image, fit: pw.BoxFit.contain),
-              ),
-              pw.SizedBox(height: 4),
-              pw.Text(
-                'Langkah ${step.stepNumber}: ${step.title}',
-                style: const pw.TextStyle(fontSize: 8),
-                textAlign: pw.TextAlign.center,
-              ),
-            ],
-          );
-        } catch (_) {
-          return pw.Container();
-        }
-      }));
+      final imageWidgets = List<pw.Widget>.from(
+        await Future.wait(pageSteps.map((step) async {
+          final path = _getImagePath(step.diagramType);
+          try {
+            final bytes = await _loadAssetBytes(path);
+            final image = pw.MemoryImage(bytes);
+            return pw.Column(
+              children: [
+                pw.Expanded(
+                  child: pw.Image(image, fit: pw.BoxFit.contain),
+                ),
+                pw.SizedBox(height: 4),
+                pw.Text(
+                  'Langkah ${step.stepNumber}: ${step.title}',
+                  style: const pw.TextStyle(fontSize: 8),
+                  textAlign: pw.TextAlign.center,
+                ),
+              ],
+            );
+          } catch (_) {
+            return pw.Container();
+          }
+        })),
+      );
 
       // Pad to full grid
       while (imageWidgets.length < imagesPerPage) {
@@ -516,7 +519,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
   }
 
   Future<Uint8List> _loadAssetBytes(String assetPath) async {
-    final byteData = await DefaultAssetBundle.of(context).load(assetPath);
+    final byteData = await rootBundle.load(assetPath);
     return byteData.buffer.asUint8List();
   }
 
