@@ -529,7 +529,7 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
                   ),
                 ...step.instructions.map((instruction) => pw.Padding(
                   padding: const pw.EdgeInsets.only(left: 12, bottom: 3),
-                  child: pw.Text('• $instruction', style: const pw.TextStyle(fontSize: 11)),
+                  child: pw.Text('- $instruction', style: const pw.TextStyle(fontSize: 11)),
                 )),
                 pw.SizedBox(height: 14),
               ],
@@ -648,9 +648,36 @@ class _PreviewAndNotesState extends State<PreviewAndNotes> with SingleTickerProv
             ),
           ),
 
-          // Back button
+          // Download + Back buttons
+          Padding(
+            padding: EdgeInsets.fromLTRB(
+              isSmallScreen ? 12 : 16,
+              isSmallScreen ? 12 : 16,
+              isSmallScreen ? 12 : 16,
+              4,
+            ),
+            child: SizedBox(
+              width: double.infinity,
+              height: isSmallScreen ? 44 : 50,
+              child: ElevatedButton.icon(
+                onPressed: () => _showDownloadOptions(context),
+                icon: const Icon(Icons.download, size: 18),
+                label: const Text('Muat Turun PDF', style: TextStyle(fontWeight: FontWeight.w600)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF8b5cf6),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+              ),
+            ),
+          ),
           Container(
-            padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
+            padding: EdgeInsets.fromLTRB(
+              isSmallScreen ? 12 : 16,
+              4,
+              isSmallScreen ? 12 : 16,
+              isSmallScreen ? 12 : 16,
+            ),
             child: SizedBox(
               width: double.infinity,
               height: isSmallScreen ? 44 : 50,
